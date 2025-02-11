@@ -1,6 +1,8 @@
 import jwt  # type: ignore
 import json
 from .settings import AUTH_SECRET
+from mail_templated import send_mail
+from django.conf import settings
 
 
 def encode_user(user):
@@ -23,3 +25,14 @@ def hex_decode(data):
     decoded_bytes = bytes.fromhex(data)
     decoded_json_data = decoded_bytes.decode('utf-8')
     return json.loads(decoded_json_data)
+
+
+def send_email(template, context):
+    to = []
+    to.append(context['email'])
+    send_mail(
+        template_name=template,
+        context=context,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=to
+    )
