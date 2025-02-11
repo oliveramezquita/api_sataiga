@@ -1,6 +1,6 @@
 import logging
 from api.models.user import User, Role
-from api.helpers.http_response import *
+from api.helpers.http_response import created, ok, ok_paginated, bad_request, not_found
 from api.helpers.validations import email_validation
 from api.serializers.user_serializer import UserSerializer
 from django.contrib.auth.hashers import check_password, make_password
@@ -8,16 +8,18 @@ from rest_framework import exceptions
 from urllib.parse import parse_qs
 from api.static import DEFAULT_PAGE_SIZE
 from django.core.paginator import Paginator
+from sataiga_api.functions import send_email
 
 log = logging.getLogger(__name__)
 
 
 class UserUseCase:
     def __init__(self, request=None, data=None, id=None):
-        params = parse_qs(request.META['QUERY_STRING'])
-        self.page = params['page'][0] if 'page' in params else 1
-        self.page_size = params['itemsPerPage'][0] \
-            if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
+        if request:
+            params = parse_qs(request.META['QUERY_STRING'])
+            self.page = params['page'][0] if 'page' in params else 1
+            self.page_size = params['itemsPerPage'][0] \
+                if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
         self.data = data
         self.id = id
 
@@ -30,10 +32,18 @@ class UserUseCase:
                 User(
                     role=role,
                     name=self.data['name'],
-                    lastname=self.data['lastname'],
+                    lastname=self.data['lastname'] if 'lastname' in self.data else None,
                     email=self.data['email'],
                 ).save()
-                # TODO: Enviar correo con la liga para registrar
+                link = ''
+                send_email(
+                    template="mail_templated/register.html",
+                    context={
+                        'fullname': self.data['name'] + f' {self.data['lastname']}' if 'lastname' in self.data else '',
+                        'email': self.data['email'],
+                        'link': link,
+                    },
+                )
                 return created('Usuario creado correctamente.')
             except Exception as e:
                 log.error(e.args[0])
