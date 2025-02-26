@@ -1,4 +1,3 @@
-import logging
 from urllib.parse import parse_qs
 from rest_framework import exceptions
 from api.constants import DEFAULT_PAGE_SIZE
@@ -12,9 +11,6 @@ from bson import ObjectId
 from pymongo import errors
 from api.helpers.bcrypt import encrypt_password, verify_password
 from django.conf import settings
-
-
-log = logging.getLogger(__name__)
 
 
 class UserUseCase:
@@ -65,9 +61,6 @@ class UserUseCase:
                     return created('Usuario creado correctamente.')
                 except errors.DuplicateKeyError:
                     return bad_request('El correo electrónico proporcionado ya ha sido registrado. Por favor, utilice una dirección de correo electrónico diferente.')
-                except Exception as e:
-                    log.error(e.args[0])
-                    return error(e.args[0])
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
@@ -89,24 +82,20 @@ class UserUseCase:
                 required_fields = ['password', 'confirm_password']
                 if all(i in self.data for i in required_fields):
                     if self.data['password'] == self.data['confirm_password']:
-                        try:
-                            password = encrypt_password(self.data['password'])
-                            db.update({'_id': ObjectId(self.id)}, {
-                                      'password': password, 'status': 1})
-                            send_email(
-                                template="mail_templated/activated.html",
-                                context={
-                                    'subject': '¡Registro Completo! Bienvenido al Sistema Bellarti',
-                                    'full_name': user[0]['name'] + f' {user[0]['lastname']}' if user[0]['lastname'] else '',
-                                    'email': user[0]['email'],
-                                    'link_href': settings.ADMIN_URL,
-                                    'link_label': 'INICIAR SESIÓN'
-                                },
-                            )
-                            return ok('Registro realizado exitosamente.')
-                        except Exception as e:
-                            log.error(e.args[0])
-                            return error(e.args[0])
+                        password = encrypt_password(self.data['password'])
+                        db.update({'_id': ObjectId(self.id)}, {
+                            'password': password, 'status': 1})
+                        send_email(
+                            template="mail_templated/activated.html",
+                            context={
+                                'subject': '¡Registro Completo! Bienvenido al Sistema Bellarti',
+                                'full_name': user[0]['name'] + f' {user[0]['lastname']}' if user[0]['lastname'] else '',
+                                'email': user[0]['email'],
+                                'link_href': settings.ADMIN_URL,
+                                'link_label': 'INICIAR SESIÓN'
+                            },
+                        )
+                        return ok('Registro realizado exitosamente.')
                     return bad_request('Las contraseñas no coinciden.')
                 return bad_request('Algunos campos requeridos no han sido completados.')
             return bad_request('El usaurio no existe o ya se encuentra registrado.')
@@ -125,12 +114,8 @@ class UserUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if user and user[0]['status'] < 2:
                 self.__validate_params(db)
-                try:
-                    db.update({'_id': ObjectId(self.id)}, self.data)
-                    return ok('Usuario actualizado correctamente.')
-                except Exception as e:
-                    log.error(e.args[0])
-                    return error(e.args[0])
+                db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok('Usuario actualizado correctamente.')
             return bad_request('El usaurio no existe.')
 
     def update_password(self):
@@ -142,15 +127,11 @@ class UserUseCase:
             if user and all(i in self.data for i in required_fields):
                 if verify_password(self.data['old_password'], user[0]['password']):
                     if self.data['new_password'] == self.data['confirm_password']:
-                        try:
-                            password = encrypt_password(
-                                self.data['new_password'])
-                            db.update({'_id': ObjectId(self.id)},
-                                      {'password': password})
-                            return ok('Su contraeña ha sido actualizada.')
-                        except Exception as e:
-                            log.error(e.args[0])
-                            return error(e.args[0])
+                        password = encrypt_password(
+                            self.data['new_password'])
+                        db.update({'_id': ObjectId(self.id)},
+                                  {'password': password})
+                        return ok('Su contraeña ha sido actualizada.')
                     return bad_request('Las contraseña nueva y su confirmación no coinciden.')
                 return bad_request('La contraseña actual es incorrecta. Intoduzca su contraseña actual para hacer el cambio de contraseña.')
             return bad_request('No ha sido posible cambiar la contraseña. Verifique que no haya campos faltantes y que el usuario se encuentre registrado.')
@@ -160,10 +141,6 @@ class UserUseCase:
             user = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if user and user[0]['status'] < 2:
-                try:
-                    db.update({'_id': ObjectId(self.id)}, {'status': 2})
-                    return ok('Usuario eliminado correctamente.')
-                except Exception as e:
-                    log.error(e.args[0])
-                    return error(e.args[0])
+                db.update({'_id': ObjectId(self.id)}, {'status': 2})
+                return ok('Usuario eliminado correctamente.')
             return bad_request('El usaurio no existe o ya se encuentra eliminado.')

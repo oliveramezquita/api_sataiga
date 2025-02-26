@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models.user import User
+from api.models import User
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.constants import USER_STATUS
 from bson import ObjectId

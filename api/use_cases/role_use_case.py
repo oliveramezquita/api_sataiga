@@ -1,12 +1,9 @@
-import logging
-from api.helpers.http_responses import ok, created, bad_request, error
+from api.helpers.http_responses import ok, created, bad_request
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.serializers.role_serializer import RoleSerializer
 from api.helpers.validations import objectid_validation
 from bson import ObjectId
 from pymongo import errors
-
-log = logging.getLogger(__name__)
 
 
 class RoleUseCase:
@@ -24,9 +21,6 @@ class RoleUseCase:
                     return created('Rol creado correctamente.')
                 except errors.DuplicateKeyError:
                     return bad_request('El valor del rol ya existe.')
-                except Exception as e:
-                    log.error(e.args[0])
-                    return error(e.args[0])
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
@@ -39,10 +33,6 @@ class RoleUseCase:
             role = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if role:
-                try:
-                    db.update({'_id': ObjectId(self.id)}, self.data)
-                    return ok('Rol actualizado correctamente.')
-                except Exception as e:
-                    log.error(e.args[0])
-                    return error(e.args[0])
+                db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok('Rol actualizado correctamente.')
             return bad_request('El rol no existe')

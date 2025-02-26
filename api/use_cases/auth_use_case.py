@@ -2,7 +2,6 @@ from datetime import datetime
 from api.helpers.http_responses import ok, bad_request
 from api.helpers.bcrypt import encrypt_password, verify_password
 from api.helpers.validations import email_validation
-from api.handlers.ExceptionHandler import ExceptionHandling
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.serializers.user_serializer import UserSerializer
 from api_sataiga.functions import encode_user, hex_decode, hex_encode, send_email
@@ -14,14 +13,13 @@ class AuthUseCase:
     def __init__(self, data):
         self.data = data
 
-    @ExceptionHandling.exception_handler
     def login(self):
         with MongoDBHandler('users') as db:
             required_fields = ['email', 'password']
             if all(i in self.data for i in required_fields):
                 user = db.extract({'email': self.data['email'], 'status': 1})
                 if user:
-                    if verify_password(self.data['password1'], user[0]['password']):
+                    if verify_password(self.data['password'], user[0]['password']):
                         user = UserSerializer(user[0]).data
                         return ok({
                             'userAbilityRules': user['role']['value'],
@@ -32,7 +30,6 @@ class AuthUseCase:
                 return bad_request('Usuario no encontrado')
             return bad_request('El correo electrónico y la contraseña son obligatorios.')
 
-    @ExceptionHandling.exception_handler
     def password_request(self):
         with MongoDBHandler('password_request') as db:
             if 'email' in self.data and email_validation(self.data['email']):
@@ -64,7 +61,6 @@ class AuthUseCase:
                 return bad_request('El correo electrónico no se encuentra registrado.')
             return bad_request('El correo electrónico no es válido.')
 
-    @ExceptionHandling.exception_handler
     def restore_password(self):
         with MongoDBHandler('users') as db:
             required_fields = ['hash_request', 'password', 'confirm_password']
