@@ -1,0 +1,34 @@
+{% extends "mail_templated/base.html" %}
+
+{% block subject_appendix %}{{ subject }}{% endblock %}
+
+{% block html_content %}
+<div>
+    <p style="margin: 0;">Estimado(a)
+        {{ full_name }},</p>
+    <p style="margin: 0;"> </p>
+    <p style="margin: 0;">Nos complace
+        informarte que tu registro en el
+        Sistema Bellarti se ha completado
+        con éxito. Ahora puedes acceder al
+        sistema utilizando los siguientes
+        datos de tu cuenta:</p>
+    <p style="margin: 0;"> </p>
+    <ul style="margin: 0; list-style-type: disc;">
+        <li style="margin: 0;">Correo
+            electrónico</li>
+        <li style="margin: 0;">Contraseña
+        </li>
+    </ul>
+    <p style="margin: 0;"> </p>
+    <p style="margin: 0;">Para iniciar
+        sesión y explorar todas las
+        funcionalidades que el Sistema
+        Bellarti tiene para ofrecerte,
+        visita el siguiente enlace:</p>
+    <p style="margin: 0;"><a href="{{ link_href }}">{{ link_label }}</a></p>
+    <p style="margin: 0;"> </p>
+    <p style="margin: 0;">Gracias por unirte
+        al sistema.</p>
+</div>
+{% endblock %}

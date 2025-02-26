@@ -1,0 +1,109 @@
+INFO 2025-02-25 20:16:04,595 autoreload 72602 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/functions.py changed, reloading.
+INFO 2025-02-25 20:16:04,966 autoreload 96014 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-25 20:16:31,689 autoreload 96014 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/functions.py changed, reloading.
+INFO 2025-02-25 20:16:31,969 autoreload 96352 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-25 20:19:43,513 autoreload 96352 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-25 20:19:43,856 autoreload 98590 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-25 20:22:50,405 autoreload 98590 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-25 20:22:50,739 autoreload 1085 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-25 20:25:00,999 autoreload 1085 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-25 20:25:01,359 autoreload 2603 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-25 20:26:12,233 autoreload 2603 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-25 20:26:12,609 autoreload 3445 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-25 20:27:31,614 log 3445 6208909312 Forbidden: /api/users
+ERROR 2025-02-25 20:28:06,761 user_use_case 3445 6208909312 'Settings' object has no attribute 'ADMIN_URL'
+ERROR 2025-02-25 20:28:06,762 log 3445 6208909312 Internal Server Error: /api/users
+INFO 2025-02-25 20:28:38,342 autoreload 3445 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-25 20:29:11,370 autoreload 5629 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-25 20:29:14,674 log 5629 6135803904 Bad Request: /api/users
+ERROR 2025-02-25 20:29:47,411 user_use_case 5629 6135803904 'Settings' object has no attribute 'EMAIL_API_KEY'
+ERROR 2025-02-25 20:29:47,412 log 5629 6135803904 Internal Server Error: /api/users
+INFO 2025-02-25 20:30:54,933 autoreload 5629 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-25 20:30:55,273 autoreload 6865 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-25 20:31:03,578 autoreload 6865 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-25 20:31:03,898 autoreload 6979 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-25 20:31:09,416 log 6979 6137032704 Bad Request: /api/users
+ERROR 2025-02-25 20:31:24,023 user_use_case 6979 6137032704 Unclosed tag on line 5: 'block'. Looking for one of: endblock.
+ERROR 2025-02-25 20:31:24,025 log 6979 6137032704 Internal Server Error: /api/users
+ERROR 2025-02-25 20:32:44,846 user_use_case 6979 6153859072 61
+ERROR 2025-02-25 20:32:44,847 log 6979 6153859072 Internal Server Error: /api/users
+INFO 2025-02-25 20:33:52,337 autoreload 6979 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-25 20:33:52,728 autoreload 8983 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-25 20:34:19,869 log 8983 6170587136 Internal Server Error: /api/users
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 11, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 51, in save
+    send_email(
+    ~~~~~~~~~~^
+        template="mail_templated/register.html",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        },
+        ^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/functions.py", line 34, in send_email
+    send_mail(
+    ~~~~~~~~~^
+        template_name=template,
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        auth_password=settings.EMAIL_API_SECRET
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/mail_templated/utils.py", line 93, in send_mail
+    connection=connection, **kwargs).send(clean=clean)
+                                     ~~~~^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/mail_templated/message.py", line 227, in send
+    return super(EmailMessage, self).send(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/mail/message.py", line 301, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/mail/backends/smtp.py", line 128, in send_messages
+    new_conn_created = self.open()
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/mail/backends/smtp.py", line 86, in open
+    self.connection = self.connection_class(
+                      ~~~~~~~~~~~~~~~~~~~~~^
+        self.host, self.port, **connection_params
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+                                    self.source_address)
+                                    ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socket.py", line 864, in create_connection
+    raise exceptions[0]
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socket.py", line 849, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [Errno 61] Connection refused

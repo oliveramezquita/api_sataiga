@@ -1,0 +1,48 @@
+{% extends "mail_templated/base.html" %}
+
+{% block subject_appendix %}{{ subject }}{% endblock %}
+
+{% block html_content %}
+<div>
+    <p style="margin: 0;">Estimado(a)
+        {{ full_name }},</p>
+    <p style="margin: 0;"> </p>
+    <p style="margin: 0;">Nos complace
+        informarle que ha sido invitado(a) a
+        unirse al Sistema Bellarti, una
+        plataforma diseñada para optimizar y
+        gestionar eficazmente nuestros
+        proyectos. Para completar su
+        registro y comenzar a disfrutar de
+        todas las funcionalidades del
+        sistema, le solicitamos que siga los
+        siguientes pasos:</p>
+    <p style="margin: 0;"> </p>
+    <ol style="margin: 0;">
+        <li style="margin: 0;">Haga clic en
+            el siguiente enlace para acceder
+            al formulario de registro:
+            <a href="{{ link_href }}">{{ link_label }}</a>.
+        </li>
+        <li style="margin: 0;">Añada su
+            contraseña con la cual entrará
+            al sistema.</li>
+        <li style="margin: 0;">Una vez
+            completado el formulario, haga
+            clic en el botón "Registrar".
+        </li>
+    </ol>
+    <p style="margin: 0;"> </p>
+    <p style="margin: 0;">Después de
+        completar el registro, recibirá un
+        correo electrónico de confirmación
+        con los detalles de su cuenta y las
+        instrucciones para acceder a la
+        plataforma.</p>
+    <p style="margin: 0;">Agradecemos su
+        colaboración y esperamos contar con
+        su participación activa en el
+        Sistema Bellarti.</p>
+    <p style="margin: 0;"> </p>
+</div>
+{% endblock %}

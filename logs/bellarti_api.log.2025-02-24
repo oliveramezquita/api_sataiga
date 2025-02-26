@@ -1,0 +1,1187 @@
+INFO 2025-02-24 01:14:41,712 autoreload 91534 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:15:34,870 autoreload 92236 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:16:26,077 autoreload 92236 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:16:26,357 autoreload 92832 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:16:49,722 autoreload 93153 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:17:17,848 autoreload 93523 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 01:20:33,762 log 93523 6136573952 Internal Server Error: /api/roles
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 8, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 14, in save
+    with MongoDBHandler('roles') as db:
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py", line 18, in __enter__
+    self.db = self.client[settings.MONGO_DB['NAME']]
+                          ^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/conf/__init__.py", line 83, in __getattr__
+    val = getattr(_wrapped, name)
+AttributeError: 'Settings' object has no attribute 'MONGO_DB'. Did you mean: 'MONGO_BD'?
+INFO 2025-02-24 01:21:59,418 autoreload 93523 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:22:00,365 autoreload 96885 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 01:22:04,263 log 96885 6194032640 Internal Server Error: /api/roles
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 8, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 14, in save
+    with MongoDBHandler('roles') as db:
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py", line 13, in __enter__
+    settings.MONGO_BD['USER'],
+    ^^^^^^^^
+NameError: name 'settings' is not defined
+INFO 2025-02-24 01:22:36,541 autoreload 96885 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:22:36,971 autoreload 97338 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:23:09,831 autoreload 97338 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:23:10,353 autoreload 97743 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:23:26,853 autoreload 97743 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:23:27,262 autoreload 97953 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:23:35,612 autoreload 97953 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:23:36,015 autoreload 98060 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 01:23:39,804 log 98060 6190051328 Internal Server Error: /api/roles
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 8, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 14, in save
+    with MongoDBHandler('roles') as db:
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py", line 13, in __enter__
+    settings.MONGO_DB['USER'],
+    ^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/conf/__init__.py", line 83, in __getattr__
+    val = getattr(_wrapped, name)
+AttributeError: 'Settings' object has no attribute 'MONGO_DB'. Did you mean: 'MONGO_BD'?
+INFO 2025-02-24 01:23:55,623 autoreload 98060 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:23:56,122 autoreload 98292 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:23:59,375 autoreload 98292 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:23:59,731 autoreload 98349 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:24:13,193 autoreload 98349 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-24 01:24:13,833 autoreload 98528 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:30:24,092 autoreload 98528 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:30:24,440 autoreload 3169 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:32:14,224 autoreload 3169 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:32:14,541 autoreload 4510 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:32:29,987 autoreload 4510 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:32:30,260 autoreload 4723 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:33:46,295 autoreload 4723 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 01:33:46,605 autoreload 5636 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:34:02,066 autoreload 5636 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:34:02,332 autoreload 5817 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:34:17,821 autoreload 5817 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:34:18,103 autoreload 6019 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:34:54,102 autoreload 6019 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-02-24 01:34:54,404 autoreload 6446 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 01:35:23,780 log 6446 6124630016 Internal Server Error: /api/roles
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 12, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 30, in get
+    return ok(RoleSerializer(roles, many=True).data)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 523, in to_representation
+    for field in fields:
+                 ^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 384, in _readable_fields
+    for field in self.fields.values():
+                 ^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 372, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 1054, in get_fields
+    assert hasattr(self, 'Meta'), (
+           ~~~~~~~^^^^^^^^^^^^^^
+AssertionError: Class RoleSerializer missing "Meta" attribute
+INFO 2025-02-24 01:36:06,470 autoreload 6446 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:36:06,776 autoreload 7311 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 01:37:07,651 log 7311 6124204032 Internal Server Error: /api/roles
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 12, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 30, in get
+    return ok(RoleSerializer(data=roles, many=True).data)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 245, in data
+    raise AssertionError(msg)
+AssertionError: When a serializer is passed a `data` keyword argument you must call `.is_valid()` before attempting to access the serialized `.data` representation.
+You should either call `.is_valid()` first, or access `.initial_data` instead.
+INFO 2025-02-24 01:38:33,499 autoreload 7311 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:38:33,818 autoreload 9038 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:38:50,420 autoreload 9038 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:38:50,716 autoreload 9257 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 01:39:04,394 log 9257 6128283648 Internal Server Error: /api/roles
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+INFO 2025-02-24 01:39:36,027 autoreload 9257 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:39:36,317 autoreload 9821 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 01:39:39,578 log 9821 6200995840 Bad Request: /api/roles
+INFO 2025-02-24 01:40:30,732 autoreload 9821 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 01:40:31,019 autoreload 10457 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:40:55,740 autoreload 10457 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/role_serializer.py changed, reloading.
+INFO 2025-02-24 01:40:56,029 autoreload 10760 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:43:23,485 autoreload 10760 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/role_serializer.py changed, reloading.
+INFO 2025-02-24 01:43:23,778 autoreload 12548 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 01:44:19,212 autoreload 12548 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/models/role.py changed, reloading.
+INFO 2025-02-24 01:44:19,522 autoreload 13197 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:32:09,033 autoreload 13197 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:32:09,870 autoreload 50719 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:34:35,538 autoreload 50719 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:34:35,844 autoreload 52488 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:35:00,478 autoreload 52488 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:35:00,780 autoreload 52791 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 12:35:39,875 log 52791 6197964800 Not Found: /api/role/67bbca42081478c511f9bbf3
+INFO 2025-02-24 12:36:36,164 autoreload 52791 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-02-24 12:36:36,495 autoreload 53925 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:37:18,645 autoreload 53925 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-02-24 12:37:18,948 autoreload 54418 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:37:34,450 autoreload 54418 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 12:37:34,711 autoreload 54626 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:38:02,483 autoreload 54626 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 12:38:02,784 autoreload 54959 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:38:29,426 autoreload 54959 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:38:29,698 autoreload 55288 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:38:41,061 autoreload 55288 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:38:41,353 autoreload 55444 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 12:38:49,087 log 55444 6137196544 Internal Server Error: /api/role/67bbca42081478c511f9bbf3
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+TypeError: RoleByIdView.patch() got an unexpected keyword argument 'id'
+INFO 2025-02-24 12:39:39,950 autoreload 55444 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-02-24 12:39:40,313 autoreload 56142 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:39:44,725 role_use_case 56142 6203338752 [{'_id': ObjectId('67bbca42081478c511f9bbf3'), 'name': 'Administrador', 'value': 'admin'}]
+ERROR 2025-02-24 12:39:44,748 log 56142 6203338752 Internal Server Error: /api/role/67bbca42081478c511f9bbf3
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+INFO 2025-02-24 12:40:10,133 autoreload 56142 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:40:10,417 autoreload 56518 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:40:12,522 role_use_case 56518 6131511296 []
+ERROR 2025-02-24 12:40:12,539 log 56518 6131511296 Internal Server Error: /api/role/67bbca42081478c511f9bbf3
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+INFO 2025-02-24 12:40:15,343 role_use_case 56518 6131511296 []
+ERROR 2025-02-24 12:40:15,359 log 56518 6131511296 Internal Server Error: /api/role/67bbca42081478c511f9bbf3
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+INFO 2025-02-24 12:40:33,060 autoreload 56518 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:40:33,346 autoreload 56798 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:42:45,368 autoreload 56798 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:42:45,674 autoreload 58356 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:42:59,938 role_use_case 58356 6204141568 {'name': 'Administrador'}
+ERROR 2025-02-24 12:42:59,954 log 58356 6204141568 Internal Server Error: /api/role/67bbca42081478c511f9bbf3
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+INFO 2025-02-24 12:43:41,196 autoreload 58356 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:43:41,490 autoreload 59023 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:48:49,211 autoreload 59023 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 12:48:49,515 autoreload 62640 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:49:41,833 autoreload 62640 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 12:49:42,109 autoreload 63286 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:50:41,571 autoreload 63286 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:50:41,918 autoreload 63990 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 12:52:37,128 role_use_case 63990 6144929792 E11000 duplicate key error collection: bellarti.roles index: admin_1 dup key: { admin: null }, full error: {'index': 0, 'code': 11000, 'errmsg': 'E11000 duplicate key error collection: bellarti.roles index: admin_1 dup key: { admin: null }', 'keyPattern': {'admin': 1}, 'keyValue': {'admin': None}}
+WARNING 2025-02-24 12:52:37,133 log 63990 6144929792 Bad Request: /api/roles
+INFO 2025-02-24 12:54:49,141 autoreload 63990 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:54:49,483 autoreload 66923 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 12:56:10,217 autoreload 66923 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 12:56:10,555 autoreload 67884 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 12:56:14,545 log 67884 6166196224 Bad Request: /api/roles
+INFO 2025-02-24 13:09:36,472 autoreload 67884 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:09:36,813 autoreload 77369 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:10:01,614 autoreload 77369 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:10:01,886 autoreload 77673 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:10:38,802 autoreload 77673 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:10:39,115 autoreload 78126 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:11:59,061 autoreload 78126 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:11:59,388 autoreload 79098 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:12:21,024 autoreload 79098 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:12:21,285 autoreload 79356 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:12:38,784 autoreload 79356 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:12:39,072 autoreload 79586 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:12:54,577 autoreload 79586 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:12:54,852 autoreload 79765 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:13:11,340 autoreload 79765 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:13:11,624 autoreload 79967 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:15:13,700 autoreload 79967 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:15:14,005 autoreload 81411 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 13:16:54,913 log 81411 6134788096 Bad Request: /api/role/67bbca42081478c511f9bbf3
+ERROR 2025-02-24 13:17:14,985 role_use_case 81411 6134788096 $set
+WARNING 2025-02-24 13:17:14,987 log 81411 6134788096 Bad Request: /api/role/67bc712d56b73455c5d65c36
+ERROR 2025-02-24 13:19:26,258 role_use_case 81411 6151614464 $set
+WARNING 2025-02-24 13:19:26,259 log 81411 6151614464 Bad Request: /api/role/67bc712d56b73455c5d65c36
+INFO 2025-02-24 13:19:57,331 autoreload 81411 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 13:19:57,657 autoreload 84772 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:28:52,746 autoreload 84772 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 13:28:53,082 autoreload 91131 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:29:44,503 role_use_case 91131 6126186496 {'name': 'Dirección', 'value': 'ceo'}
+INFO 2025-02-24 13:30:08,077 autoreload 91131 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 13:30:08,419 autoreload 92036 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 13:30:12,273 log 92036 6136819712 Bad Request: /api/roles
+WARNING 2025-02-24 13:30:33,469 log 92036 6136819712 Bad Request: /api/roles
+WARNING 2025-02-24 13:30:58,458 log 92036 6136819712 Bad Request: /api/roles
+WARNING 2025-02-24 13:32:15,784 log 92036 6153646080 Bad Request: /api/roles
+WARNING 2025-02-24 13:34:20,990 log 92036 6170472448 Bad Request: /api/roles
+INFO 2025-02-24 13:44:50,722 autoreload 92036 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 13:44:51,096 autoreload 2728 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 13:46:17,575 log 2728 6164623360 Bad Request: /api/roles
+INFO 2025-02-24 13:48:09,179 autoreload 2728 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 13:48:09,531 autoreload 5121 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 13:52:03,714 log 5121 6163443712 Not Found: /api/users
+INFO 2025-02-24 13:55:48,734 autoreload 5121 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 13:55:49,079 autoreload 10598 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:56:21,846 autoreload 10598 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 13:56:22,211 autoreload 11009 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:56:43,802 autoreload 11009 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 13:56:44,085 autoreload 11289 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:56:49,341 autoreload 11289 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 13:56:49,559 autoreload 11374 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 13:57:00,868 log 11374 6133477376 Internal Server Error: /api/users
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 8, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 41, in save
+    self.__validate_params(db)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 31, in __validate_params
+    role = db.extract({'_id': ObjectId(self.data['role_id'])})
+                              ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 105, in __init__
+    self.__validate(oid)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 195, in __validate
+    raise TypeError(f"id must be an instance of (bytes, str, ObjectId), not {type(oid)}")
+TypeError: id must be an instance of (bytes, str, ObjectId), not <class 'int'>
+INFO 2025-02-24 13:59:30,728 autoreload 11374 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 13:59:31,076 autoreload 13251 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:59:40,459 autoreload 13251 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 13:59:40,802 autoreload 13388 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 13:59:47,094 autoreload 13388 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 13:59:47,383 autoreload 13471 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 14:00:03,391 log 13471 6125973504 Bad Request: /api/users
+WARNING 2025-02-24 14:00:35,155 log 13471 6125973504 Bad Request: /api/users
+WARNING 2025-02-24 14:00:53,652 log 13471 6125973504 Bad Request: /api/users
+INFO 2025-02-24 14:39:57,231 autoreload 13471 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 14:39:57,666 autoreload 38037 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 14:41:09,436 autoreload 38037 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 14:41:09,729 autoreload 38882 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 14:49:41,549 log 38882 6205943808 Bad Request: /api/users
+INFO 2025-02-24 14:52:48,674 autoreload 38882 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 14:52:49,019 autoreload 47087 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:26:16,144 autoreload 47087 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:26:16,510 autoreload 59748 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:26:26,857 autoreload 59748 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:26:27,121 autoreload 59888 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:27:21,572 autoreload 59888 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:27:21,891 autoreload 60543 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 15:27:48,101 log 60543 6132789248 Method Not Allowed: /api/users
+INFO 2025-02-24 15:28:10,279 autoreload 60543 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 15:28:10,568 autoreload 61141 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:28:24,044 autoreload 61141 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 15:28:24,337 autoreload 61299 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:29:51,629 autoreload 61299 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 15:29:51,917 autoreload 62350 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:31:04,738 autoreload 62350 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 15:31:05,058 autoreload 63212 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:34:33,214 autoreload 63212 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 15:34:33,514 autoreload 65646 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:35:32,139 autoreload 65646 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 15:35:32,426 autoreload 66357 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:35:43,863 autoreload 66357 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 15:35:44,151 autoreload 66488 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:39:44,488 autoreload 66488 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 15:39:44,807 autoreload 69300 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:41:30,720 autoreload 69300 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:41:31,041 autoreload 70545 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:44:02,899 autoreload 70545 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:44:03,270 autoreload 72357 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:44:17,723 autoreload 72357 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:44:17,980 autoreload 72540 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:44:44,728 autoreload 72540 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:44:45,045 autoreload 72862 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:50:19,840 autoreload 72862 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:50:20,211 autoreload 76778 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:50:28,507 autoreload 76778 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 15:50:28,794 autoreload 76888 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 15:53:09,604 autoreload 78881 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 15:59:08,592 log 78881 6203437056 Not Found: /api/user/67bc8517aff56ba79c494ed0
+INFO 2025-02-24 16:00:17,938 autoreload 78881 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 16:00:18,286 autoreload 83915 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:00:25,595 autoreload 83915 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 16:00:25,880 autoreload 84000 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:00:41,320 autoreload 84000 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 16:00:41,603 autoreload 84203 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 16:00:49,767 log 84203 6134525952 Internal Server Error: /api/user/67bc8517aff56ba79c494ed0
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 18, in post
+    return use_case.register()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 83, in register
+    if user and user[0].status == 0:
+                ^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'status'
+INFO 2025-02-24 16:01:17,671 autoreload 84203 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:01:18,040 autoreload 84650 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:01:22,552 user_use_case 84650 6129528832 [{'_id': ObjectId('67bc8517aff56ba79c494ed0'), 'role_id': '67bc77edcb576affdd1ad35b', 'name': 'Oliver', 'email': 'oliver.amezquita@hotmail.com', 'status': 0, 'created_at': datetime.datetime(2025, 2, 24, 14, 41, 27, 46000), 'updated_at': datetime.datetime(2025, 2, 24, 14, 41, 27, 46000)}]
+ERROR 2025-02-24 16:01:22,570 log 84650 6129528832 Internal Server Error: /api/user/67bc8517aff56ba79c494ed0
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 18, in post
+    return use_case.register()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 84, in register
+    if user and user[0].status == 0:
+                ^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'status'
+INFO 2025-02-24 16:01:53,053 autoreload 84650 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:01:53,407 autoreload 85069 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:02:05,855 autoreload 85069 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:02:06,129 autoreload 85226 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:04:08,443 autoreload 85226 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:04:08,730 autoreload 86678 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:04:13,979 autoreload 86678 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:04:14,244 autoreload 86738 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:05:13,706 autoreload 86738 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:05:14,019 autoreload 87453 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:05:23,346 autoreload 87453 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:05:23,607 autoreload 87585 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:06:41,601 autoreload 87585 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:06:41,937 autoreload 88487 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:06:53,368 autoreload 88487 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:06:53,649 autoreload 88649 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:07:29,709 autoreload 88649 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 16:07:30,040 autoreload 89099 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:07:49,667 autoreload 89099 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 16:07:50,041 autoreload 89337 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:08:43,450 autoreload 89337 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:08:43,768 autoreload 89972 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 16:08:50,125 log 89972 6156677120 Internal Server Error: /api/user/4
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 22, in get
+    return use_case.get_by_id()
+           ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 107, in get_by_id
+    user = db.extract({'_id': ObjectId(self.id)})
+                              ~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 105, in __init__
+    self.__validate(oid)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 193, in __validate
+    _raise_invalid_id(oid)
+    ~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 38, in _raise_invalid_id
+    raise InvalidId(
+    ...<2 lines>...
+    )
+bson.errors.InvalidId: '4' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string
+INFO 2025-02-24 16:09:05,478 autoreload 89972 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:09:05,821 autoreload 90254 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 16:09:07,449 log 90254 6204567552 Internal Server Error: /api/user/4
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 22, in get
+    return use_case.get_by_id()
+           ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 106, in get_by_id
+    {'_id': ObjectId(self.id)}) if isinstance(self.id, str) else None
+            ~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 105, in __init__
+    self.__validate(oid)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 193, in __validate
+    _raise_invalid_id(oid)
+    ~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 38, in _raise_invalid_id
+    raise InvalidId(
+    ...<2 lines>...
+    )
+bson.errors.InvalidId: '4' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string
+INFO 2025-02-24 16:09:12,145 autoreload 90254 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:09:12,414 autoreload 90342 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 16:09:16,012 log 90342 6200373248 Internal Server Error: /api/user/4
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 22, in get
+    return use_case.get_by_id()
+           ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 106, in get_by_id
+    {'_id': ObjectId(self.id)}) if isinstance(self.id, str) else None
+            ~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 105, in __init__
+    self.__validate(oid)
+    ~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 193, in __validate
+    _raise_invalid_id(oid)
+    ~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/bson/objectid.py", line 38, in _raise_invalid_id
+    raise InvalidId(
+    ...<2 lines>...
+    )
+bson.errors.InvalidId: '4' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string
+INFO 2025-02-24 16:12:51,868 autoreload 90342 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/validations.py changed, reloading.
+INFO 2025-02-24 16:12:52,234 autoreload 92930 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:13:42,513 autoreload 92930 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:13:42,809 autoreload 93548 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 16:13:52,690 log 93548 6197145600 Not Found: /api/user/4
+INFO 2025-02-24 16:14:08,578 autoreload 93548 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:14:08,902 autoreload 93887 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:14:13,089 autoreload 93887 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:14:13,274 autoreload 93944 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:14:49,084 autoreload 93944 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 16:14:49,398 autoreload 94360 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:14:58,745 autoreload 94360 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-02-24 16:14:59,024 autoreload 94493 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:18:20,065 autoreload 94493 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:18:20,388 autoreload 96848 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:18:57,382 autoreload 96848 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:18:57,714 autoreload 97296 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:19:07,060 autoreload 97296 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:19:07,340 autoreload 97404 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:20:29,386 autoreload 97404 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:20:29,705 autoreload 98393 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:21:50,948 autoreload 98393 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:21:51,270 autoreload 99393 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:22:05,773 autoreload 99393 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:22:06,034 autoreload 99577 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 16:22:33,177 log 99577 6196146176 Method Not Allowed: /api/user/4
+INFO 2025-02-24 16:22:56,476 autoreload 99577 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 16:22:56,791 autoreload 276 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 16:23:03,644 log 276 6132051968 Bad Request: /api/user/4
+ERROR 2025-02-24 16:23:44,495 log 276 6132051968 Internal Server Error: /api/user/67bc8517aff56ba79c494ed0
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 26, in patch
+    return use_case.update()
+           ~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 117, in update
+    self.__validate_params(db)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 29, in __validate_params
+    if not email_validation(self.data['email']):
+                            ~~~~~~~~~^^^^^^^^^
+KeyError: 'email'
+INFO 2025-02-24 16:25:19,569 autoreload 276 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:25:19,905 autoreload 2172 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 16:35:11,110 autoreload 2172 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 16:35:11,482 autoreload 9115 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:02:27,061 autoreload 9115 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:02:27,469 autoreload 19809 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:04:02,885 autoreload 19809 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:04:03,177 autoreload 20960 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:07:52,197 autoreload 20960 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:07:52,515 autoreload 23626 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:08:22,333 autoreload 23626 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:08:22,628 autoreload 24000 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:08:49,410 autoreload 24000 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:08:49,683 autoreload 24326 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:09:53,429 autoreload 24326 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:09:53,718 autoreload 25085 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:10:23,580 autoreload 25085 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:10:23,898 autoreload 25447 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 17:14:56,924 log 25447 6133870592 Not Found: /api/change_password/1
+INFO 2025-02-24 17:16:39,444 autoreload 25447 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 17:16:39,782 autoreload 29837 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:16:56,317 autoreload 29837 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 17:16:56,612 autoreload 30041 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:17:37,757 autoreload 30041 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 17:17:38,042 autoreload 30542 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 17:17:43,371 log 30542 6199586816 Bad Request: /api/change_password/1
+INFO 2025-02-24 17:19:14,510 autoreload 30542 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:19:14,836 autoreload 31696 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:19:43,629 autoreload 31696 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:19:43,890 autoreload 32047 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:20:07,611 autoreload 32047 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 17:20:07,902 autoreload 32324 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 17:22:07,764 log 32324 6164115456 Internal Server Error: /api/users
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 12, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 80, in get
+    UserSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py", line 16, in get_full_name
+    return f"{data['name']} {data['last_name']}"
+                             ~~~~^^^^^^^^^^^^^
+KeyError: 'last_name'
+INFO 2025-02-24 17:22:44,104 autoreload 32324 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 17:22:44,451 autoreload 34179 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 17:23:15,907 log 34179 6130905088 Bad Request: /api/user/5
+INFO 2025-02-24 17:30:12,640 autoreload 34179 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:30:13,012 autoreload 39505 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:30:59,282 autoreload 39505 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:30:59,977 autoreload 40081 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:40:01,806 autoreload 40081 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:40:02,250 autoreload 46501 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:40:20,779 autoreload 46501 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:40:21,121 autoreload 46766 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:40:58,028 autoreload 46766 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:40:58,355 autoreload 47198 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:41:08,690 autoreload 47198 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:41:08,969 autoreload 47357 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:41:24,439 autoreload 47357 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:41:24,728 autoreload 47535 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:41:42,305 autoreload 47535 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/utils/bcrypt.py changed, reloading.
+INFO 2025-02-24 17:41:42,594 autoreload 47761 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:42:05,186 autoreload 47761 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 17:42:05,482 autoreload 48037 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:49:39,829 autoreload 48037 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 17:49:40,158 autoreload 53439 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:51:08,453 autoreload 53439 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 17:51:08,758 autoreload 54485 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 17:51:23,950 log 54485 6134689792 Bad Request: /api/login
+INFO 2025-02-24 17:54:55,721 autoreload 54485 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 17:54:56,038 autoreload 57169 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:56:31,372 autoreload 57169 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 17:56:31,710 autoreload 58293 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 17:59:46,294 autoreload 58293 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 17:59:46,601 autoreload 60576 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:00:06,049 autoreload 60576 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:00:06,353 autoreload 60821 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:00:15,702 autoreload 60821 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:00:15,964 autoreload 60965 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:00:28,405 autoreload 60965 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:00:28,730 autoreload 61129 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:00:36,733 auth_use_case 61129 6122713088 maximum recursion depth exceeded
+ERROR 2025-02-24 18:00:36,737 log 61129 6122713088 Internal Server Error: /api/login
+INFO 2025-02-24 18:01:34,440 autoreload 61129 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:01:34,810 autoreload 61968 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:01:38,782 auth_use_case 61968 6122991616 maximum recursion depth exceeded
+ERROR 2025-02-24 18:01:38,785 log 61968 6122991616 Internal Server Error: /api/login
+INFO 2025-02-24 18:01:56,426 autoreload 61968 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:01:56,718 autoreload 62223 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:02:09,110 autoreload 62223 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:02:09,395 autoreload 62378 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:02:13,478 auth_use_case 62378 6203371520 maximum recursion depth exceeded
+ERROR 2025-02-24 18:02:13,480 log 62378 6203371520 Internal Server Error: /api/login
+INFO 2025-02-24 18:02:20,804 autoreload 62378 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:02:21,111 autoreload 62538 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:02:37,605 autoreload 62538 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:02:37,904 autoreload 62742 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:02:41,575 auth_use_case 62742 6194294784 maximum recursion depth exceeded
+ERROR 2025-02-24 18:02:41,577 log 62742 6194294784 Internal Server Error: /api/login
+INFO 2025-02-24 18:05:29,884 autoreload 62742 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:05:30,381 autoreload 64781 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:05:37,679 autoreload 64781 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:05:37,954 autoreload 64889 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:05:43,247 auth_use_case 64889 6124302336 unhashable type: 'dict'
+ERROR 2025-02-24 18:05:43,250 log 64889 6124302336 Internal Server Error: /api/login
+INFO 2025-02-24 18:06:00,662 autoreload 64889 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:06:00,942 autoreload 65167 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:06:04,516 auth_use_case 65167 6132625408 unhashable type: 'dict'
+ERROR 2025-02-24 18:06:04,517 log 65167 6132625408 Internal Server Error: /api/login
+INFO 2025-02-24 18:07:50,893 autoreload 65167 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:07:51,221 autoreload 66452 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:07:58,500 autoreload 66452 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:07:58,791 autoreload 66538 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:08:40,740 autoreload 66538 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/models/user.py changed, reloading.
+INFO 2025-02-24 18:08:41,068 autoreload 67065 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:12:56,550 autoreload 67065 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:12:56,893 autoreload 70047 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:13:30,828 autoreload 70047 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:13:31,149 autoreload 70447 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:16:45,805 autoreload 70447 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:16:46,138 autoreload 72763 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:16:57,457 autoreload 72763 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:16:57,728 autoreload 72920 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:17:06,022 autoreload 72920 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:17:06,293 autoreload 73027 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:17:11,500 auth_use_case 73027 6191083520 Object of type ObjectId is not JSON serializable
+ERROR 2025-02-24 18:17:11,501 log 73027 6191083520 Internal Server Error: /api/login
+ERROR 2025-02-24 18:17:18,776 auth_use_case 73027 6191083520 Object of type ObjectId is not JSON serializable
+ERROR 2025-02-24 18:17:18,776 log 73027 6191083520 Internal Server Error: /api/login
+ERROR 2025-02-24 18:17:19,984 auth_use_case 73027 6191083520 Object of type ObjectId is not JSON serializable
+ERROR 2025-02-24 18:17:19,985 log 73027 6191083520 Internal Server Error: /api/login
+INFO 2025-02-24 18:18:25,359 autoreload 73027 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:18:25,656 autoreload 73955 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:18:28,481 auth_use_case 73955 6201847808 Object of type ObjectId is not JSON serializable
+ERROR 2025-02-24 18:18:28,481 log 73955 6201847808 Internal Server Error: /api/login
+INFO 2025-02-24 18:18:53,533 autoreload 73955 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:18:53,803 autoreload 74307 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:18:55,412 auth_use_case 74307 6165114880 Object of type ObjectId is not JSON serializable
+ERROR 2025-02-24 18:18:55,413 log 74307 6165114880 Internal Server Error: /api/login
+INFO 2025-02-24 18:20:10,869 autoreload 74307 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:20:11,245 autoreload 75214 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:21:17,091 autoreload 75214 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:21:17,437 autoreload 76017 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:21:30,081 autoreload 76017 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:21:30,355 autoreload 76174 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 18:21:33,068 auth_use_case 76174 6192427008 unhashable type: 'dict'
+ERROR 2025-02-24 18:21:33,071 log 76174 6192427008 Internal Server Error: /api/login
+INFO 2025-02-24 18:21:42,789 autoreload 76174 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-02-24 18:21:43,062 autoreload 76328 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 18:22:40,424 log 76328 6124974080 Bad Request: /api/login
+INFO 2025-02-24 18:30:35,373 autoreload 76328 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/utils/bcrypt.py changed, reloading.
+INFO 2025-02-24 18:30:35,714 autoreload 82599 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:30:59,342 autoreload 82599 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 18:30:59,645 autoreload 82884 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:31:14,083 autoreload 82884 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/bcrypt.py changed, reloading.
+INFO 2025-02-24 18:31:14,384 autoreload 83067 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:45:49,380 autoreload 93458 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 18:45:52,262 log 93458 6133100544 Bad Request: /api/login
+INFO 2025-02-24 18:46:47,864 autoreload 93458 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 18:46:48,177 autoreload 94172 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:47:08,760 autoreload 94172 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 18:47:09,041 autoreload 94425 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:47:41,938 autoreload 94425 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:47:42,266 autoreload 94823 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:47:47,496 autoreload 94823 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:47:47,776 autoreload 94905 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:47:57,119 autoreload 94905 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:47:57,420 autoreload 95012 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:56:37,574 autoreload 95012 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:56:37,950 autoreload 1389 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:57:29,230 autoreload 1389 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:57:29,532 autoreload 2016 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:57:36,833 autoreload 2016 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:57:37,162 autoreload 2106 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:57:58,785 autoreload 2106 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:57:59,079 autoreload 2384 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:58:56,576 autoreload 2384 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:58:56,932 autoreload 3083 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:59:02,179 autoreload 3083 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:59:02,496 autoreload 3142 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 18:59:22,103 autoreload 3142 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 18:59:22,417 autoreload 3396 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:01:44,021 autoreload 3396 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:01:44,376 autoreload 5146 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:01:49,662 autoreload 5146 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:01:49,951 autoreload 5229 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:02:01,363 autoreload 5229 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:02:01,639 autoreload 5385 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:02:19,200 autoreload 5385 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:02:19,504 autoreload 5588 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:02:59,515 autoreload 5588 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:02:59,800 autoreload 6078 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:03:05,045 autoreload 6078 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:03:05,333 autoreload 6137 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:03:36,193 autoreload 6137 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:03:36,495 autoreload 6512 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:04:29,959 autoreload 6512 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:04:30,288 autoreload 7158 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:05:36,037 autoreload 7158 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 19:05:36,360 autoreload 7947 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:05:44,686 autoreload 7947 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-02-24 19:05:44,961 autoreload 8056 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:06:33,131 autoreload 8056 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:06:33,492 autoreload 8621 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:06:38,736 autoreload 8621 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:06:38,994 autoreload 8704 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:06:52,422 autoreload 8704 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:06:52,703 autoreload 8889 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:07:11,314 autoreload 8889 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:07:11,643 autoreload 9121 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:07:19,947 autoreload 9121 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:07:20,250 autoreload 9230 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:07:26,498 autoreload 9230 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:07:26,801 autoreload 9310 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:08:16,154 autoreload 9310 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:08:16,489 autoreload 9903 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:09:10,751 autoreload 9903 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:09:11,092 autoreload 10546 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:09:18,376 autoreload 10546 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:09:18,649 autoreload 10654 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:10:24,207 autoreload 10654 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:10:24,525 autoreload 11438 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:10:48,306 autoreload 11438 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:10:48,584 autoreload 11716 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:11:40,852 autoreload 11716 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:11:41,179 autoreload 12352 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:12:05,938 autoreload 12352 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:12:06,196 autoreload 12663 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:12:17,576 autoreload 12663 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:12:17,910 autoreload 12797 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:12:42,662 autoreload 12797 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:12:42,981 autoreload 13097 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:13:03,558 autoreload 13097 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:13:03,890 autoreload 13347 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:15:01,724 autoreload 13347 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:15:02,095 autoreload 14733 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:15:31,933 autoreload 14733 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:15:32,223 autoreload 15108 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:15:50,784 autoreload 15108 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:15:51,062 autoreload 15334 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:15:59,344 autoreload 15334 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:15:59,604 autoreload 15441 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:16:12,962 autoreload 15441 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:16:13,244 autoreload 15618 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:16:33,830 autoreload 15618 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:16:34,108 autoreload 15868 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:17:00,817 autoreload 15868 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:17:01,092 autoreload 16190 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:45:52,431 autoreload 16190 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:45:52,963 autoreload 27607 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 19:46:18,884 log 27607 6127890432 Not Found: /api/password_request
+INFO 2025-02-24 19:46:54,710 autoreload 27607 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py changed, reloading.
+INFO 2025-02-24 19:46:55,047 autoreload 28362 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:47:09,482 autoreload 28362 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 19:47:09,767 autoreload 28542 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:47:26,245 autoreload 28542 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 19:47:26,535 autoreload 28770 8466331712 Watching for file changes with StatReloader
+ERROR 2025-02-24 19:47:29,084 log 28770 6201749504 Internal Server Error: /api/password_request
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py", line 14, in post
+    return use_case.password_request()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py", line 50, in password_request
+    'hash_request': hex_encode({
+                    ~~~~~~~~~~^^
+        'id': user[0]['_id'],
+        ^^^^^^^^^^^^^^^^^^^^^
+        'datetime': datetime.now().isoformat()})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/functions.py", line 20, in hex_encode
+    json_data = json.dumps(data)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type ObjectId is not JSON serializable
+INFO 2025-02-24 19:49:01,179 autoreload 28770 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:49:01,488 autoreload 29893 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 19:59:11,601 autoreload 29893 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 19:59:11,974 autoreload 37010 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:04:44,776 autoreload 37010 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:04:45,096 autoreload 40929 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:05:34,292 autoreload 40929 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:05:34,618 autoreload 41494 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:06:10,620 autoreload 41494 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:06:10,926 autoreload 41941 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:06:18,205 autoreload 41941 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:06:18,528 autoreload 42050 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 20:07:10,739 log 42050 6136082432 Not Found: /api/restore_password
+INFO 2025-02-24 20:07:37,766 autoreload 42050 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py changed, reloading.
+INFO 2025-02-24 20:07:38,086 autoreload 42982 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:07:44,356 autoreload 42982 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-02-24 20:07:44,621 autoreload 43069 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:07:59,104 autoreload 43069 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-02-24 20:07:59,404 autoreload 43255 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:08:02,718 auth_use_case 43255 6159708160 {'id': '67bc8517aff56ba79c494ed0', 'datetime': '2025-02-24T20:05:37.897738'}
+WARNING 2025-02-24 20:08:02,753 log 43255 6159708160 Bad Request: /api/restore_password
+INFO 2025-02-24 20:13:57,696 autoreload 43255 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:13:58,063 autoreload 47533 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:23:30,193 autoreload 47533 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:23:30,567 autoreload 54249 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:24:13,744 auth_use_case 54249 6171127808 {'hash_request': '7b226964223a2022363762633835313761666635366261373963343934656430222c20226461746574696d65223a2022323032352d30322d32345432303a30353a33372e383937373338227d', 'password': 'Totopotopo24.', 'confirm_password': 'Totopotopo24.'}
+INFO 2025-02-24 20:24:13,745 auth_use_case 54249 6171127808 {'id': '67bc8517aff56ba79c494ed0', 'datetime': '2025-02-24T20:05:37.897738'}
+WARNING 2025-02-24 20:24:13,801 log 54249 6171127808 Bad Request: /api/restore_password
+INFO 2025-02-24 20:24:42,558 autoreload 54249 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:24:42,909 autoreload 55114 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:24:45,791 auth_use_case 55114 6194589696 {'id': '67bc8517aff56ba79c494ed0', 'datetime': '2025-02-24T20:05:37.897738'}
+WARNING 2025-02-24 20:24:45,810 log 55114 6194589696 Bad Request: /api/restore_password
+INFO 2025-02-24 20:28:39,285 autoreload 55114 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:28:39,641 autoreload 57882 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:28:58,203 autoreload 57882 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:28:58,486 autoreload 58112 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:29:25,199 autoreload 58112 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:29:25,508 autoreload 58442 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:29:31,751 autoreload 58442 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:29:32,032 autoreload 58524 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:30:11,087 autoreload 58524 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:30:11,401 autoreload 58994 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:33:25,326 autoreload 58994 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:33:25,628 autoreload 61282 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:34:21,964 autoreload 61282 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:34:22,282 autoreload 61955 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:34:31,629 autoreload 61955 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-02-24 20:34:31,909 autoreload 62088 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:38:47,157 autoreload 62088 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-24 20:38:47,476 autoreload 65114 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:39:25,795 autoreload 65608 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:39:46,403 autoreload 65608 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-24 20:39:46,701 autoreload 65862 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:40:04,188 autoreload 65862 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-24 20:40:04,516 autoreload 66088 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:40:15,868 autoreload 66088 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-02-24 20:40:16,212 autoreload 66224 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:40:49,043 autoreload 66224 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-02-24 20:40:49,388 autoreload 66627 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:47:21,442 autoreload 66627 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 20:47:21,798 autoreload 71338 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:47:58,813 autoreload 71338 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 20:47:59,111 autoreload 71784 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:48:09,489 autoreload 71784 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 20:48:09,764 autoreload 71915 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:48:34,534 autoreload 71915 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 20:48:34,834 autoreload 72222 8466331712 Watching for file changes with StatReloader
+INFO 2025-02-24 20:49:05,706 autoreload 72222 8466331712 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py changed, reloading.
+INFO 2025-02-24 20:49:05,980 autoreload 72602 8466331712 Watching for file changes with StatReloader
+WARNING 2025-02-24 20:49:15,649 log 72602 6160084992 Forbidden: /api/users
+WARNING 2025-02-24 20:49:20,941 log 72602 6160084992 Forbidden: /api/users
