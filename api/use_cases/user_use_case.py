@@ -35,6 +35,10 @@ class UserUseCase:
                 raise exceptions.ValidationError(
                     "El rol seleccionado no se encuentra registrado en el sistema.")
 
+    def __assign_permissions(self, db, role_id):
+        role = MongoDBHandler.find(db, 'roles', {'_id': ObjectId(role_id)})
+        return role[0]['permissions']
+
     def save(self):
         with MongoDBHandler('users') as db:
             required_fields = ['role_id', 'name', 'email']
@@ -43,6 +47,9 @@ class UserUseCase:
                 try:
                     db.create_unique_index('email')
                     self.data['status'] = 0
+                    self.data['permissions'] = self.__assign_permissions(
+                        db,
+                        self.data['role_id'])
                     user_id = db.insert(self.data)
                     hash_request = hex_encode({
                         'id': str(user_id),
@@ -89,7 +96,7 @@ class UserUseCase:
                             template="mail_templated/activated.html",
                             context={
                                 'subject': '¡Registro Completo! Bienvenido al Sistema Bellarti',
-                                'full_name': user[0]['name'] + f' {user[0]['lastname']}' if user[0]['lastname'] else '',
+                                'full_name': user[0]['name'] + f' {user[0]['lastname']}' if 'lastname' in user[0] and user[0]['lastname'] != '' else '',
                                 'email': user[0]['email'],
                                 'link_href': settings.ADMIN_URL,
                                 'link_label': 'INICIAR SESIÓN'

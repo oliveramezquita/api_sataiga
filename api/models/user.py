@@ -10,3 +10,4 @@ class User(models.Model):
     email = models.EmailField()
     status = models.PositiveSmallIntegerField()
     avatar = models.TextField(null=True)
+    permissions = models.JSONField(null=True)

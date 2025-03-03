@@ -1,15 +1,15 @@
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
-from api.helpers.http_responses import ok, created, bad_request, ok_paginated
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
-from api.serializers.role_serializer import RoleSerializer
-from api.helpers.validations import objectid_validation
-from bson import ObjectId
 from pymongo import errors
+from api.helpers.http_responses import created, bad_request, ok_paginated, ok
 from django.core.paginator import Paginator
+from api.serializers.section_serializer import SectionSerializer
+from bson import ObjectId
+from api.helpers.validations import objectid_validation
 
 
-class RoleUseCase:
+class SectionUseCase:
     def __init__(self, request=None, **kwargs):
         if request:
             params = parse_qs(request.META['QUERY_STRING'])
@@ -20,33 +20,33 @@ class RoleUseCase:
         self.id = kwargs.get('id', None)
 
     def save(self):
-        with MongoDBHandler('roles') as db:
-            required_fields = ['name', 'value', 'permissions']
+        with MongoDBHandler('sections') as db:
+            required_fields = ['parent', 'value']
             if all(i in self.data for i in required_fields):
                 try:
                     db.create_unique_index('value')
                     db.insert(self.data)
-                    return created('Rol creado correctamente.')
+                    return created('Sección creada correctamente.')
                 except errors.DuplicateKeyError:
-                    return bad_request('El valor del rol ya existe.')
+                    return bad_request('El nombre de la sección proporcionado ya ha sido registrado. Por favor, utilice un nombre diferente.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
-        with MongoDBHandler('roles') as db:
-            roles = db.extract()
-            paginator = Paginator(roles, per_page=self.page_size)
+        with MongoDBHandler('sections') as db:
+            sections = db.extract()
+            paginator = Paginator(sections, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
                 paginator,
                 page,
-                RoleSerializer(page.object_list, many=True).data
+                SectionSerializer(page.object_list, many=True).data
             )
 
     def update(self):
-        with MongoDBHandler('roles') as db:
-            role = db.extract(
+        with MongoDBHandler('sections') as db:
+            section = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if role:
+            if section:
                 db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('Rol actualizado correctamente.')
-            return bad_request('El rol no existe')
+                return ok('Sección actualizada correctamente.')
+            return bad_request('La sección no existe')

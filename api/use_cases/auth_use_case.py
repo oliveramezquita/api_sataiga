@@ -13,6 +13,16 @@ class AuthUseCase:
     def __init__(self, data):
         self.data = data
 
+    def __user_ability_rules(self, rules):
+        user_ability_rules = []
+        for rule, ability in rules.items():
+            for i in ability:
+                user_ability_rules.append({
+                    'action': i,
+                    'subject': rule
+                })
+        return user_ability_rules
+
     def login(self):
         with MongoDBHandler('users') as db:
             required_fields = ['email', 'password']
@@ -20,9 +30,12 @@ class AuthUseCase:
                 user = db.extract({'email': self.data['email'], 'status': 1})
                 if user:
                     if verify_password(self.data['password'], user[0]['password']):
+                        user_ability_rules = self.__user_ability_rules(
+                            user[0]['permissions'])
                         user = UserSerializer(user[0]).data
+                        user.pop('permissions')
                         return ok({
-                            'userAbilityRules': user['role']['value'],
+                            'userAbilityRules': user_ability_rules,
                             'accessToken': encode_user(user),
                             'userData': user
                         })

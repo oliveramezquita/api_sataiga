@@ -2,6 +2,8 @@ from django.urls import path
 from api.views import *
 
 urlpatterns = [
+    path('sections', SectionView.as_view(), name="sections"),
+    path('section/<str:id>', SectionViewById.as_view(), name="section"),
     path('roles', RoleView.as_view(), name="roles"),
     path('role/<str:id>', RoleByIdView.as_view(), name="role"),
     path('users', UserView.as_view(), name='users'),
