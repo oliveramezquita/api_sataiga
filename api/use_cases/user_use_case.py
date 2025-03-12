@@ -11,6 +11,7 @@ from bson import ObjectId
 from pymongo import errors
 from api.helpers.bcrypt import encrypt_password, verify_password
 from django.conf import settings
+from api.helpers.resolve_permissions import resolve_permissions
 
 
 class UserUseCase:
@@ -20,6 +21,9 @@ class UserUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
+            self.q = params['q'][0] if 'q' in params else None
+            self.role = params['role'][0] if 'role' in params else None
+            self.status = params['status'][0] if 'status' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -39,6 +43,15 @@ class UserUseCase:
         role = MongoDBHandler.find(db, 'roles', {'_id': ObjectId(role_id)})
         return role[0]['permissions']
 
+    def __filter_superadmin(self, db, users):
+        filtered_users = []
+        for user in users:
+            role = MongoDBHandler.find(
+                db, 'roles', {'_id': ObjectId(user['role_id'])})
+            if role[0]['value'] != 'super':
+                filtered_users.append(user)
+        return filtered_users
+
     def save(self):
         with MongoDBHandler('users') as db:
             required_fields = ['role_id', 'name', 'email']
@@ -50,6 +63,7 @@ class UserUseCase:
                     self.data['permissions'] = self.__assign_permissions(
                         db,
                         self.data['role_id'])
+                    self.data['permissions']['AccountSettings'] = ['read']
                     user_id = db.insert(self.data)
                     hash_request = hex_encode({
                         'id': str(user_id),
@@ -72,8 +86,20 @@ class UserUseCase:
 
     def get(self):
         with MongoDBHandler('users') as db:
-            users = db.extract({'status': {'$lt': 2}})
-            paginator = Paginator(users, per_page=self.page_size)
+            filters = {'status': {'$lt': 3}}
+            if self.q:
+                filters['$or'] = [
+                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'lastname': {'$regex': self.q, '$options': 'i'}},
+                    {'email': {'$regex': self.q, '$options': 'i'}},
+                ]
+            if self.role:
+                filters['role_id'] = self.role
+            if self.status:
+                filters['status'] = int(self.status)
+            users = db.extract(filters)
+            paginator = Paginator(self.__filter_superadmin(
+                db, users), per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
                 paginator,
@@ -102,10 +128,10 @@ class UserUseCase:
                                 'link_label': 'INICIAR SESIÓN'
                             },
                         )
-                        return ok('Registro realizado exitosamente.')
-                    return bad_request('Las contraseñas no coinciden.')
-                return bad_request('Algunos campos requeridos no han sido completados.')
-            return bad_request('El usaurio no existe o ya se encuentra registrado.')
+                        return ok({'message': 'Registro realizado exitosamente.', 'status': 400})
+                    return bad_request({'message': 'Las contraseñas no coinciden.', 'status': 400})
+                return bad_request({'message': 'Algunos campos requeridos no han sido completados.', 'status': 400})
+            return bad_request({'message': 'El usaurio no existe o ya se encuentra registrado.', 'status': 400})
 
     def get_by_id(self):
         with MongoDBHandler('users') as db:
@@ -121,6 +147,9 @@ class UserUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if user and user[0]['status'] < 2:
                 self.__validate_params(db)
+                if 'permissions' in self.data:
+                    self.data['permissions'] = resolve_permissions(
+                        self.data['permissions'])
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok('Usuario actualizado correctamente.')
             return bad_request('El usaurio no existe.')
@@ -147,7 +176,7 @@ class UserUseCase:
         with MongoDBHandler('users') as db:
             user = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if user and user[0]['status'] < 2:
-                db.update({'_id': ObjectId(self.id)}, {'status': 2})
+            if user and user[0]['status'] < 3:
+                db.update({'_id': ObjectId(self.id)}, {'status': 3})
                 return ok('Usuario eliminado correctamente.')
             return bad_request('El usaurio no existe o ya se encuentra eliminado.')

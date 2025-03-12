@@ -21,3 +21,11 @@ class SectionViewById(views.APIView):
     def patch(self, request, id):
         use_case = SectionUseCase(data=request.data, id=id)
         return use_case.update()
+
+
+class TreeView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request):
+        use_case = SectionUseCase()
+        return use_case.tree_view()

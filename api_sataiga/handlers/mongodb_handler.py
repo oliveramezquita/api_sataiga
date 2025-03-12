@@ -57,6 +57,13 @@ class MongoDBHandler:
         return list(result)
 
     @staticmethod
+    def modify(inst, collection_name, query, modify_data):
+        collection = inst.db[collection_name]
+        modify_data['updated_at'] = datetime.now()
+        result = collection.update_one(query, {'$set': modify_data})
+        return result.modified_count
+
+    @staticmethod
     def remove(inst, collection_name, query):
         collection = inst.db[collection_name]
         result = collection.delete_one(query)

@@ -1,3 +1,5 @@
+import json
+from django.http import HttpResponse
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
@@ -50,3 +52,28 @@ class SectionUseCase:
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok('Sección actualizada correctamente.')
             return bad_request('La sección no existe')
+
+    def tree_view(self):
+        with MongoDBHandler('sections') as db:
+            sections = db.extract()
+
+            tree_sections = {}
+            for section in sections:
+                if section['parent'] not in ['Historial', 'Logs']:
+                    if section['parent'] not in tree_sections:
+                        tree_sections[section['parent']] = []
+                    tree_sections[section['parent']].append({
+                        '_id': str(section['_id']),
+                        'name': self.__set_name_section(section),
+                        'value': section['value'],
+                    })
+
+            return HttpResponse(json.dumps(tree_sections), content_type='application/json')
+
+    def __set_name_section(self, section):
+        name = section['parent']
+        if 'level_1' in section:
+            name = section['level_1']
+        if 'level_2' in section:
+            name = f'{name} - {section['level_2']}'
+        return name

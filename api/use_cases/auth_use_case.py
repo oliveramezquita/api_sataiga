@@ -23,6 +23,13 @@ class AuthUseCase:
                 })
         return user_ability_rules
 
+    def __set_home(self, permissions):
+        is_admin = [k for k, v in permissions.items(
+        ) if k == 'AdminDashboard' and 'read' in v]
+        if len(is_admin) > 0:
+            return 'admin'
+        return 'user'
+
     def login(self):
         with MongoDBHandler('users') as db:
             required_fields = ['email', 'password']
@@ -32,12 +39,14 @@ class AuthUseCase:
                     if verify_password(self.data['password'], user[0]['password']):
                         user_ability_rules = self.__user_ability_rules(
                             user[0]['permissions'])
+                        permissions = user[0]['permissions']
                         user = UserSerializer(user[0]).data
                         user.pop('permissions')
                         return ok({
                             'userAbilityRules': user_ability_rules,
                             'accessToken': encode_user(user),
-                            'userData': user
+                            'userData': user,
+                            'home': self.__set_home(permissions)
                         })
                     return bad_request('Usuario o contraseña no son válidos.')
                 return bad_request('Usuario no encontrado')

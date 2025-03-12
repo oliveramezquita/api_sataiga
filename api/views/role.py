@@ -21,3 +21,15 @@ class RoleByIdView(views.APIView):
     def patch(self, request, id):
         use_case = RoleUseCase(data=request.data, id=id)
         return use_case.update()
+
+    def get(self, request, id):
+        use_case = RoleUseCase(id=id)
+        return use_case.get_by_id()
+
+
+class UpdatePermissionsView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def patch(self, request, id):
+        use_case = RoleUseCase(data=request.data, id=id)
+        return use_case.update_permissions()

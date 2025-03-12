@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
     def get_role(self, data):
         with MongoDBHandler('roles') as db:
             role = db.extract({'_id': ObjectId(data['role_id'])})
-        return {'name': role[0]['name'], 'value': role[0]['value']}
+            return {'name': role[0]['name'], 'value': role[0]['value']}
 
     def get_user_status(self, data):
         return next((v for k, v in USER_STATUS if k == data['status']), None)
