@@ -17,6 +17,7 @@ class RoleUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
+            self.status = params['status'][0] if 'status' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -28,6 +29,8 @@ class RoleUseCase:
         return filtered_roles
 
     def __update_user_permissions(self, db, permissions):
+        if 'AccountSettings' not in permissions:
+            permissions['AccountSettings'] = ['read']
         return MongoDBHandler.modify(
             db,
             'users',
@@ -49,7 +52,9 @@ class RoleUseCase:
 
     def get(self):
         with MongoDBHandler('roles') as db:
-            roles = db.extract()
+            filters = {'status': int(self.status)} if self.status else {
+                'status': {'$lt': 2}}
+            roles = db.extract(filters)
             paginator = Paginator(self.__filter_superadmin(
                 roles), per_page=self.page_size)
             page = paginator.get_page(self.page)
@@ -81,4 +86,13 @@ class RoleUseCase:
             permissions = resolve_permissions(self.data)
             db.update({'_id': ObjectId(self.id)}, {'permissions': permissions})
             modified_users = self.__update_user_permissions(db, permissions)
-            return ok(f'Permisos actualizados correctamente, {modified_users} usuario(s) modificados.')
+            return ok(f'Función actualizada correctamente, {modified_users} usuario(s) modificado(s).')
+
+    def delete(self):
+        with MongoDBHandler('roles') as db:
+            role = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if role:
+                db.delete({'_id': ObjectId(self.id)})
+                return ok('Función eliminada correctamente.')
+            return bad_request('La función no existe.')

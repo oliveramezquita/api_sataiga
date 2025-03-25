@@ -1,0 +1,127 @@
+INFO 2025-03-21 02:40:30,334 autoreload 9203 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/models/role.py changed, reloading.
+INFO 2025-03-21 02:40:30,749 autoreload 86370 8588707904 Watching for file changes with StatReloader
+ERROR 2025-03-21 02:40:35,602 exception 86370 6129971200 Ocurrió una excepción: "Got KeyError when attempting to get a value for field `icon` on serializer `RoleSerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'icon'."
+ERROR 2025-03-21 02:40:35,603 exception 86370 6129971200 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 437, in get_attribute
+    return get_attribute(instance, self.source_attrs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 102, in get_attribute
+    instance = instance[attr]
+               ~~~~~~~~^^^^^^
+KeyError: 'icon'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 59, in get
+    RoleSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 525, in to_representation
+    attribute = field.get_attribute(instance)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 470, in get_attribute
+    raise type(exc)(msg)
+KeyError: "Got KeyError when attempting to get a value for field `icon` on serializer `RoleSerializer`.\nThe serializer field might be named incorrectly and not match any attribute or key on the `dict` instance.\nOriginal exception text was: 'icon'."
+
+ERROR 2025-03-21 02:40:35,603 log 86370 6129971200 Internal Server Error: /api/roles
+INFO 2025-03-21 02:41:07,875 autoreload 86370 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/models/role.py changed, reloading.
+INFO 2025-03-21 02:41:08,147 autoreload 86933 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 03:08:26,071 autoreload 86933 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 03:08:26,435 autoreload 11819 8588707904 Watching for file changes with StatReloader
+WARNING 2025-03-21 03:09:26,802 log 11819 6142816256 Not Found: /apps/users/67d0b3d3aa5010580288fb67
+WARNING 2025-03-21 03:13:42,990 log 11819 6142816256 Bad Request: /api/roles
+INFO 2025-03-21 03:15:39,489 autoreload 11819 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 03:15:39,836 autoreload 18189 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 03:16:15,818 autoreload 18189 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 03:16:16,143 autoreload 18715 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 03:17:04,368 autoreload 18715 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-03-21 03:17:04,683 autoreload 19457 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 03:17:30,522 autoreload 19457 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-03-21 03:17:30,844 autoreload 19831 8588707904 Watching for file changes with StatReloader
+WARNING 2025-03-21 03:18:18,868 log 19831 6169735168 Forbidden: /api/role/67dcd7e595cbf073573b48c0
+INFO 2025-03-21 04:23:01,655 autoreload 19831 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:23:02,088 autoreload 56566 8588707904 Watching for file changes with StatReloader
+ERROR 2025-03-21 04:23:06,026 exception 56566 6162329600 Ocurrió una excepción: name 'params' is not defined
+ERROR 2025-03-21 04:23:06,027 exception 56566 6162329600 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py", line 52, in get
+    print(params)
+          ^^^^^^
+NameError: name 'params' is not defined
+
+ERROR 2025-03-21 04:23:06,028 log 56566 6162329600 Internal Server Error: /api/roles
+INFO 2025-03-21 04:23:55,641 autoreload 56566 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:23:55,915 autoreload 57383 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:24:19,691 autoreload 57383 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:24:20,051 autoreload 57727 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:26:03,745 autoreload 57727 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:26:04,087 autoreload 59264 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:26:11,456 autoreload 59264 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:26:11,734 autoreload 59397 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:27:20,572 autoreload 59397 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:27:20,872 autoreload 60418 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:27:46,729 autoreload 60418 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:27:47,062 autoreload 60824 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:28:17,970 autoreload 60824 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:28:18,291 autoreload 61265 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:28:25,623 autoreload 61265 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 04:28:25,903 autoreload 61397 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 04:37:38,299 autoreload 61397 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/user_serializer.py changed, reloading.
+INFO 2025-03-21 04:37:38,648 autoreload 69555 8588707904 Watching for file changes with StatReloader
+WARNING 2025-03-21 04:39:02,447 log 69555 6221705216 Not Found: /apps/users/67cfd6ffa48b49e2f0ee750e
+WARNING 2025-03-21 16:20:00,339 log 69555 6221705216 Bad Request: /api/user/67d05dc4b0795beb0d0c9a40
+WARNING 2025-03-21 16:20:12,661 log 69555 6255357952 Bad Request: /api/user/67d05dc4b0795beb0d0c9a40
+WARNING 2025-03-21 16:22:50,308 log 69555 6272184320 Bad Request: /api/user/67d05dc4b0795beb0d0c9a40
+INFO 2025-03-21 16:37:46,225 autoreload 69555 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-21 16:37:46,680 autoreload 66077 8588707904 Watching for file changes with StatReloader
+WARNING 2025-03-21 16:42:20,296 log 66077 6172274688 Not Found: /apps/users/67dd966e9061523ee72f07a4
+INFO 2025-03-21 16:47:01,313 autoreload 66077 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-21 16:47:01,716 autoreload 74439 8588707904 Watching for file changes with StatReloader
+INFO 2025-03-21 16:48:16,689 autoreload 74439 8588707904 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-21 16:48:16,984 autoreload 75544 8588707904 Watching for file changes with StatReloader
+WARNING 2025-03-21 16:49:12,184 log 75544 6202978304 Not Found: /api/users/67dd966e9061523ee72f07a4

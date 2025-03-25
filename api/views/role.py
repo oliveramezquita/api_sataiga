@@ -26,6 +26,10 @@ class RoleByIdView(views.APIView):
         use_case = RoleUseCase(id=id)
         return use_case.get_by_id()
 
+    def delete(self, request, id):
+        use_case = RoleUseCase(id=id)
+        return use_case.delete()
+
 
 class UpdatePermissionsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]

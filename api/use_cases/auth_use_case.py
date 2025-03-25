@@ -48,8 +48,7 @@ class AuthUseCase:
                             'userData': user,
                             'home': self.__set_home(permissions)
                         })
-                    return bad_request('Usuario o contraseña no son válidos.')
-                return bad_request('Usuario no encontrado')
+                return bad_request('Usuario o contraseña no son válidos.')
             return bad_request('El correo electrónico y la contraseña son obligatorios.')
 
     def password_request(self):
@@ -63,11 +62,12 @@ class AuthUseCase:
                         {'user_id': user_id})
                     if password_request:
                         db.delete({'user_id': user_id})
+                    hash_request = hex_encode({
+                        'id': user_id,
+                        'datetime': datetime.now().isoformat()})
                     db.insert({
                         'user_id': user_id,
-                        'hash_request': hex_encode({
-                            'id': user_id,
-                            'datetime': datetime.now().isoformat()})
+                        'hash_request': hash_request
                     })
                     send_email(
                         template="mail_templated/restore_password.html",
@@ -75,11 +75,11 @@ class AuthUseCase:
                             'subject': 'Restauración de Contraseña del Sistema Bellarti',
                             'full_name': user[0]['name'] + f' {user[0]['lastname']}' if user[0]['lastname'] else '',
                             'email': user[0]['email'],
-                            'link_href': settings.ADMIN_URL,
+                            'link_href': f'{settings.ADMIN_URL}/reset-password?rt={hash_request}',
                             'link_label': 'RESTAURAR CONTRASEÑA'
                         },
                     )
-                    return ok('La solicitud para el cambio de contrasela ha sido enviada.')
+                    return ok('La solicitud para el cambio de contraseña ha sido enviada. Revisa tu correo electrónico.')
                 return bad_request('El correo electrónico no se encuentra registrado.')
             return bad_request('El correo electrónico no es válido.')
 
@@ -98,11 +98,11 @@ class AuthUseCase:
                         if self.data['password'] == self.data['confirm_password']:
                             password = encrypt_password(
                                 self.data['password'])
-                            db.update({'_id': payload['id']}, {
+                            db.update({'_id': ObjectId(payload['id'])}, {
                                 'password': password})
                             MongoDBHandler.remove(db, 'password_request', {
                                 '_id': ObjectId(password_request[0]['_id'])})
-                            return ok('La contraseña ha sido restaurada correctamente.')
+                            return ok('La contraseña ha sido restaurada correctamente. Vuele al inicio de sesión para usar tu nueva contraseña.')
                         return bad_request('Las contraseñas no coinciden.')
                     return bad_request('Se venció el tiempo para procesar la restauración de la contrasela. Solicite una nueva solicitud de cambio de contraeña.')
                 return bad_request('Ocurrió un error al procesar la restauración de la contraseña. Solicite una nueva solicitud de cambio de contraeña.')

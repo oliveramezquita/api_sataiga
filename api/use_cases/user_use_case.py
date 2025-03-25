@@ -128,10 +128,10 @@ class UserUseCase:
                                 'link_label': 'INICIAR SESIÓN'
                             },
                         )
-                        return ok({'message': 'Registro realizado exitosamente.', 'status': 400})
-                    return bad_request({'message': 'Las contraseñas no coinciden.', 'status': 400})
-                return bad_request({'message': 'Algunos campos requeridos no han sido completados.', 'status': 400})
-            return bad_request({'message': 'El usaurio no existe o ya se encuentra registrado.', 'status': 400})
+                        return ok('Registro realizado exitosamente.')
+                    return bad_request('Las contraseñas no coinciden.')
+                return bad_request('Algunos campos requeridos no han sido completados.')
+            return bad_request('El usaurio no existe o ya se encuentra registrado.')
 
     def get_by_id(self):
         with MongoDBHandler('users') as db:
@@ -145,13 +145,19 @@ class UserUseCase:
         with MongoDBHandler('users') as db:
             user = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if user and user[0]['status'] < 2:
+            if user:
                 self.__validate_params(db)
                 if 'permissions' in self.data:
                     self.data['permissions'] = resolve_permissions(
                         self.data['permissions'])
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('Usuario actualizado correctamente.')
+                if 'role_id' in self.data and user[0]['role_id'] != self.data['role_id']:
+                    role = MongoDBHandler.find(
+                        db, 'roles', {'_id': ObjectId(self.data['role_id'])})
+                    self.data['permissions'] = role[0]['permissions']
+                    if 'AccountSettings' not in self.data['permissions']:
+                        self.data['permissions']['AccountSettings'] = ['read']
+                updated_user = db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok(UserSerializer(updated_user[0]).data)
             return bad_request('El usaurio no existe.')
 
     def update_password(self):
@@ -176,7 +182,7 @@ class UserUseCase:
         with MongoDBHandler('users') as db:
             user = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if user and user[0]['status'] < 3:
-                db.update({'_id': ObjectId(self.id)}, {'status': 3})
+            if user:
+                db.delete({'_id': ObjectId(self.id)})
                 return ok('Usuario eliminado correctamente.')
             return bad_request('El usaurio no existe o ya se encuentra eliminado.')

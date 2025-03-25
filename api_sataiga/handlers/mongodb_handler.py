@@ -38,8 +38,9 @@ class MongoDBHandler:
     def update(self, query, update_data):
         collection = self.db[self.collection_name]
         update_data['updated_at'] = datetime.now()
-        result = collection.update_one(query, {'$set': update_data})
-        return result.modified_count
+        _ = collection.update_one(query, {'$set': update_data})
+        result = collection.find(query)
+        return list(result)
 
     def delete(self, query):
         collection = self.db[self.collection_name]
