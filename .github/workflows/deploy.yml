@@ -24,11 +24,12 @@ jobs:
                 pip install -r requirements.txt
             
             - name: Deploy to server
-              env:
-                SSH_PASSWORD: ${{ secrets.SSH_KEY }}
-              run: |
-                sshpass -p "$SSH_PASSWORD" ssh -p 2222 -tt vixenslt@ssh.web6.us.cloudlogin.co << EOF
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.SSH_HOST }}
+                username: ${{ secrets.SSH_USER }}
+                password: ${{ secrets.SSH_PASSWORD }}
+                post: 2222
+                script: |
                   cd /api_bellarti/api_sataiga
                   git pull
-                EOF
-              shell: bash
