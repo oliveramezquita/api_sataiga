@@ -1,0 +1,244 @@
+WARNING 2025-03-11 00:00:06,276 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:03:05,663 log 58152 6327037952 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:04:21,019 log 58152 6343864320 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:05:19,769 log 58152 6293385216 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:06:38,659 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:07:06,113 log 58152 6327037952 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:09:33,109 log 58152 6360690688 Bad Request: /api/login
+WARNING 2025-03-11 00:09:39,691 log 58152 6293385216 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:10:54,711 log 58152 6327037952 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:16:10,265 log 58152 6343864320 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:18:07,275 log 58152 6377517056 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:19:21,132 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:41:42,029 log 58152 6327037952 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:42:26,048 log 58152 6343864320 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:53:22,592 log 58152 6343864320 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:53:25,479 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:54:18,563 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 00:54:21,943 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:22:14,501 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:23:49,974 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:23:52,184 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:23:55,541 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:23:57,071 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:23:58,949 log 58152 6427996160 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:24:25,834 log 58152 12901707776 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:24:42,279 log 58152 12918534144 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:24:52,901 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:25:51,352 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:27:47,536 log 58152 6377517056 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:28:08,663 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:29:20,453 log 58152 12918534144 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:29:36,833 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:55:06,763 log 58152 6427996160 Bad Request: /api/login
+WARNING 2025-03-11 01:57:29,438 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 01:58:27,896 log 58152 6360690688 Bad Request: /api/login
+WARNING 2025-03-11 01:58:30,931 log 58152 6360690688 Bad Request: /api/login
+WARNING 2025-03-11 02:52:52,814 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 02:58:12,794 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:00:02,099 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:00:10,580 log 58152 6427996160 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:00:30,103 log 58152 12918534144 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:01:14,456 log 58152 12935360512 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:01:23,098 log 58152 12952186880 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:01:27,052 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:01:58,249 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:02:33,110 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:15:44,931 log 58152 6377517056 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:18:29,534 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:19:08,712 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:20:00,537 log 58152 6377517056 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:24:07,272 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:28:06,694 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:29:21,879 log 58152 6377517056 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:30:00,722 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:47:55,529 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 03:48:03,280 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:02:54,486 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:04:23,149 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:12:10,995 log 58152 6427996160 Bad Request: /api/login
+WARNING 2025-03-11 04:16:44,348 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:17:17,952 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:17:21,810 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:18:35,462 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:33:13,344 log 58152 6360690688 Bad Request: /api/login
+WARNING 2025-03-11 04:56:53,317 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:57:17,032 log 58152 6394343424 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:57:37,109 log 58152 12901707776 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:58:03,936 log 58152 12918534144 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:58:18,002 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 04:58:31,723 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:02:57,642 log 58152 12901707776 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:03:02,957 log 58152 12935360512 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:03:04,803 log 58152 12952186880 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:03:06,991 log 58152 12952186880 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:03:26,684 log 58152 6259732480 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:03:34,383 log 58152 6310211584 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:04:01,188 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:04:40,940 log 58152 6427996160 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:05:14,548 log 58152 12901707776 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:28:41,100 log 58152 6259732480 Bad Request: /api/login
+WARNING 2025-03-11 05:39:33,977 log 58152 6360690688 Forbidden: /api/role/67c528dea1b1e8601f322d21
+WARNING 2025-03-11 05:39:33,981 log 58152 6360690688 Forbidden: /api/tree_view_sections
+WARNING 2025-03-11 05:39:57,520 log 58152 6360690688 Bad Request: /api/login
+WARNING 2025-03-11 05:48:17,011 log 58152 6360690688 Bad Request: /api/login
+WARNING 2025-03-11 05:50:14,857 log 58152 12901707776 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 05:59:44,616 log 58152 6360690688 Not Found: /dashboard/analytics/projects
+INFO 2025-03-11 06:11:43,050 autoreload 58152 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 06:11:43,532 autoreload 90384 8612886592 Watching for file changes with StatReloader
+WARNING 2025-03-11 06:20:39,330 log 90384 6197833728 Not Found: /dashboard/analytics/projects
+ERROR 2025-03-11 06:21:09,328 exception 90384 6197833728 Ocurrió una excepción: 'dict' object has no attribute 'append'
+ERROR 2025-03-11 06:21:09,332 exception 90384 6197833728 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/user.py", line 11, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py", line 65, in save
+    self.data['permissions'].append(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'append'
+
+ERROR 2025-03-11 06:21:09,333 log 90384 6197833728 Internal Server Error: /api/users
+WARNING 2025-03-11 06:21:29,193 log 90384 6197833728 Forbidden: /api/users
+WARNING 2025-03-11 06:21:29,328 log 90384 6214660096 Not Found: /favicon.ico
+INFO 2025-03-11 06:23:32,574 autoreload 90384 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 06:23:32,931 autoreload 3297 8612886592 Watching for file changes with StatReloader
+WARNING 2025-03-11 06:25:19,338 log 3297 6174470144 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 06:26:47,419 log 3297 6157643776 Not Found: /dashboard/analytics/projects
+INFO 2025-03-11 13:28:21,133 autoreload 3297 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 13:28:21,578 autoreload 50237 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:29:57,943 autoreload 50237 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/role.py changed, reloading.
+INFO 2025-03-11 13:29:58,250 autoreload 51973 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:30:07,669 autoreload 51973 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 13:30:07,987 autoreload 52137 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:31:10,729 autoreload 52137 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 13:31:11,084 autoreload 53291 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:31:14,360 autoreload 53291 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 13:31:14,687 autoreload 53343 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:31:33,252 autoreload 53343 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-03-11 13:31:33,580 autoreload 53725 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:32:51,530 autoreload 53725 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-03-11 13:32:51,882 autoreload 55102 8612886592 Watching for file changes with StatReloader
+WARNING 2025-03-11 13:38:51,925 log 55102 6164246528 Not Found: /dashboard/analytics/projects
+INFO 2025-03-11 13:42:02,323 autoreload 55102 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 13:42:02,897 autoreload 64850 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 13:56:05,134 autoreload 64850 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 13:56:05,658 autoreload 78143 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 14:12:22,339 autoreload 78143 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 14:12:22,732 autoreload 93825 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 14:23:53,572 autoreload 93825 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 14:23:53,954 autoreload 6576 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 14:26:13,838 autoreload 6576 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 14:26:14,180 autoreload 9067 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 14:54:46,725 autoreload 9067 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 14:54:47,227 autoreload 38911 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 14:58:54,318 autoreload 38911 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py changed, reloading.
+INFO 2025-03-11 14:58:54,651 autoreload 43270 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:01:39,766 autoreload 43270 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 15:01:40,097 autoreload 46168 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:02:47,871 autoreload 46168 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 15:02:48,260 autoreload 47375 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:03:01,761 autoreload 47375 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 15:03:02,071 autoreload 47611 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:04:06,824 autoreload 47611 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 15:04:07,164 autoreload 48789 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:04:33,002 autoreload 48789 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 15:04:33,307 autoreload 49243 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:05:32,005 autoreload 49243 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 15:05:32,331 autoreload 50279 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:27:05,425 autoreload 50279 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:27:05,864 autoreload 72975 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:27:20,374 autoreload 72975 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:27:20,674 autoreload 73251 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:29:27,038 autoreload 73251 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:29:27,368 autoreload 75515 8612886592 Watching for file changes with StatReloader
+ERROR 2025-03-11 15:29:31,188 exception 75515 6138376192 Ocurrió una excepción: 0
+ERROR 2025-03-11 15:29:31,189 exception 75515 6138376192 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py", line 8, in post
+    return use_case.login()
+           ~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py", line 45, in login
+    'home': user[0]['permissions']
+            ~~~~^^^
+KeyError: 0
+
+ERROR 2025-03-11 15:29:31,189 log 75515 6138376192 Internal Server Error: /api/login
+INFO 2025-03-11 15:31:20,308 autoreload 75515 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:31:20,657 autoreload 77507 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:32:48,011 autoreload 77507 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:32:48,356 autoreload 79058 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:33:26,397 autoreload 79058 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:33:26,776 autoreload 79723 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 15:57:48,424 autoreload 79723 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 15:57:48,925 autoreload 97665 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 16:01:19,307 autoreload 97665 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-11 16:01:19,673 autoreload 1650 8612886592 Watching for file changes with StatReloader
+WARNING 2025-03-11 16:27:48,513 log 1650 6213038080 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 16:48:01,967 log 1650 6263517184 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 17:18:32,074 log 1650 6229864448 Not Found: /dashboard/analytics/projects
+INFO 2025-03-11 17:30:20,862 autoreload 1650 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 17:30:21,608 autoreload 90327 8612886592 Watching for file changes with StatReloader
+WARNING 2025-03-11 18:26:41,545 log 90327 6208991232 Not Found: /dashboard/analytics/projects
+INFO 2025-03-11 18:34:53,818 autoreload 90327 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 18:34:54,754 autoreload 58664 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 18:39:00,053 autoreload 58664 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 18:39:00,566 autoreload 62995 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 18:53:48,330 autoreload 62995 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/role_use_case.py changed, reloading.
+INFO 2025-03-11 18:53:48,825 autoreload 78608 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 18:59:00,915 autoreload 78608 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 18:59:01,277 autoreload 84078 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 18:59:11,665 autoreload 84078 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 18:59:11,984 autoreload 84271 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 18:59:49,090 autoreload 84271 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 18:59:49,452 autoreload 84939 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 19:03:52,149 autoreload 84939 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 19:03:52,594 autoreload 89169 8612886592 Watching for file changes with StatReloader
+INFO 2025-03-11 19:05:10,679 autoreload 89169 8612886592 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/user_use_case.py changed, reloading.
+INFO 2025-03-11 19:05:11,026 autoreload 90564 8612886592 Watching for file changes with StatReloader
+WARNING 2025-03-11 21:24:06,849 log 90564 6194933760 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 21:50:19,544 log 90564 6194933760 Bad Request: /api/login
+WARNING 2025-03-11 21:50:25,540 log 90564 6211760128 Bad Request: /api/login
+WARNING 2025-03-11 21:51:25,493 log 90564 6245412864 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 21:51:33,038 log 90564 6161281024 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 21:51:41,602 log 90564 6178107392 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 21:55:58,798 log 90564 6194933760 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:04:55,548 log 90564 6194933760 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:13:00,112 log 90564 6161281024 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:13:37,947 log 90564 6178107392 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:15:10,152 log 90564 6161281024 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:24:00,380 log 90564 6194933760 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:25:19,191 log 90564 6211760128 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-11 22:27:01,562 log 90564 6228586496 Not Found: /dashboard/analytics/projects
