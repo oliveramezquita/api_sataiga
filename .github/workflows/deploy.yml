@@ -24,7 +24,11 @@ jobs:
                 pip install -r requirements.txt
             
             - name: Deploy to server
-              run: |
-                ssh -p 2222 vixenslt@ssh.web6.us.cloudlogin.co "cd /api_bellarti/api_sataiga && git pull"
               env:
-                SSH_KEY: ${{ secrets.SSH_KEY }}
+                SSH_PASSWORD: ${{ secrets.SSH_KEY }}
+              run: |
+                sshpass -p "$SSH_PASSWORD" ssh -p 2222 -o StrictHostKeyChecking=no vixenslt@ssh.web6.us.cloudlogin.co << EOF
+                  cd /api_bellarti/api_sataiga
+                  git pull
+                EOF
+              shell: bash
