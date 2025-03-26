@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'mail_templated',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -194,3 +195,13 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# Configuración de Redis
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
