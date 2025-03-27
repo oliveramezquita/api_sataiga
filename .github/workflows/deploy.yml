@@ -30,6 +30,6 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 key: ${{ secrets.SSH_KEY }}
                 script: |
-                  cd api_bellarti/api_sataiga
+                  cd api_sataiga/api_sataiga
                   git pull
                   sudo systemctl restart bellarti
