@@ -24,6 +24,8 @@ class AuthUseCase:
         return user_ability_rules
 
     def __set_home(self, permissions):
+        if 'all' in permissions:
+            return 'admin'
         is_admin = [k for k, v in permissions.items(
         ) if k == 'AdminDashboard' and 'read' in v]
         if len(is_admin) > 0:

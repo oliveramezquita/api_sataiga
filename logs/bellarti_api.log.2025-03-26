@@ -1,0 +1,386 @@
+INFO 2025-03-26 01:09:10,737 autoreload 90336 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:10:13,667 autoreload 91173 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:12:44,165 autoreload 93063 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:13:19,374 autoreload 93063 8340244544 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-03-26 01:13:19,671 autoreload 93492 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:15:11,028 autoreload 93492 8340244544 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-03-26 01:15:11,278 autoreload 94842 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:17:40,894 autoreload 94842 8340244544 /Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/settings.py changed, reloading.
+INFO 2025-03-26 01:17:41,133 autoreload 96622 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:17:56,708 autoreload 96867 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 01:26:24,796 autoreload 3690 8340244544 Watching for file changes with StatReloader
+INFO 2025-03-26 16:57:05,557 autoreload 95085 8340244544 Watching for file changes with StatReloader
+ERROR 2025-03-26 16:57:22,020 exception 95085 6123319296 Ocurrió una excepción: Authentication failed., full error: {'ok': 0.0, 'errmsg': 'Authentication failed.', 'code': 18, 'codeName': 'AuthenticationFailed'}
+ERROR 2025-03-26 16:57:22,027 exception 95085 6123319296 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py", line 8, in post
+    return use_case.login()
+           ~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py", line 37, in login
+    user = db.extract({'email': self.data['email'], 'status': 1})
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py", line 36, in extract
+    return list(result)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1281, in __next__
+    return self.next()
+           ~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1257, in next
+    if len(self._data) or self._refresh():
+                          ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1205, in _refresh
+    self._send_message(q)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1100, in _send_message
+    response = client._run_operation(
+        operation, self._unpack_response, address=self._address
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1752, in _run_operation
+    return self._retryable_read(
+           ~~~~~~~~~~~~~~~~~~~~^
+        _cmd,
+        ^^^^^
+    ...<4 lines>...
+        operation=operation.name,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1861, in _retryable_read
+    return self._retry_internal(
+           ~~~~~~~~~~~~~~~~~~~~^
+        func,
+        ^^^^^
+    ...<7 lines>...
+        operation_id=operation_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1828, in _retry_internal
+    ).run()
+      ~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2565, in run
+    return self._read() if self._is_read else self._write()
+           ~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2702, in _read
+    with self._client._conn_from_server(self._read_pref, self._server, self._session) as (
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1681, in _conn_from_server
+    with self._checkout(server, session) as conn:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1591, in _checkout
+    with server.checkout(handler=err_handler) as conn:
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 1346, in checkout
+    conn = self._get_conn(checkout_started_time, handler=handler)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 1507, in _get_conn
+    conn = self.connect(handler=handler)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 1304, in connect
+    conn.authenticate()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 646, in authenticate
+    auth.authenticate(creds, self, reauthenticate=reauthenticate)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/auth.py", line 450, in authenticate
+    auth_func(credentials, conn)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/auth.py", line 355, in _authenticate_default
+    return _authenticate_scram(credentials, conn, "SCRAM-SHA-1")
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/auth.py", line 96, in _authenticate_scram
+    res = conn.command(source, cmd)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/helpers.py", line 47, in inner
+    return func(*args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 536, in command
+    return command(
+        self,
+    ...<20 lines>...
+        write_concern=write_concern,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/network.py", line 213, in command
+    helpers_shared._check_command_response(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        response_doc,
+        ^^^^^^^^^^^^^
+    ...<2 lines>...
+        parse_write_concern_error=parse_write_concern_error,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/helpers_shared.py", line 247, in _check_command_response
+    raise OperationFailure(errmsg, code, response, max_wire_version)
+pymongo.errors.OperationFailure: Authentication failed., full error: {'ok': 0.0, 'errmsg': 'Authentication failed.', 'code': 18, 'codeName': 'AuthenticationFailed'}
+
+ERROR 2025-03-26 16:57:22,028 log 95085 6123319296 Internal Server Error: /api/login
+ERROR 2025-03-26 17:01:04,759 exception 95085 6123319296 Ocurrió una excepción: Authentication failed., full error: {'ok': 0.0, 'errmsg': 'Authentication failed.', 'code': 18, 'codeName': 'AuthenticationFailed'}
+ERROR 2025-03-26 17:01:04,774 exception 95085 6123319296 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py", line 8, in post
+    return use_case.login()
+           ~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py", line 37, in login
+    user = db.extract({'email': self.data['email'], 'status': 1})
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py", line 36, in extract
+    return list(result)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1281, in __next__
+    return self.next()
+           ~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1257, in next
+    if len(self._data) or self._refresh():
+                          ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1205, in _refresh
+    self._send_message(q)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1100, in _send_message
+    response = client._run_operation(
+        operation, self._unpack_response, address=self._address
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1752, in _run_operation
+    return self._retryable_read(
+           ~~~~~~~~~~~~~~~~~~~~^
+        _cmd,
+        ^^^^^
+    ...<4 lines>...
+        operation=operation.name,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1861, in _retryable_read
+    return self._retry_internal(
+           ~~~~~~~~~~~~~~~~~~~~^
+        func,
+        ^^^^^
+    ...<7 lines>...
+        operation_id=operation_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1828, in _retry_internal
+    ).run()
+      ~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2565, in run
+    return self._read() if self._is_read else self._write()
+           ~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2702, in _read
+    with self._client._conn_from_server(self._read_pref, self._server, self._session) as (
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1681, in _conn_from_server
+    with self._checkout(server, session) as conn:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1591, in _checkout
+    with server.checkout(handler=err_handler) as conn:
+         ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 1346, in checkout
+    conn = self._get_conn(checkout_started_time, handler=handler)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 1507, in _get_conn
+    conn = self.connect(handler=handler)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 1304, in connect
+    conn.authenticate()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 646, in authenticate
+    auth.authenticate(creds, self, reauthenticate=reauthenticate)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/auth.py", line 450, in authenticate
+    auth_func(credentials, conn)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/auth.py", line 355, in _authenticate_default
+    return _authenticate_scram(credentials, conn, "SCRAM-SHA-1")
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/auth.py", line 96, in _authenticate_scram
+    res = conn.command(source, cmd)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/helpers.py", line 47, in inner
+    return func(*args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/pool.py", line 536, in command
+    return command(
+        self,
+    ...<20 lines>...
+        write_concern=write_concern,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/network.py", line 213, in command
+    helpers_shared._check_command_response(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        response_doc,
+        ^^^^^^^^^^^^^
+    ...<2 lines>...
+        parse_write_concern_error=parse_write_concern_error,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/helpers_shared.py", line 247, in _check_command_response
+    raise OperationFailure(errmsg, code, response, max_wire_version)
+pymongo.errors.OperationFailure: Authentication failed., full error: {'ok': 0.0, 'errmsg': 'Authentication failed.', 'code': 18, 'codeName': 'AuthenticationFailed'}
+
+ERROR 2025-03-26 17:01:04,775 log 95085 6123319296 Internal Server Error: /api/login
+INFO 2025-03-26 17:18:13,678 autoreload 10961 8340244544 Watching for file changes with StatReloader
+ERROR 2025-03-26 17:19:09,609 exception 10961 6160986112 Ocurrió una excepción: 127.0.0.1:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 67e436ef49081031d961a11e, topology_type: Unknown, servers: [<ServerDescription ('127.0.0.1', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+ERROR 2025-03-26 17:19:09,624 exception 10961 6160986112 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/auth.py", line 8, in post
+    return use_case.login()
+           ~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py", line 37, in login
+    user = db.extract({'email': self.data['email'], 'status': 1})
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/handlers/mongodb_handler.py", line 36, in extract
+    return list(result)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1281, in __next__
+    return self.next()
+           ~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1257, in next
+    if len(self._data) or self._refresh():
+                          ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1205, in _refresh
+    self._send_message(q)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/cursor.py", line 1100, in _send_message
+    response = client._run_operation(
+        operation, self._unpack_response, address=self._address
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1752, in _run_operation
+    return self._retryable_read(
+           ~~~~~~~~~~~~~~~~~~~~^
+        _cmd,
+        ^^^^^
+    ...<4 lines>...
+        operation=operation.name,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1861, in _retryable_read
+    return self._retry_internal(
+           ~~~~~~~~~~~~~~~~~~~~^
+        func,
+        ^^^^^
+    ...<7 lines>...
+        operation_id=operation_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/_csot.py", line 119, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1828, in _retry_internal
+    ).run()
+      ~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2565, in run
+    return self._read() if self._is_read else self._write()
+           ~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2700, in _read
+    self._server = self._get_server()
+                   ~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 2656, in _get_server
+    return self._client._select_server(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self._server_selector,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        operation_id=self._operation_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/mongo_client.py", line 1647, in _select_server
+    server = topology.select_server(
+        server_selector,
+    ...<2 lines>...
+        operation_id=operation_id,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/topology.py", line 402, in select_server
+    server = self._select_server(
+        selector,
+    ...<4 lines>...
+        operation_id=operation_id,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/topology.py", line 380, in _select_server
+    servers = self.select_servers(
+        selector, operation, server_selection_timeout, address, operation_id
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/topology.py", line 287, in select_servers
+    server_descriptions = self._select_servers_loop(
+        selector, server_timeout, operation, operation_id, address
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/pymongo/synchronous/topology.py", line 337, in _select_servers_loop
+    raise ServerSelectionTimeoutError(
+        f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+    )
+pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 67e436ef49081031d961a11e, topology_type: Unknown, servers: [<ServerDescription ('127.0.0.1', 27017) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27017: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+
+ERROR 2025-03-26 17:19:09,627 log 10961 6160986112 Internal Server Error: /api/login
+INFO 2025-03-26 18:44:29,126 autoreload 73569 8340244544 Watching for file changes with StatReloader
+WARNING 2025-03-26 18:45:08,230 log 73569 6189805568 Not Found: /dashboard/analytics/projects
+INFO 2025-03-26 20:34:02,155 autoreload 41416 8340244544 Watching for file changes with StatReloader
+WARNING 2025-03-26 20:34:05,722 log 41416 6169030656 Not Found: /
+WARNING 2025-03-26 20:34:06,865 log 41416 6169030656 Not Found: /
+WARNING 2025-03-26 20:34:06,868 log 41416 6185857024 Not Found: /sw.js
+WARNING 2025-03-26 20:34:07,886 log 41416 6185857024 Not Found: /sw.js
+WARNING 2025-03-26 20:34:07,896 log 41416 6202683392 Not Found: /sw.js
+WARNING 2025-03-26 20:34:11,891 log 41416 6219509760 Not Found: /
+WARNING 2025-03-26 20:34:12,855 log 41416 6236336128 Not Found: /favicon.ico
+WARNING 2025-03-26 20:34:12,898 log 41416 6236336128 Not Found: /sw.js
+WARNING 2025-03-26 20:34:12,901 log 41416 6269988864 Not Found: /sw.js
+WARNING 2025-03-26 20:34:14,738 log 41416 6169030656 Not Found: /sw.js
+WARNING 2025-03-26 20:34:14,743 log 41416 6185857024 Not Found: /sw.js
+WARNING 2025-03-26 20:34:50,323 log 41416 6202683392 Not Found: /sw.js
+WARNING 2025-03-26 20:34:50,330 log 41416 6219509760 Not Found: /sw.js

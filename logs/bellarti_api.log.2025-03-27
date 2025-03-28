@@ -1,0 +1,17 @@
+INFO 2025-03-27 07:29:08,442 autoreload 45708 8527054912 Watching for file changes with StatReloader
+WARNING 2025-03-27 07:30:17,616 log 45708 6135607296 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-27 15:31:24,146 log 45708 6135607296 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-27 16:28:23,564 log 45708 6152433664 Not Found: /app-bar/search
+WARNING 2025-03-27 16:28:23,966 log 45708 6152433664 Not Found: /app-bar/search
+WARNING 2025-03-27 16:28:26,530 log 45708 6152433664 Not Found: /app-bar/search
+WARNING 2025-03-27 16:29:29,750 log 45708 6169260032 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-27 17:15:16,325 log 45708 6186086400 Not Found: /dashboard/analytics/projects
+WARNING 2025-03-27 17:17:04,236 log 45708 6202912768 Not Found: /dashboard/analytics/projects
+INFO 2025-03-27 17:18:56,462 autoreload 45708 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-27 17:18:56,902 autoreload 35173 8527054912 Watching for file changes with StatReloader
+WARNING 2025-03-27 17:19:09,566 log 35173 6195539968 Not Found: /dashboard/analytics/projects
+INFO 2025-03-27 17:19:47,532 autoreload 35173 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/auth_use_case.py changed, reloading.
+INFO 2025-03-27 17:19:47,872 autoreload 35799 8527054912 Watching for file changes with StatReloader
+WARNING 2025-03-27 20:26:59,887 log 35799 6163787776 Bad Request: /api/register/67e5af9f54ac0f8118d3cf5b
+WARNING 2025-03-27 20:27:41,364 log 35799 6197440512 Bad Request: /api/register/67e5af9f54ac0f8118d3cf5b
+WARNING 2025-03-27 20:27:49,445 log 35799 6214266880 Bad Request: /api/register/67e5af9f54ac0f8118d3cf5b

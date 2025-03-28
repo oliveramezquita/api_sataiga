@@ -1,7 +1,0 @@
-WARNING 2025-03-12 00:02:09,854 log 90564 6245412864 Not Found: /dashboard/analytics/projects
-WARNING 2025-03-12 00:02:10,336 log 90564 6262239232 Not Found: /dashboard/analytics/projects
-WARNING 2025-03-12 01:07:08,922 log 90564 6279065600 Not Found: /dashboard/analytics/projects
-WARNING 2025-03-12 01:07:09,023 log 90564 6295891968 Not Found: /dashboard/analytics/projects
-INFO 2025-03-12 02:10:34,530 autoreload 66510 8612886592 Watching for file changes with StatReloader
-WARNING 2025-03-12 02:10:48,780 log 66510 6210973696 Not Found: /dashboard/analytics/projects
-WARNING 2025-03-12 02:11:33,811 log 66510 6227800064 Not Found: /dashboard/analytics/projects
