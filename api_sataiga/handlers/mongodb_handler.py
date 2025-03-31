@@ -30,9 +30,11 @@ class MongoDBHandler:
         result = collection.insert_one(data)
         return result.inserted_id
 
-    def extract(self, query=None):
+    def extract(self, query=None, order_field=None, order=1):
         collection = self.db[self.collection_name]
         result = collection.find(query)
+        if order_field:
+            result = result.sort(order_field, order)
         return list(result)
 
     def update(self, query, update_data):

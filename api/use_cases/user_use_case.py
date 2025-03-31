@@ -40,7 +40,8 @@ class UserUseCase:
                     "El rol seleccionado no se encuentra registrado en el sistema.")
 
     def __assign_permissions(self, db, role_id):
-        role = MongoDBHandler.find(db, 'roles', {'_id': ObjectId(role_id)})
+        role = MongoDBHandler.find(db, 'roles', {'_id': ObjectId(
+            role_id)}) if objectid_validation(role_id) else None
         return role[0]['permissions']
 
     def __filter_superadmin(self, db, users):
@@ -139,7 +140,7 @@ class UserUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if user:
                 return ok(UserSerializer(user[0]).data)
-            return not_found('El usuario no se existe.')
+            return not_found('El usuario no existe.')
 
     def update(self):
         with MongoDBHandler('users') as db:

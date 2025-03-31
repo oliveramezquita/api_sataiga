@@ -1,0 +1,135 @@
+INFO 2025-03-28 00:17:03,454 autoreload 35799 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-03-28 00:17:03,894 autoreload 25543 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:29:20,926 autoreload 25543 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-03-28 00:29:21,319 autoreload 34431 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:31:46,451 autoreload 34431 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-03-28 00:31:46,809 autoreload 36170 8527054912 Watching for file changes with StatReloader
+WARNING 2025-03-28 00:32:16,009 log 36170 6123352064 Forbidden: /api/dashboard
+INFO 2025-03-28 00:33:32,934 autoreload 36170 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:33:33,265 autoreload 37483 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:33:37,652 autoreload 37483 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:33:37,852 autoreload 37541 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:44:15,159 autoreload 37541 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:44:15,507 autoreload 45243 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:44:16,808 autoreload 45243 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:44:16,991 autoreload 45275 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:52:52,852 autoreload 45275 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:52:53,226 autoreload 51451 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:52:58,631 autoreload 51451 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:52:58,811 autoreload 51532 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:53:11,284 autoreload 51532 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:53:11,562 autoreload 51693 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:53:22,066 autoreload 51693 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:53:22,327 autoreload 51825 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:53:38,942 autoreload 51825 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:53:39,274 autoreload 52054 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:54:20,545 autoreload 52054 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:54:20,870 autoreload 52577 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 00:54:27,278 autoreload 52577 8527054912 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/dashboard_use_case.py changed, reloading.
+INFO 2025-03-28 00:54:27,623 autoreload 52691 8527054912 Watching for file changes with StatReloader
+INFO 2025-03-28 23:35:13,953 autoreload 27383 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:37:32,432 autoreload 27383 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-03-28 23:37:32,952 autoreload 29067 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:37:38,393 autoreload 29067 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/client.py changed, reloading.
+INFO 2025-03-28 23:37:38,691 autoreload 29151 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:37:42,002 autoreload 29151 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/client.py changed, reloading.
+INFO 2025-03-28 23:37:42,230 autoreload 29201 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:37:57,824 autoreload 29201 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:37:58,166 autoreload 29385 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:38:07,612 autoreload 29385 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:38:07,937 autoreload 29520 8545306688 Watching for file changes with StatReloader
+WARNING 2025-03-28 23:41:49,670 log 29520 6169587712 Forbidden: /api/client
+WARNING 2025-03-28 23:41:57,274 log 29520 6169587712 Bad Request: /api/client
+INFO 2025-03-28 23:42:09,658 autoreload 29520 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:42:10,015 autoreload 32441 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:45:10,942 autoreload 32441 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:45:11,321 autoreload 34625 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:45:29,042 autoreload 34625 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:45:29,336 autoreload 34859 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:46:09,643 autoreload 34859 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:46:09,967 autoreload 35337 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:47:12,850 autoreload 35337 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:47:13,181 autoreload 36118 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:48:19,087 autoreload 36118 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:48:19,467 autoreload 36923 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:51:07,263 autoreload 36923 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:51:07,642 autoreload 38983 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:51:23,271 autoreload 38983 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:51:23,620 autoreload 39198 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:51:29,019 autoreload 39198 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:51:29,227 autoreload 39260 8545306688 Watching for file changes with StatReloader
+WARNING 2025-03-28 23:53:36,252 log 39260 6125072384 Bad Request: /api/client
+INFO 2025-03-28 23:54:12,690 autoreload 39260 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:54:13,059 autoreload 41225 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:54:52,464 autoreload 41225 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:54:52,767 autoreload 41704 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:54:55,030 autoreload 41704 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:54:55,217 autoreload 41737 8545306688 Watching for file changes with StatReloader
+ERROR 2025-03-28 23:55:34,338 exception 41737 6193000448 Ocurrió una excepción: unsupported operand type(s) for +: 'dict' and 'int'
+ERROR 2025-03-28 23:55:34,342 exception 41737 6193000448 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/client.py", line 11, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py", line 32, in save
+    self.data['id'] = self.__create_consecutive()
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py", line 24, in __create_consecutive
+    return max(clients, key=lambda client: client['id']) + 1
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+TypeError: unsupported operand type(s) for +: 'dict' and 'int'
+
+ERROR 2025-03-28 23:55:34,342 log 41737 6193000448 Internal Server Error: /api/client
+INFO 2025-03-28 23:56:48,331 autoreload 41737 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:56:48,688 autoreload 43105 8545306688 Watching for file changes with StatReloader
+ERROR 2025-03-28 23:56:54,427 exception 43105 6167523328 Ocurrió una excepción: unsupported operand type(s) for +: 'dict' and 'int'
+ERROR 2025-03-28 23:56:54,428 exception 43105 6167523328 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/client.py", line 11, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py", line 34, in save
+    self.data['id'] = self.__create_consecutive()
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py", line 26, in __create_consecutive
+    return last_id + 1
+           ~~~~~~~~^~~
+TypeError: unsupported operand type(s) for +: 'dict' and 'int'
+
+ERROR 2025-03-28 23:56:54,428 log 43105 6167523328 Internal Server Error: /api/client
+INFO 2025-03-28 23:57:40,335 autoreload 43105 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:57:40,644 autoreload 43743 8545306688 Watching for file changes with StatReloader
+INFO 2025-03-28 23:57:54,219 autoreload 43743 8545306688 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-03-28 23:57:54,508 autoreload 43924 8545306688 Watching for file changes with StatReloader
