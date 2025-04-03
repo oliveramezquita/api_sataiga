@@ -15,7 +15,7 @@ class ClientUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
-            self.status = params['status'][0] if 'status' in params else None
+            self.q = params['q'][0] if 'q' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.client_type = kwargs.get('client_type', None)
@@ -41,6 +41,12 @@ class ClientUseCase:
     def get(self):
         with MongoDBHandler('clients') as db:
             filters = {'type': self.client_type}
+            if self.q:
+                filters['$or'] = [
+                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'address': {'$regex': self.q, '$options': 'i'}},
+                    {'email': {'$regex': self.q, '$options': 'i'}},
+                ]
             order = 'pe_id' if self.client_type == 'PE' else None
             clients = db.extract(filters, order)
             paginator = Paginator(clients, per_page=self.page_size)

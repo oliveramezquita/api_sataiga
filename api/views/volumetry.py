@@ -9,3 +9,7 @@ class VolumetryView(views.APIView):
     def post(self, request):
         use_case = VolumetryUseCase(data=request.data)
         return use_case.save()
+
+    def get(self, request):
+        use_case = VolumetryUseCase(request=request)
+        return use_case.get()

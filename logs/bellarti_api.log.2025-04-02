@@ -1,0 +1,559 @@
+INFO 2025-04-02 03:59:45,858 autoreload 4836 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/supplier_use_case.py changed, reloading.
+INFO 2025-04-02 03:59:46,361 autoreload 91763 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 04:00:09,187 autoreload 91763 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/supplier_use_case.py changed, reloading.
+INFO 2025-04-02 04:00:09,552 autoreload 92051 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 04:00:19,050 autoreload 92051 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/supplier_use_case.py changed, reloading.
+INFO 2025-04-02 04:00:19,391 autoreload 92191 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 04:23:05,347 autoreload 92191 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-04-02 04:23:05,829 autoreload 9282 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 04:32:16,184 log 9282 6144454656 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:34:24,496 log 9282 6144454656 Method Not Allowed: /api/prototype_by_client/67e733da54de9d1fe1378fb9
+WARNING 2025-04-02 04:34:37,103 log 9282 6161281024 Method Not Allowed: /api/prototype_by_client/67e733da54de9d1fe1378fb9
+WARNING 2025-04-02 04:35:05,174 log 9282 6178107392 Method Not Allowed: /api/prototype_by_client/67e733da54de9d1fe1378fb9
+WARNING 2025-04-02 04:36:22,094 log 9282 6211760128 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:38:46,504 log 9282 6194933760 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:40:12,788 log 9282 6161281024 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:40:19,118 log 9282 6178107392 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:40:54,027 log 9282 6144454656 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:41:27,106 log 9282 6211760128 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:41:44,883 log 9282 6161281024 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:43:30,306 log 9282 6194933760 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:46:42,119 log 9282 6144454656 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:46:59,110 log 9282 6194933760 Not Found: /api/prototype_by_client/67eb454e509077419c808c70
+INFO 2025-04-02 04:47:19,470 autoreload 9282 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py changed, reloading.
+INFO 2025-04-02 04:47:19,986 autoreload 27628 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 04:47:37,830 log 27628 6199422976 Not Found: /api/prototype_by_client/67ea0785f84d6a0c075d0c2a
+WARNING 2025-04-02 04:47:43,230 log 27628 6216249344 Not Found: /api/prototype_by_client/67eb454e509077419c808c70
+WARNING 2025-04-02 16:31:08,818 log 27628 6199422976 Not Found: /api/materials/
+WARNING 2025-04-02 16:31:32,076 log 27628 6233075712 Not Found: /api/materials/
+WARNING 2025-04-02 16:32:06,039 log 27628 6249902080 Not Found: /api/materials/
+WARNING 2025-04-02 20:34:20,493 log 27628 6199422976 Bad Request: /api/volumetries
+WARNING 2025-04-02 20:37:26,219 log 27628 6199422976 Bad Request: /api/volumetries
+WARNING 2025-04-02 20:42:32,183 log 27628 6199422976 Bad Request: /api/volumetries
+INFO 2025-04-02 20:44:11,443 autoreload 27628 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:44:12,393 autoreload 69900 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 20:44:15,888 log 69900 6125645824 Bad Request: /api/volumetries
+INFO 2025-04-02 20:45:03,533 autoreload 69900 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:45:03,945 autoreload 70534 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:45:06,291 autoreload 70534 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:45:06,572 autoreload 70573 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:46:17,815 autoreload 70573 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:46:18,172 autoreload 71424 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:47:46,464 autoreload 71424 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:47:46,790 autoreload 72524 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:48:59,742 autoreload 72524 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:49:00,124 autoreload 73397 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:49:58,684 autoreload 73397 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:49:59,171 autoreload 74126 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:50:22,052 autoreload 74126 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:50:22,395 autoreload 74448 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:50:26,750 autoreload 74448 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:50:26,981 autoreload 74508 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:53:01,848 autoreload 74508 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/volumetry.py changed, reloading.
+INFO 2025-04-02 20:53:02,204 autoreload 76373 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:53:12,733 autoreload 76373 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-04-02 20:53:13,044 autoreload 76514 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:54:03,398 autoreload 76514 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-04-02 20:54:03,726 autoreload 77121 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:54:06,016 autoreload 77121 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-04-02 20:54:06,230 autoreload 77153 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 20:55:18,318 log 77153 6171308032 Forbidden: /api/volumetries/67e733da54de9d1fe1378fb9/Lombardia 1
+ERROR 2025-04-02 20:55:25,058 exception 77153 6171308032 Ocurrió una excepción: Object of type ObjectId is not JSON serializable
+ERROR 2025-04-02 20:55:25,074 exception 77153 6171308032 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/volumetry.py", line 19, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py", line 44, in get
+    return ok(volumetries)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/http_responses.py", line 42, in ok
+    response = build_response_no_message(data)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/http_responses.py", line 26, in build_response_no_message
+    return JsonResponse(data, safe=False)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/http/response.py", line 733, in __init__
+    data = json.dumps(data, cls=encoder, **json_dumps_params)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/serializers/json.py", line 106, in default
+    return super().default(o)
+           ~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type ObjectId is not JSON serializable
+
+ERROR 2025-04-02 20:55:25,074 log 77153 6171308032 Internal Server Error: /api/volumetries/67e733da54de9d1fe1378fb9/Lombardia 1
+INFO 2025-04-02 20:55:54,484 autoreload 77153 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:55:54,881 autoreload 78500 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:56:08,473 autoreload 78500 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 20:56:08,895 autoreload 78673 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:57:44,745 autoreload 78673 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 20:57:45,102 autoreload 79850 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 20:58:14,147 autoreload 79850 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 20:58:14,459 autoreload 80220 8463304768 Watching for file changes with StatReloader
+ERROR 2025-04-02 21:27:43,536 exception 80220 6215806976 Ocurrió una excepción: list index out of range
+ERROR 2025-04-02 21:27:43,553 exception 80220 6215806976 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/prototype.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py", line 66, in get
+    PrototypeSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py", line 15, in get_client
+    return client[0]['name']
+           ~~~~~~^^^
+IndexError: list index out of range
+
+ERROR 2025-04-02 21:27:43,553 log 80220 6215806976 Internal Server Error: /api/prototypes
+ERROR 2025-04-02 21:27:55,543 exception 80220 6165327872 Ocurrió una excepción: list index out of range
+ERROR 2025-04-02 21:27:55,545 exception 80220 6165327872 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/prototype.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py", line 66, in get
+    PrototypeSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py", line 15, in get_client
+    return client[0]['name']
+           ~~~~~~^^^
+IndexError: list index out of range
+
+ERROR 2025-04-02 21:27:55,545 log 80220 6165327872 Internal Server Error: /api/prototypes
+WARNING 2025-04-02 21:29:01,270 log 80220 6182154240 Not Found: /api/prototype_by_client/67edabc9209de0ad303226e7
+ERROR 2025-04-02 21:29:11,589 exception 80220 6215806976 Ocurrió una excepción: list index out of range
+ERROR 2025-04-02 21:29:11,593 exception 80220 6215806976 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/prototype.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py", line 66, in get
+    PrototypeSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py", line 15, in get_client
+    return client[0]['name']
+           ~~~~~~^^^
+IndexError: list index out of range
+
+ERROR 2025-04-02 21:29:11,594 log 80220 6215806976 Internal Server Error: /api/prototypes
+WARNING 2025-04-02 21:29:36,170 log 80220 6165327872 Not Found: /api/prototype_by_client/67edabc9209de0ad303226e7
+INFO 2025-04-02 21:29:55,910 autoreload 80220 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/urls.py changed, reloading.
+INFO 2025-04-02 21:29:56,342 autoreload 87988 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 21:30:03,381 log 87988 6129283072 Not Found: /api/prototype_by_client/67edabc9209de0ad303226e7
+WARNING 2025-04-02 21:30:49,624 log 87988 6146109440 Not Found: /api/prototype_by_client/67edabc9209de0ad303226e7
+WARNING 2025-04-02 21:30:56,521 log 87988 6162935808 Forbidden: /api/prototype_by_client/67edabc9209de0ad303226e7
+WARNING 2025-04-02 21:30:56,658 log 87988 6162935808 Not Found: /favicon.ico
+WARNING 2025-04-02 21:31:08,006 log 87988 6146109440 Not Found: /api/prototype_by_client/67edabc9209de0ad303226e7
+WARNING 2025-04-02 21:31:32,000 log 87988 6162935808 Bad Request: /api/prototype_by_client/67e733da54de9d1fe1378fb9
+WARNING 2025-04-02 21:31:34,243 log 87988 6162935808 Bad Request: /api/prototype_by_client/67e733da54de9d1fe1378fb9
+ERROR 2025-04-02 22:37:07,618 exception 87988 6213414912 Ocurrió una excepción: list index out of range
+ERROR 2025-04-02 22:37:07,629 exception 87988 6213414912 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/prototype.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py", line 66, in get
+    PrototypeSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py", line 15, in get_client
+    return client[0]['name']
+           ~~~~~~^^^
+IndexError: list index out of range
+
+ERROR 2025-04-02 22:37:07,630 log 87988 6213414912 Internal Server Error: /api/prototypes
+INFO 2025-04-02 22:40:06,691 autoreload 87988 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py changed, reloading.
+INFO 2025-04-02 22:40:07,272 autoreload 806 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 22:50:47,386 autoreload 806 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/material_serializer.py changed, reloading.
+INFO 2025-04-02 22:50:47,789 autoreload 8682 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 22:51:26,090 autoreload 8682 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/material_serializer.py changed, reloading.
+INFO 2025-04-02 22:51:26,439 autoreload 9161 8463304768 Watching for file changes with StatReloader
+ERROR 2025-04-02 22:57:02,720 exception 9161 6187216896 Ocurrió una excepción: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+ERROR 2025-04-02 22:57:02,727 exception 9161 6187216896 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 511, in dispatch
+    self.response = self.finalize_response(request, response, *args, **kwargs)
+                    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 423, in finalize_response
+    assert isinstance(response, HttpResponseBase), (
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Expected a `Response`, `HttpResponse` or `StreamingHttpResponse` to be returned from the view, but received a `<class 'NoneType'>`
+
+ERROR 2025-04-02 22:57:02,728 log 9161 6187216896 Internal Server Error: /api/volumetries/67edbd704c948592381dc1e4/Lombardia 1
+ERROR 2025-04-02 22:57:02,736 exception 9161 6187216896 Ocurrió una excepción: Invalid crypto padding
+ERROR 2025-04-02 22:57:02,740 exception 9161 6187216896 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jws.py", line 293, in _load
+    signature = base64url_decode(crypto_segment)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/utils.py", line 33, in base64url_decode
+    return base64.urlsafe_b64decode(input_bytes)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/base64.py", line 134, in urlsafe_b64decode
+    return b64decode(s)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 497, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 414, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 324, in perform_authentication
+    request.user
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/request.py", line 231, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/request.py", line 384, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/middlewares/authentication.py", line 20, in authenticate
+    user = self.get_user_from_token(token)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/middlewares/authentication.py", line 28, in get_user_from_token
+    payload = decode_user(token)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/functions.py", line 14, in decode_user
+    decoded_data = jwt.decode(
+        jwt=token, key=settings.AUTH_SECRET, algorithms=["HS256"])
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jwt.py", line 222, in decode
+    decoded = self.decode_complete(
+        jwt,
+    ...<8 lines>...
+        leeway=leeway,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jwt.py", line 156, in decode_complete
+    decoded = api_jws.decode_complete(
+        jwt,
+    ...<3 lines>...
+        detached_payload=detached_payload,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jws.py", line 209, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jws.py", line 295, in _load
+    raise DecodeError("Invalid crypto padding") from err
+jwt.exceptions.DecodeError: Invalid crypto padding
+
+ERROR 2025-04-02 22:57:02,741 log 9161 6187216896 Internal Server Error: /api/volumetries/67edbd704c948592381dc1e4/Lombardia 1
+INFO 2025-04-02 22:59:20,282 autoreload 9161 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 22:59:20,703 autoreload 14958 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 22:59:46,505 autoreload 14958 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/volumetry.py changed, reloading.
+INFO 2025-04-02 22:59:46,815 autoreload 15291 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 22:59:53,207 autoreload 15291 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/volumetry.py changed, reloading.
+INFO 2025-04-02 22:59:53,566 autoreload 15378 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:00:37,041 autoreload 15378 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:00:37,361 autoreload 15921 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:00:53,992 autoreload 15921 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:00:54,344 autoreload 16155 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:01:04,773 autoreload 16155 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:01:05,078 autoreload 16294 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:01:42,072 autoreload 16294 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:01:42,382 autoreload 16753 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:03:23,211 autoreload 16753 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:03:23,659 autoreload 17943 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:04:52,247 autoreload 17943 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:04:52,617 autoreload 19033 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:05:17,378 autoreload 19033 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/views/__init__.py changed, reloading.
+INFO 2025-04-02 23:05:17,716 autoreload 19367 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 23:06:44,507 log 19367 6197735424 Not Found: /api/volumetries
+INFO 2025-04-02 23:09:37,238 autoreload 19367 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:09:37,648 autoreload 22477 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:10:02,446 autoreload 22477 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:10:02,905 autoreload 22781 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-02 23:10:16,781 log 22781 6140129280 Not Found: /api/volumetries
+INFO 2025-04-02 23:11:20,318 autoreload 22781 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py changed, reloading.
+INFO 2025-04-02 23:11:20,681 autoreload 23728 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:47:14,544 autoreload 23728 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:47:15,037 autoreload 49674 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:47:26,574 autoreload 49674 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:47:26,870 autoreload 49818 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:48:17,337 autoreload 49818 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:48:17,754 autoreload 50446 8463304768 Watching for file changes with StatReloader
+ERROR 2025-04-02 23:49:56,900 exception 50446 6217347072 Ocurrió una excepción: 'supplier_id'
+ERROR 2025-04-02 23:49:56,903 exception 50446 6217347072 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/volumetry.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/volumetry_use_case.py", line 51, in get
+    return ok(VolumetrySerializer(volumetries, many=True).data)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py", line 17, in get_supplier
+    client = db.extract({'_id': ObjectId(data['supplier_id'])})
+                                         ~~~~^^^^^^^^^^^^^^^
+KeyError: 'supplier_id'
+
+ERROR 2025-04-02 23:49:56,903 log 50446 6217347072 Internal Server Error: /api/volumetries
+ERROR 2025-04-02 23:49:56,915 exception 50446 6217347072 Ocurrió una excepción: Invalid crypto padding
+ERROR 2025-04-02 23:49:56,919 exception 50446 6217347072 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jws.py", line 293, in _load
+    signature = base64url_decode(crypto_segment)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/utils.py", line 33, in base64url_decode
+    return base64.urlsafe_b64decode(input_bytes)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/base64.py", line 134, in urlsafe_b64decode
+    return b64decode(s)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/base64.py", line 88, in b64decode
+    return binascii.a2b_base64(s, strict_mode=validate)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Incorrect padding
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 497, in dispatch
+    self.initial(request, *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 414, in initial
+    self.perform_authentication(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 324, in perform_authentication
+    request.user
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/request.py", line 231, in user
+    self._authenticate()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/request.py", line 384, in _authenticate
+    user_auth_tuple = authenticator.authenticate(self)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/middlewares/authentication.py", line 20, in authenticate
+    user = self.get_user_from_token(token)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/middlewares/authentication.py", line 28, in get_user_from_token
+    payload = decode_user(token)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api_sataiga/functions.py", line 14, in decode_user
+    decoded_data = jwt.decode(
+        jwt=token, key=settings.AUTH_SECRET, algorithms=["HS256"])
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jwt.py", line 222, in decode
+    decoded = self.decode_complete(
+        jwt,
+    ...<8 lines>...
+        leeway=leeway,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jwt.py", line 156, in decode_complete
+    decoded = api_jws.decode_complete(
+        jwt,
+    ...<3 lines>...
+        detached_payload=detached_payload,
+    )
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jws.py", line 209, in decode_complete
+    payload, signing_input, header, signature = self._load(jwt)
+                                                ~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/jwt/api_jws.py", line 295, in _load
+    raise DecodeError("Invalid crypto padding") from err
+jwt.exceptions.DecodeError: Invalid crypto padding
+
+ERROR 2025-04-02 23:49:56,920 log 50446 6217347072 Internal Server Error: /api/volumetries
+INFO 2025-04-02 23:51:09,723 autoreload 50446 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:51:10,100 autoreload 52529 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:55:35,790 autoreload 52529 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:55:36,223 autoreload 55842 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:58:18,599 autoreload 55842 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:58:19,030 autoreload 57799 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:59:31,878 autoreload 57799 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:59:32,246 autoreload 58760 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-02 23:59:52,002 autoreload 58760 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/volumetry_serializer.py changed, reloading.
+INFO 2025-04-02 23:59:52,332 autoreload 58993 8463304768 Watching for file changes with StatReloader

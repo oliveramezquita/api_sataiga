@@ -20,9 +20,13 @@ class Material(models.Model):
     measurement = models.CharField(max_length=25)
     presentation = models.CharField(max_length=50, null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-    inventory_price = models.DecimalField(max_digits=10, decimal_places=2)
-    market_price = models.DecimalField(max_digits=10, decimal_places=2)
-    price_difference = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True)
+    inventory_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True)
+    market_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True)
+    price_difference = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True)
     automation = models.BooleanField(default=False)
     images = models.JSONField(null=True)

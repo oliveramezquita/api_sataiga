@@ -15,7 +15,7 @@ class PrototypeUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
-            self.status = params['status'][0] if 'status' in params else None
+            self.q = params['q'][0] if 'q' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.client_id = kwargs.get('client_id', None)
@@ -51,7 +51,13 @@ class PrototypeUseCase:
 
     def get(self):
         with MongoDBHandler('prototypes') as db:
-            prototypes = db.extract()
+            filters = {}
+            if self.q:
+                filters['$or'] = [
+                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'front': {'$regex': self.q, '$options': 'i'}},
+                ]
+            prototypes = db.extract(filters)
             paginator = Paginator(prototypes, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
@@ -74,7 +80,7 @@ class PrototypeUseCase:
                             "prototypes": prototypes
                         }
                     )
-                return not_found(f'No se encontraron protoripos para el cliente: {client['name']}')
+                return not_found(f'No se encontraron prototipos para el cliente: {client['name']}')
             return bad_request('El clinte seleccionado no existe.')
 
     def update(self):

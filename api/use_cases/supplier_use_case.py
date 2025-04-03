@@ -15,7 +15,7 @@ class SupplierUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
-            self.status = params['status'][0] if 'status' in params else None
+            self.q = params['q'][0] if 'q' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -29,7 +29,14 @@ class SupplierUseCase:
 
     def get(self):
         with MongoDBHandler('suppliers') as db:
-            suppliers = db.extract()
+            filters = {}
+            if self.q:
+                filters['$or'] = [
+                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'address': {'$regex': self.q, '$options': 'i'}},
+                    {'email': {'$regex': self.q, '$options': 'i'}},
+                ]
+            suppliers = db.extract(filters)
             paginator = Paginator(suppliers, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(

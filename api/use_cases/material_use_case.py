@@ -28,14 +28,13 @@ class MaterialUseCase:
 
     def save(self):
         with MongoDBHandler('materials') as db:
-            required_fields = ['name', 'supplier_id', 'measurement',
-                               'unit_price', 'inventory_price', 'market_price', 'price_difference']
+            required_fields = ['name', 'supplier_id', 'measurement']
             if all(i in self.data for i in required_fields):
                 if self.__check_supplier(db, self.data['supplier_id']):
                     if 'automation' not in self.data:
                         self.data['automation'] = False
-                    db.insert(self.data)
-                    return created('Material creado correctamente.')
+                    id = db.insert(self.data)
+                    return created({'id': str(id)})
                 return bad_request('El proveedor selecionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
