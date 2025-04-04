@@ -118,7 +118,7 @@ class PrototypeUseCase:
                             "prototypes": prototypes
                         }
                     )
-                return not_found(f'No se encontraron prototipos para el cliente: {client['name']}')
+                return not_found(f'No se encontraron frentes / fraccionamientos para el cliente: {client['name']}')
             return bad_request('El clinte seleccionado no existe.')
 
     def update(self):
