@@ -11,7 +11,7 @@ class CatalogView(views.APIView):
         return use_case.save()
 
     def get(self, request):
-        use_case = CatalogUseCase()
+        use_case = CatalogUseCase(request=request)
         return use_case.get()
 
 

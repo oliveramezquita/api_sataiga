@@ -8,4 +8,4 @@ from .supplier import SupplierView, SupplierByIdView
 from .prototype import PrototypeView, PrototypeByIdView, PrototypeByClientView
 from .catalog import CatalogView, CatalogByIdView
 from .material import MatrialView, MaterialByIdView
-from .volumetry import VolumetryView
+from .volumetry import VolumetryView, VolumetryByIdView

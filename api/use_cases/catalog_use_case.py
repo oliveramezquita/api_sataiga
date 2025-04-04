@@ -3,10 +3,14 @@ from api.helpers.http_responses import created, bad_request, ok, not_found
 from api.serializers.catalog_serializer import CatalogSerializer
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
+from urllib.parse import parse_qs
 
 
 class CatalogUseCase:
-    def __init__(self, data=None, id=None):
+    def __init__(self, request=None, data=None, id=None):
+        if request:
+            params = parse_qs(request.META['QUERY_STRING'])
+            self.name = params['name'][0] if 'name' in params else None
         self.data = data
         self.id = id
 
@@ -20,8 +24,15 @@ class CatalogUseCase:
 
     def get(self):
         with MongoDBHandler('catalogs') as db:
+            if self.name:
+                catalog = db.extract({'name': self.name})
+                if catalog:
+                    return ok(CatalogSerializer(catalog[0]).data)
+                return not_found(f'El catálogo {self.name} no existe.')
             catalogs = db.extract()
-            return ok(CatalogSerializer(catalogs, many=True).data)
+            if catalogs:
+                return ok(CatalogSerializer(catalogs, many=True).data)
+            return not_found('No hay catálogos dados de alta.')
 
     def get_by_id(self):
         with MongoDBHandler('catalogs') as db:

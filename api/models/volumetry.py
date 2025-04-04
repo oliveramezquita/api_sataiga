@@ -7,4 +7,4 @@ class Volumetry(models.Model):
     front = models.CharField(max_length=100)
     material_id = models.CharField(max_length=50)
     volumetry = models.JSONField(null=True)
-    gran_total = models.PositiveIntegerField(default=0)
+    gran_total = models.FloatField(default=0)

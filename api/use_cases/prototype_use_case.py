@@ -27,11 +27,48 @@ class PrototypeUseCase:
             return client[0]
         return False
 
-    def __check_prototype(self, db, client_id, name, front):
+    def __update_volumetry(self, db):
+        volumetry = MongoDBHandler.find(db, 'volumetries', {
+                                        'client_id': self.data['client_id'], 'front': self.data['front']})
+        if volumetry:
+            for item in volumetry:
+                for v in item["volumetry"]:
+                    if not any(proto["prototype"] == self.data['name'] for proto in v["prototypes"]):
+                        v["prototypes"].append({
+                            "prototype": self.data['name'],
+                            "quantities": {"factory": 0, "instalation": 0}
+                        })
+                MongoDBHandler.modify(
+                    db,
+                    'volumetries',
+                    {'_id': ObjectId(item['_id'])},
+                    {'volumetry': item["volumetry"]})
+
+    def __delete_into_volumetry(self, db, **kwargs):
+        volumetry = MongoDBHandler.find(
+            db,
+            'volumetries',
+            {'client_id': kwargs.get('client_id'), 'front': kwargs.get('front')})
+        if volumetry:
+            for item in volumetry:
+                for v in item["volumetry"]:
+                    v["prototypes"] = [
+                        proto for proto in v["prototypes"] if proto["prototype"] != kwargs.get('name')
+                    ]
+                    v["total"] = sum(float(q) for proto in v["prototypes"]
+                                     for q in proto["quantities"].values())
+                item["gran_total"] = sum(v["total"] for v in item["volumetry"])
+                MongoDBHandler.modify(
+                    db,
+                    'volumetries',
+                    {'_id': ObjectId(item['_id'])},
+                    {'volumetry': item["volumetry"], 'gran_total': item["gran_total"]})
+
+    def __check_prototype(self, db):
         prototype = MongoDBHandler.find(db, 'prototypes', {
-            'client_id': client_id,
-            'name': name,
-            'front': front,
+            'client_id': self.data['client_id'],
+            'name': self.data['name'],
+            'front': self.data['front'],
         })
         if prototype:
             return False
@@ -42,8 +79,9 @@ class PrototypeUseCase:
             required_fields = ['client_id', 'name', 'front']
             if all(i in self.data for i in required_fields):
                 if self.__client_validation(db, self.data['client_id']):
-                    if self.__check_prototype(db, **self.data):
+                    if self.__check_prototype(db):
                         db.insert(self.data)
+                        self.__update_volumetry(db)
                         return created('Prototipo creado correctamente.')
                     return bad_request('El prototipo ya existe.')
                 return bad_request('El clinte seleccionado no existe.')
@@ -89,6 +127,7 @@ class PrototypeUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if prototype:
                 db.update({'_id': ObjectId(self.id)}, self.data)
+                self.__update_volumetry(db)
                 return ok('Prototipo actualizado correctamente.')
             return bad_request('El prototipo no existe.')
 
@@ -98,5 +137,6 @@ class PrototypeUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if prototype:
                 db.delete({'_id': ObjectId(self.id)})
+                self.__delete_into_volumetry(db, **prototype[0])
                 return ok('Prototipo eliminado correctamente.')
             return bad_request('El prototipo no existe.')

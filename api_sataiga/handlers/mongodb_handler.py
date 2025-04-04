@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from django.conf import settings
 from datetime import datetime
+from rest_framework.exceptions import APIException
 
 
 class MongoDBHandler:

@@ -19,9 +19,9 @@ class MaterialUseCase:
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
-    def __check_supplier(self, db, supplier_id):
+    def __check_supplier(self, db):
         supplier = MongoDBHandler.find(db, 'suppliers', {'_id': ObjectId(
-            supplier_id)}) if objectid_validation(supplier_id) else None
+            self.data['supplier_id'])}) if objectid_validation(self.data['supplier_id']) else None
         if supplier:
             return True
         return False
@@ -30,7 +30,7 @@ class MaterialUseCase:
         with MongoDBHandler('materials') as db:
             required_fields = ['name', 'supplier_id', 'measurement']
             if all(i in self.data for i in required_fields):
-                if self.__check_supplier(db, self.data['supplier_id']):
+                if self.__check_supplier(db):
                     if 'automation' not in self.data:
                         self.data['automation'] = False
                     id = db.insert(self.data)
@@ -62,7 +62,7 @@ class MaterialUseCase:
             material = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if material:
-                if 'supplier_id' in self.data and not self.__check_supplier(db, self.data['supplier_id']):
+                if 'supplier_id' in self.data and not self.__check_supplier(db):
                     return bad_request('El proveedor selecionado no existe.')
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok('Material actualizado correctamente.')
