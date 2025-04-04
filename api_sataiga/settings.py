@@ -63,6 +63,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'https://bellarti.art',
 ]
 
 ROOT_URLCONF = 'api_sataiga.urls'
