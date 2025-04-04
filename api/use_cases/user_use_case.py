@@ -39,8 +39,9 @@ class UserUseCase:
                 raise exceptions.ValidationError(
                     "El rol seleccionado no se encuentra registrado en el sistema.")
 
-    def __assign_permissions(self, db, role_id):
-        role = MongoDBHandler.find(db, 'roles', {'_id': ObjectId(role_id)})
+    def __assign_permissions(self, db):
+        role = MongoDBHandler.find(db, 'roles', {'_id': ObjectId(
+            self.data['role_id'])}) if objectid_validation(self.data['role_id']) else None
         return role[0]['permissions']
 
     def __filter_superadmin(self, db, users):
@@ -60,9 +61,7 @@ class UserUseCase:
                 try:
                     db.create_unique_index('email')
                     self.data['status'] = 0
-                    self.data['permissions'] = self.__assign_permissions(
-                        db,
-                        self.data['role_id'])
+                    self.data['permissions'] = self.__assign_permissions(db)
                     self.data['permissions']['AccountSettings'] = ['read']
                     user_id = db.insert(self.data)
                     hash_request = hex_encode({
@@ -139,7 +138,7 @@ class UserUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if user:
                 return ok(UserSerializer(user[0]).data)
-            return not_found('El usuario no se existe.')
+            return not_found('El usuario no existe.')
 
     def update(self):
         with MongoDBHandler('users') as db:

@@ -70,7 +70,7 @@ class RoleUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if role:
                 return ok(RoleSerializer(role[0]).data)
-            return not_found('La función no se existe.')
+            return not_found('La función no existe.')
 
     def update(self):
         with MongoDBHandler('roles') as db:

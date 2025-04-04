@@ -1,0 +1,169 @@
+WARNING 2025-04-01 03:57:35,400 log 3047 6211301376 Not Found: /api/user/67e733da54de9d1fe1378fb9
+INFO 2025-04-01 04:18:07,973 autoreload 3047 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py changed, reloading.
+INFO 2025-04-01 04:18:08,640 autoreload 55046 8463304768 Watching for file changes with StatReloader
+ERROR 2025-04-01 04:18:11,975 exception 55046 6167212032 Ocurrió una excepción: 'dict' object has no attribute 'name'
+ERROR 2025-04-01 04:18:11,977 exception 55046 6167212032 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/prototype.py", line 15, in get
+    return use_case.get()
+           ~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py", line 60, in get
+    PrototypeSerializer(page.object_list, many=True).data
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 795, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 249, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 714, in to_representation
+    self.child.to_representation(item) for item in iterable
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 538, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/fields.py", line 1870, in to_representation
+    return method(value)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py", line 15, in get_client
+    return client[0].name
+           ^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'name'
+
+ERROR 2025-04-01 04:18:11,977 log 55046 6167212032 Internal Server Error: /api/prototypes
+INFO 2025-04-01 04:18:31,627 autoreload 55046 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/serializers/prototype_serializer.py changed, reloading.
+INFO 2025-04-01 04:18:31,989 autoreload 55356 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-01 04:28:03,014 log 55356 6375518208 Not Found: /api/prototypes/VS
+WARNING 2025-04-01 04:37:39,944 log 55356 6392344576 Method Not Allowed: /api/clients
+WARNING 2025-04-01 04:38:24,880 log 55356 6149238784 Method Not Allowed: /api/clients
+INFO 2025-04-01 12:49:17,839 autoreload 55356 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py changed, reloading.
+INFO 2025-04-01 12:49:18,275 autoreload 6686 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 12:49:22,659 autoreload 6686 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py changed, reloading.
+INFO 2025-04-01 12:49:23,886 autoreload 6764 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 12:50:34,970 autoreload 6764 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py changed, reloading.
+INFO 2025-04-01 12:50:35,340 autoreload 7686 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 12:50:59,238 autoreload 7686 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/prototype_use_case.py changed, reloading.
+INFO 2025-04-01 12:50:59,511 autoreload 7999 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 12:52:22,788 autoreload 7999 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-04-01 12:52:23,108 autoreload 9023 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 12:53:24,835 autoreload 9023 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/client_use_case.py changed, reloading.
+INFO 2025-04-01 12:53:25,220 autoreload 9793 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 22:22:45,967 autoreload 9793 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/models/material.py changed, reloading.
+INFO 2025-04-01 22:22:46,589 autoreload 54996 8463304768 Watching for file changes with StatReloader
+WARNING 2025-04-01 23:35:58,948 log 54996 6233845760 Bad Request: /api/materials
+INFO 2025-04-01 23:36:42,094 autoreload 54996 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py changed, reloading.
+INFO 2025-04-01 23:36:42,599 autoreload 98075 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 23:40:52,659 autoreload 98075 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py changed, reloading.
+INFO 2025-04-01 23:40:53,044 autoreload 1517 8463304768 Watching for file changes with StatReloader
+INFO 2025-04-01 23:41:14,879 autoreload 1517 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py changed, reloading.
+INFO 2025-04-01 23:41:15,219 autoreload 1813 8463304768 Watching for file changes with StatReloader
+ERROR 2025-04-01 23:43:17,053 exception 1813 6144503808 Ocurrió una excepción: Object of type ObjectId is not JSON serializable
+ERROR 2025-04-01 23:43:17,063 exception 1813 6144503808 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/material.py", line 11, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py", line 37, in save
+    return created(id)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/http_responses.py", line 54, in created
+    response = build_response_no_message(data)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/http_responses.py", line 26, in build_response_no_message
+    return JsonResponse(data, safe=False)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/http/response.py", line 733, in __init__
+    data = json.dumps(data, cls=encoder, **json_dumps_params)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/serializers/json.py", line 106, in default
+    return super().default(o)
+           ~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type ObjectId is not JSON serializable
+
+ERROR 2025-04-01 23:43:17,064 log 1813 6144503808 Internal Server Error: /api/materials
+INFO 2025-04-01 23:44:39,963 autoreload 1813 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py changed, reloading.
+INFO 2025-04-01 23:44:40,441 autoreload 4350 8463304768 Watching for file changes with StatReloader
+ERROR 2025-04-01 23:44:49,767 exception 4350 6196588544 Ocurrió una excepción: Object of type ObjectId is not JSON serializable
+ERROR 2025-04-01 23:44:49,770 exception 4350 6196588544 Detalles del traceback:
+Traceback (most recent call last):
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/views/material.py", line 11, in post
+    return use_case.save()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py", line 36, in save
+    return created({'id': db.insert(self.data)})
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/http_responses.py", line 54, in created
+    response = build_response_no_message(data)
+  File "/Users/aemo/Projects/api_sataiga/api_sataiga/api/helpers/http_responses.py", line 26, in build_response_no_message
+    return JsonResponse(data, safe=False)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/http/response.py", line 733, in __init__
+    data = json.dumps(data, cls=encoder, **json_dumps_params)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "/Users/aemo/Projects/api_sataiga/venv/lib/python3.13/site-packages/django/core/serializers/json.py", line 106, in default
+    return super().default(o)
+           ~~~~~~~~~~~~~~~^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type ObjectId is not JSON serializable
+
+ERROR 2025-04-01 23:44:49,771 log 4350 6196588544 Internal Server Error: /api/materials
+INFO 2025-04-01 23:45:17,607 autoreload 4350 8463304768 /Users/aemo/Projects/api_sataiga/api_sataiga/api/use_cases/material_use_case.py changed, reloading.
+INFO 2025-04-01 23:45:17,992 autoreload 4836 8463304768 Watching for file changes with StatReloader
