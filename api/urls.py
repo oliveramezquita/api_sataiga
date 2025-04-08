@@ -34,4 +34,5 @@ urlpatterns = [
     path('material/<str:id>', MaterialByIdView.as_view(), name='material'),
     path('volumetries', VolumetryView.as_view(), name='volumetries'),
     path('volumetry/<str:id>', VolumetryByIdView.as_view(), name='volumetry'),
+    path('upload_volumetry', VolumetryUploadView.as_view(), name="upload volumetry"),
 ]

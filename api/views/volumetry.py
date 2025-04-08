@@ -21,3 +21,11 @@ class VolumetryByIdView(views.APIView):
     def delete(self, request, id):
         use_case = VolumetryUseCase(id=id)
         return use_case.delete()
+
+
+class VolumetryUploadView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def post(self, request):
+        use_case = VolumetryUseCase(request=request, data=request.data)
+        return use_case.upload()
