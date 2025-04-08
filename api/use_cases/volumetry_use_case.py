@@ -58,6 +58,14 @@ class VolumetryUseCase:
         self.data['gran_total'] = gran_total
         return self.data
 
+    def __get_prototypes(self):
+        with MongoDBHandler('prototypes') as db:
+            prototypes = db.extract(
+                {'client_id': self.client_id, 'front': self.front})
+            if prototypes:
+                return sorted(set(item["name"] for item in prototypes))
+            return []
+
     def __get_id_material_by_name(self, **kwargs):
         with MongoDBHandler('materials') as db:
             filters = {
@@ -243,7 +251,10 @@ class VolumetryUseCase:
     def get(self):
         if self.client_id and self.front:
             volumetry = self.__extract()
-            return ok(VolumetrySerializer(volumetry, many=True).data)
+            return ok({
+                'volumetry': VolumetrySerializer(volumetry, many=True).data,
+                'prototypes': self.__get_prototypes(),
+            })
         return not_found('No existe volumería con lo datos asignados.')
 
     def delete(self):

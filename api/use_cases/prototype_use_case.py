@@ -111,13 +111,7 @@ class PrototypeUseCase:
                 results = db.extract({'client_id': self.client_id})
                 if results:
                     fronts = sorted(set(item["front"] for item in results))
-                    prototypes = sorted(set(item["name"] for item in results))
-                    return ok(
-                        {
-                            "fronts": fronts,
-                            "prototypes": prototypes
-                        }
-                    )
+                    return ok(fronts)
                 return not_found(f'No se encontraron frentes / fraccionamientos para el cliente: {client['name']}')
             return bad_request('El clinte seleccionado no existe.')
 
