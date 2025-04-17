@@ -9,3 +9,6 @@ from .prototype import PrototypeView, PrototypeByIdView, PrototypeByClientView
 from .catalog import CatalogView, CatalogByIdView
 from .material import MatrialView, MaterialByIdView
 from .volumetry import VolumetryView, VolumetryByIdView, VolumetryUploadView
+from .tax_data import TaxDataView
+from .bank_data import BankDataView
+from .refresh_rate import RefreshRateView, RefreshRatesView
