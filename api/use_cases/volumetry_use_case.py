@@ -4,7 +4,7 @@ from api.helpers.validations import objectid_validation
 from bson import ObjectId
 from api.helpers.http_responses import bad_request, ok, not_found
 from api.serializers.volumetry_serializer import VolumetrySerializer
-from api.serializers.excel_file_serializer import ExcelUploadSerializer
+from api.serializers.file_serializer import FileUploadSerializer
 from urllib.parse import parse_qs
 from openpyxl import load_workbook
 
@@ -117,7 +117,7 @@ class VolumetryUseCase:
                     "volumetry": [],
                     "gran_total": 0
                 }
-                volumetry_by_element = {}
+                volumetry_by_area = {}
 
                 for prototype_name in existing_prototypes:
                     sheet = workbook[prototype_name]
@@ -133,14 +133,14 @@ class VolumetryUseCase:
                                     break
                                 parts = header_cell.split('-')
                                 if len(parts) == 2:
-                                    element = parts[0].strip()
+                                    area = parts[0].strip()
 
-                                    if element not in volumetry_by_element:
-                                        volumetry_by_element[element] = {
+                                    if area not in volumetry_by_area:
+                                        volumetry_by_area[area] = {
                                             "prototypes": {}}
 
-                                    if prototype_name not in volumetry_by_element[element]["prototypes"]:
-                                        volumetry_by_element[element]["prototypes"][prototype_name] = {
+                                    if prototype_name not in volumetry_by_area[area]["prototypes"]:
+                                        volumetry_by_area[area]["prototypes"][prototype_name] = {
                                             "quantities": {"factory": 0, "instalation": 0}}
 
                                     value = sheet.cell(
@@ -149,19 +149,19 @@ class VolumetryUseCase:
                                         value, (int, float)) else 0
 
                                     if col_index % 2:
-                                        volumetry_by_element[element]["prototypes"][prototype_name]["quantities"]["factory"] = quantity
+                                        volumetry_by_area[area]["prototypes"][prototype_name]["quantities"]["factory"] = quantity
                                     else:
-                                        volumetry_by_element[element]["prototypes"][
+                                        volumetry_by_area[area]["prototypes"][
                                             prototype_name]["quantities"]["instalation"] = quantity
                                 else:
                                     warnings.append(
-                                        f"La columna: {header_cell} no tiene el formato correcto: 'ELEMENTO - FÁBRICA' o 'ELEMENTO - INSTALACIÓN'")
+                                        f"La columna: {header_cell} no tiene el formato correcto: 'ÁREA - FÁBRICA' o 'ÁREA - INSTALACIÓN'")
                                 col_index += 1
                             break
 
                 total_gran_material = 0
-                for element, data in volumetry_by_element.items():
-                    element_total = 0
+                for area, data in volumetry_by_area.items():
+                    area_total = 0
                     prototype_list = []
                     for proto_name in existing_prototypes:
                         quantities = data["prototypes"].get(
@@ -177,14 +177,14 @@ class VolumetryUseCase:
                                 "instalation": instalation_qty
                             }
                         })
-                        element_total += factory_qty + instalation_qty
+                        area_total += factory_qty + instalation_qty
 
                     material_data["volumetry"].append({
-                        "element": element,
+                        "area": area,
                         "prototypes": prototype_list,
-                        "total": round(element_total, 2)
+                        "total": round(area_total, 2)
                     })
-                    total_gran_material += element_total
+                    total_gran_material += area_total
                 material_data["gran_total"] = round(total_gran_material, 2)
                 result.append(material_data)
         except Exception as e:
@@ -263,15 +263,15 @@ class VolumetryUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if volumetry:
                 db.delete({'_id': ObjectId(self.id)})
-                return ok('El elemento de la volumetría ha sido eliminado correctamente.')
-            return bad_request('El elmemento de la volumetría no existe.')
+                return ok('El área en la volumetría ha sido eliminado correctamente.')
+            return bad_request('El área en la volumetría no existe.')
 
     def upload(self):
         prototypes = self.__check_prototypes()
         if not prototypes:
             return bad_request('No existen prototipos para el cliente y el frente seleccionados.')
 
-        serializer = ExcelUploadSerializer(data=self.data)
+        serializer = FileUploadSerializer(data=self.data)
         if serializer.is_valid():
             excel_file = self.request.FILES['file']
             try:

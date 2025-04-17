@@ -35,4 +35,9 @@ urlpatterns = [
     path('volumetries', VolumetryView.as_view(), name='volumetries'),
     path('volumetry/<str:id>', VolumetryByIdView.as_view(), name='volumetry'),
     path('upload_volumetry', VolumetryUploadView.as_view(), name="upload volumetry"),
+    path('tax_data/<str:supplier_id>', TaxDataView.as_view(), name='tax data'),
+    path('bank_data/<str:supplier_id>', BankDataView.as_view(), name='bank data'),
+    path('refresh_rate/<str:supplier_id>',
+         RefreshRateView.as_view(), name='refresh rate'),
+    path('refresh_rates', RefreshRatesView.as_view(), name='refresh rates'),
 ]

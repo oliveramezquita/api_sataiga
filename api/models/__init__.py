@@ -7,3 +7,6 @@ from .prototype import Prototype
 from .catalog import Catalog
 from .material import Material
 from .volumetry import Volumetry
+from .tax_data import TaxData
+from .bank_data import BankData
+from .refresh_rate import RefreshRate
