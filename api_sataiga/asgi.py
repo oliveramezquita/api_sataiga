@@ -1,15 +1,16 @@
 import os
-from django.core.asgi import get_asgi_application
+import django
 from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.layers import get_channel_layer
-from django.urls import path
-from api.consumers import NotificationConsumer
+from channels.auth import AuthMiddlewareStack
+from django.core.asgi import get_asgi_application
+from notifications.routing import websocket_urlpatterns
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api_sataiga.settings')
+django.setup()
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": URLRouter([
-        path("ws/notifications/", NotificationConsumer.as_asgi()),
-    ]),
+    "websocket": AuthMiddlewareStack(
+        URLRouter(websocket_urlpatterns)
+    ),
 })
