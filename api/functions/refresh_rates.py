@@ -60,8 +60,8 @@ def refresh_rates():
                 if today == item_date:
                     new_date = increase_date(
                         item_date, item['value'])
-                    # db.update({'_id': item['_id']}, {
-                    #     'next_date': new_date.strftime('%Y-%m-%d')})
+                    db.update({'_id': item['_id']}, {
+                        'next_date': new_date.strftime('%Y-%m-%d')})
                     suppliers.append(check_supplier(db, item['supplier_id']))
             if len(suppliers) > 0:
                 message = f"REFRESH_RATES: {len(suppliers)} fecha(s) de la frecuencia de actualización fueron modificadas, proveedores: {format_list(suppliers)}."
