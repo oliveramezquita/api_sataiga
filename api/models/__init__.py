@@ -10,3 +10,4 @@ from .volumetry import Volumetry
 from .tax_data import TaxData
 from .bank_data import BankData
 from .refresh_rate import RefreshRate
+from .notification import Notification
