@@ -65,6 +65,9 @@ MIDDLEWARE = [
     'api.middlewares.ExceptionMiddleware',
 ]
 
+if DEBUG:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'https://bellarti.art',

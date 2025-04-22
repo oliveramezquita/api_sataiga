@@ -15,3 +15,12 @@ REFRESH_RATES = {
     'Quincena': relativedelta(days=15),
     'Mes': relativedelta(months=1),
 }
+
+MESSAGE_CONFIG = {
+    "refresh_rates": {
+        "title": "Actualización de precios en los materiales",
+        "icon": "tabler-refresh-alert",
+        "user_id": None,
+        "roles": ['admin', 'ceo', 'buyer'],
+    },
+}

@@ -7,6 +7,8 @@ from dateutil.relativedelta import relativedelta
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from celery import shared_task
+from api_sataiga.functions import send_notification
+from api.helpers.get_message import get_message
 
 
 log = logging.getLogger(__name__)
@@ -63,6 +65,8 @@ def refresh_rates():
                     suppliers.append(check_supplier(db, item['supplier_id']))
             if len(suppliers) > 0:
                 message = f"REFRESH_RATES: {len(suppliers)} fecha(s) de la frecuencia de actualización fueron modificadas, proveedores: {format_list(suppliers)}."
+                send_notification(get_message(
+                    'refresh_rates', f'Los siguientes proveedores requieren actualización de precios en sus materiales: {format_list(suppliers)}.'))
             else:
                 message = "REFRESH_RATES: No se reealizaron cambios en la frecuencia de actualización."
             log.info(message)
