@@ -27,7 +27,7 @@ AUTH_SECRET = config('AUTH_SECRET')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['*',]
 
