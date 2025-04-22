@@ -30,5 +30,6 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 password: ${{ secrets.SSH_PASSWORD }}
                 script: |
-                  cd api_sataiga/api_sataiga
+                  cd api_sataiga
                   git pull
+                  sudo systemctl restart gunicorn
