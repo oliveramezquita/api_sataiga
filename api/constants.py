@@ -21,6 +21,6 @@ MESSAGE_CONFIG = {
         "title": "Actualización de precios en los materiales",
         "icon": "tabler-refresh-alert",
         "user_id": None,
-        "roles": ['admin', 'ceo', 'buyer'],
+        "roles": ['super', 'admin', 'ceo', 'buyer'],
     },
 }

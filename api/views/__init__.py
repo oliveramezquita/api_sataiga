@@ -12,3 +12,4 @@ from .volumetry import VolumetryView, VolumetryByIdView, VolumetryUploadView
 from .tax_data import TaxDataView
 from .bank_data import BankDataView
 from .refresh_rate import RefreshRateView, RefreshRatesView
+from .notification import NotificationsView

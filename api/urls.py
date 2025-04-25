@@ -40,4 +40,5 @@ urlpatterns = [
     path('refresh_rate/<str:supplier_id>',
          RefreshRateView.as_view(), name='refresh rate'),
     path('refresh_rates', RefreshRatesView.as_view(), name='refresh rates'),
+    path('notifications', NotificationsView.as_view(), name='notifications'),
 ]
