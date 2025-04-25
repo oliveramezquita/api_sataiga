@@ -32,4 +32,4 @@ jobs:
                 script: |
                   cd api_sataiga
                   git pull
-                  sudo systemctl restart gunicorn
+                  sudo systemctl restart daphne.service

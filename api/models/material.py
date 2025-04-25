@@ -11,6 +11,7 @@ class Material(models.Model):
     supplier_id = models.CharField(max_length=50)
     name = models.TextField()
     supplier_code = models.CharField(max_length=25, null=True)
+    internal_code = models.CharField(max_length=25, null=True)
     area = models.CharField(
         max_length=25,
         choices=AREAS,
@@ -19,7 +20,7 @@ class Material(models.Model):
     maximum = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     measurement = models.CharField(max_length=25)
     presentation = models.CharField(max_length=50, null=True)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    reference = models.CharField(max_length=50, null=True)
     unit_price = models.DecimalField(
         max_digits=10, decimal_places=2, null=True)
     inventory_price = models.DecimalField(

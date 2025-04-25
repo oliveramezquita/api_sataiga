@@ -222,3 +222,6 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
+
+
+# TODO: CONFIGURAR REDIS PARA QUE LAS CONSULTAS SEAN MÁS RAPIDAS

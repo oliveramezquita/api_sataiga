@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from api.helpers.http_responses import ok, bad_request
 from api.helpers.bcrypt import encrypt_password, verify_password
 from api.helpers.validations import email_validation
@@ -7,6 +7,7 @@ from api.serializers.user_serializer import UserSerializer
 from api_sataiga.functions import encode_user, hex_decode, hex_encode, send_email
 from bson import ObjectId
 from django.conf import settings
+from api.serializers.notification_serializer import NotificationSerializer
 
 
 class AuthUseCase:
@@ -32,6 +33,22 @@ class AuthUseCase:
             return 'admin'
         return 'user'
 
+    def __get_notifications(self, db, user_id, role):
+        today = datetime.now().strftime("%Y-%m-%d")
+        notifications = MongoDBHandler.find(db, 'notifications', {
+            "$or": [
+                {"user_id": user_id},
+                {"roles": role}
+            ],
+            "created_at": {
+                "$gte": datetime.strptime(today, "%Y-%m-%d"),
+                "$lt": datetime.strptime(today, "%Y-%m-%d") + timedelta(days=1)
+            }
+        })
+        if notifications:
+            return NotificationSerializer(notifications, many=True).data
+        return []
+
     def login(self):
         with MongoDBHandler('users') as db:
             required_fields = ['email', 'password']
@@ -46,6 +63,7 @@ class AuthUseCase:
                         user.pop('permissions')
                         return ok({
                             'userAbilityRules': user_ability_rules,
+                            'notifications': self.__get_notifications(db, str(user['_id']), user['role']['value']),
                             'accessToken': encode_user(user),
                             'userData': user,
                             'home': self.__set_home(permissions)

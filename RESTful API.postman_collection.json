@@ -1,0 +1,2153 @@
+{
+	"info": {
+		"_postman_id": "6ff61ecd-5303-4ccb-820d-b10e9c8f4f06",
+		"name": "RESTful API",
+		"description": "# 🚀 Get started here\n\nThis collection guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this collection**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these request types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT and PATCH requests.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a variable called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more scripts in \"Tests\" to verify if the API works as expected and execute flows.\n    \n\n## ℹ️ Resources\n\n[Building requests](https://learning.postman.com/docs/sending-requests/requests/)  \n[Authorizing requests](https://learning.postman.com/docs/sending-requests/authorization/)  \n[Using variables](https://learning.postman.com/docs/sending-requests/variables/)  \n[Managing environments](https://learning.postman.com/docs/sending-requests/managing-environments/)  \n[Writing scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "978479"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Save user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role_id\": \"67c528dea1b1e8601f322d21\",\n    \"name\": \"Administrador\",\n    \"email\": \"info@bellarti.art\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/users",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/users?q&itemsPerPage=10&page=1",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null
+								},
+								{
+									"key": "itemsPerPage",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/user/67cfd6ffa48b49e2f0ee750e",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"user",
+								"67cfd6ffa48b49e2f0ee750e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"Totopotopo24.\",\n    \"confirm_password\": \"Totopotopo24.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/register/67e0d3653722393667f2bba4",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"register",
+								"67e0d3653722393667f2bba4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lastname\": \"Amezquita Morales\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/user/67bc8517aff56ba79c494ed0",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"user",
+								"67bc8517aff56ba79c494ed0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/user/67bcaabcda2c8f37419cb0bd",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"user",
+								"67bcaabcda2c8f37419cb0bd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"Totopotopo24.\",\n    \"new_password\": \"Totopotopo24\",\n    \"confirm_password\": \"Totopotopo24\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/change_password/67bc8517aff56ba79c494ed0",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"change_password",
+								"67bc8517aff56ba79c494ed0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Save role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Compras\",\n    \"value\": \"cop\",\n    \"permissions\": {\n        \"CliVS\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"CliPE\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"CliContactos\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"VSPrototipos\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"VSVolumetria\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"VSODs\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"PE\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"PEPlantillas\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"Proveedores\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"Materiales\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"MatEquipamiento\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"AlmInventario\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"AlmEntradas\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"AlmSalidas\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"OC\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"RQM\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"Facturas\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"Cuentas\": [\"read\",\"create\",\"update\",\"delete\"],\n        \"EC\": [\"read\",\"create\",\"update\",\"delete\"]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/roles",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/roles",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/role/67c52a0fa1b1e8601f322d3c",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"role",
+								"67c52a0fa1b1e8601f322d3c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/update_permissions/67c529a0a1b1e8601f322d2d",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"update_permissions",
+								"67c529a0a1b1e8601f322d2d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/role/67dcd7e595cbf073573b48c0",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"role",
+								"67dcd7e595cbf073573b48c0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(",
+									"    \"ACCESS_TOKEN\",",
+									"    pm.response.json().accessToken",
+									")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"oliver.amezquita@hotmail.com\",\n    \"password\": \"Totopotopo24.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/login",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"varilla24@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/password-request",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"password-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hash_request\": \"7b226964223a2022363762633835313761666635366261373963343934656430222c20226461746574696d65223a2022323032352d30322d32345432303a30353a33372e383937373338227d\",\n    \"password\": \"Totopotopo24.\",\n    \"confirm_password\": \"Totopotopo24.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/restore-password",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"restore-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Section",
+			"item": [
+				{
+					"name": "Save section",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"parent\": \"Logs\",\n    \"name\": \"Logs\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/sections",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"sections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get sections",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/sections?itemsPerPage=100",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"sections"
+							],
+							"query": [
+								{
+									"key": "itemsPerPage",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update section",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"Logs\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/section/67c51acb748676b48ef6d098",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"section",
+								"67c51acb748676b48ef6d098"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tree view",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/tree-view-sections",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"tree-view-sections"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "dashboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/dashboard",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "Save client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"VS\",\n    \"name\": \"Ruba\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/clients",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get clients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/clients/VS",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"clients",
+								"VS"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/client/67e7382e2ac8c2024c266180",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"client",
+								"67e7382e2ac8c2024c266180"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"client@mail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/client/67e7382e2ac8c2024c266180",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"client",
+								"67e7382e2ac8c2024c266180"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/client/67e742dd0eb6bf69fbdfb90f",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"client",
+								"67e742dd0eb6bf69fbdfb90f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Supplier",
+			"item": [
+				{
+					"name": "Tax Data",
+					"item": [
+						{
+							"name": "Save tax data",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "supplier_id",
+											"value": "67f043c47c75d4753b87cd5d",
+											"type": "text"
+										},
+										{
+											"key": "rfc",
+											"value": "AEMO850615TF6",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "Try Play Y Laminados El Salto S.A. de C.V.",
+											"type": "text"
+										},
+										{
+											"key": "regime",
+											"value": "601 - Régimen General de Ley Personas Morales",
+											"type": "text"
+										},
+										{
+											"key": "postal_code",
+											"value": "37526",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "Circuito Maremma #150, Residencial Benevento",
+											"type": "text"
+										},
+										{
+											"key": "constancy",
+											"type": "file",
+											"src": "/Users/aemo/Documents/ConstanciaSituiacionFiscal_AEMO.pdf",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{BASE_URL}}api/tax_data/67f043c47c75d4753b87cd5d",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"tax_data",
+										"67f043c47c75d4753b87cd5d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get tax data by supplier",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/tax_data/67f043c47c75d4753b87cd5d",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"tax_data",
+										"67f043c47c75d4753b87cd5d"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Bank Data",
+					"item": [
+						{
+							"name": "Save bank data",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"bank\": \"BBVA\",\n    \"clabe\": \"013456798564731389\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}api/bank_data/67f043c47c75d4753b87cd5d",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"bank_data",
+										"67f043c47c75d4753b87cd5d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get bank data by supplier",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/bank_data/67f043c47c75d4753b87cd5d",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"bank_data",
+										"67f043c47c75d4753b87cd5d"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Refresh Rate",
+					"item": [
+						{
+							"name": "Save refresh rate",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"value\": \"Día\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}api/refresh_rate/67f043c47c75d4753b87cd5d",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"refresh_rate",
+										"67f043c47c75d4753b87cd5d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get refresh date by supplier",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/refresh_rate/67f043c47c75d4753b87cd5d",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"refresh_rate",
+										"67f043c47c75d4753b87cd5d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh rates",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/refresh_rates",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"refresh_rates"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Save supplier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ana Karen Martinez\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/suppliers",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get suppliers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/suppliers",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"suppliers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/supplier/67e80c40b212b03003ed5b84",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"supplier",
+								"67e80c40b212b03003ed5b84"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update supplier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"gerenciacomercialacoroz@hotmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/supplier/67e80c40b212b03003ed5b84",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"supplier",
+								"67e80c40b212b03003ed5b84"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete supplier",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/supplier/67e80cb6b212b03003ed5b8d",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"supplier",
+								"67e80cb6b212b03003ed5b8d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Prototype",
+			"item": [
+				{
+					"name": "Save prototype",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"67e733da54de9d1fe1378fb9\",\n    \"name\": \"Toscana\",\n    \"front\": \"Lombardia 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/prototypes",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"prototypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get prototypes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/prototypes",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"prototypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update prototype",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Toscana\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/prototype/67e82582eac9f008c882b2a8",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"prototype",
+								"67e82582eac9f008c882b2a8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete prototype",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/prototype/67e826b2eac9f008c882b2b1",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"prototype",
+								"67e826b2eac9f008c882b2b1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get prototypes by client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/prototype_by_client/67edbd704c948592381dc1e4",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"prototype_by_client",
+								"67edbd704c948592381dc1e4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Catalog",
+			"item": [
+				{
+					"name": "New catalog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Prototipos\",\n    \"values\": {\n        \"Sacromonte 2\": [\"Tarento\",\"Carpi\",\"Amalfi\"],\n        \"Sacromonte 3\": [\"Piamonte\",\"Toscana\",\"Veneto\",\"Calabria\"],\n        \"Lombardia 5\": [\"Tarento\",\"Calabria\",\"Veneto 20\",\"Piamonte\",\"Ravenna 20\",\"Sicilia\"]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/catalogs",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalogs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get catalogs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/catalogs",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalogs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get catalog by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/catalog/67e8534fa303a4cd1b381d22",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalog",
+								"67e8534fa303a4cd1b381d22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete catalog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/catalog/67e8d8d58a9cda727d3385eb",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalog",
+								"67e8d8d58a9cda727d3385eb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add value",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"add\",\n    \"value\": \"PRUEBA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/catalog/67e8534fa303a4cd1b381d22",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalog",
+								"67e8534fa303a4cd1b381d22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete value",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"action\": \"delete\",\n    \"value\": \"PRUEBA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/catalog/67e8534fa303a4cd1b381d22",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalog",
+								"67e8534fa303a4cd1b381d22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get catalog by name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/catalogs?name=Prototipos",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"catalogs"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Prototipos"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Material",
+			"item": [
+				{
+					"name": "Save material",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"BOLSA 20X30 NATURAL CORTADA\",\n    \"supplier_id\": \"67e8e86d38a4795664527790\",\n    \"measurement\": \"KG\",\n    \"unit_price\": 27.93,\n    \"inventory_price\": 27.93,\n    \"market_price\": 32.40,\n    \"price_difference\": 4.47\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/materials",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"materials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get materials",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/materials?itemsPerPage=9999",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"materials"
+							],
+							"query": [
+								{
+									"key": "itemsPerPage",
+									"value": "9999"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/material/67ec7c0331793fd0d42f8eb0",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"material",
+								"67ec7c0331793fd0d42f8eb0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update material",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"supplier_code\": \"BOL20NATCOR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/material/67e8e9812096a063401c6033",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"material",
+								"67e8e9812096a063401c6033"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete material",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/material/67e8ee5572d567d7ebfc18e8",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"material",
+								"67e8ee5572d567d7ebfc18e8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Volumetry",
+			"item": [
+				{
+					"name": "Save volumetry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"67e733da54de9d1fe1378fb9\",\n    \"front\": \"Lombardia 1\",\n    \"material_id\": \"67e8e9812096a063401c6033\",\n    \"volumetry\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/volumetries",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"volumetries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get volumetries by client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/volumetries?client_id=67edbd704c948592381dc1e4&front=Lombardia 2",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"volumetries"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "67edbd704c948592381dc1e4"
+								},
+								{
+									"key": "front",
+									"value": "Lombardia 2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete volumetry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/volumetry/67ee1948738e2959bea4f813",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"volumetry",
+								"67ee1948738e2959bea4f813"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload volumetry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/aemo/Documents/Bellarti/test_volumetria.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/upload_volumetry?client_id=67edbd704c948592381dc1e4&front=Lombardia 1",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"upload_volumetry"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "67edbd704c948592381dc1e4"
+								},
+								{
+									"key": "front",
+									"value": "Lombardia 1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "Get notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/notifications?user_id=67cfd6ffa48b49e2f0ee750e&role=admin&today=2025-04-23",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "67cfd6ffa48b49e2f0ee750e"
+								},
+								{
+									"key": "role",
+									"value": "admin"
+								},
+								{
+									"key": "today",
+									"value": "2025-04-23"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notifications\": [\"6807ddf92272a5096095edf4\"],\n    \"is_seen\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/notifications",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notification\": \"6807dde72272a5096095edee\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/notifications",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}

@@ -14,6 +14,10 @@ class MatrialView(views.APIView):
         use_case = MaterialUseCase(request=request)
         return use_case.get()
 
+    def put(self, request):
+        use_case = MaterialUseCase(data=request.data)
+        return use_case.upload()
+
 
 class MaterialByIdView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
