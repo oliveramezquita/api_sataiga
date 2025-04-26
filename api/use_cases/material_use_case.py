@@ -7,9 +7,10 @@ from api.helpers.validations import objectid_validation
 from django.core.paginator import Paginator
 from api.serializers.material_serializer import MaterialSerializer
 from api.serializers.file_serializer import FileUploadSerializer
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from decimal import Decimal, InvalidOperation
 from rest_framework import exceptions
+from django.http import HttpResponse
 
 
 class MaterialUseCase:
@@ -19,7 +20,8 @@ class MaterialUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
-            self.status = params['status'][0] if 'status' in params else None
+            self.q = params['q'][0] if 'q' in params else None
+            self.supplier = params['supplier'][0] if 'supplier' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -101,6 +103,59 @@ class MaterialUseCase:
                 return inserted, updated
             raise exceptions.NotFound('El proveedor seleccionado no existe.')
 
+    def __suppliers_list(self):
+        with MongoDBHandler('suppliers') as db:
+            suppliers_list = {}
+            suppliers = db.extract()
+            if suppliers:
+                for supplier in suppliers:
+                    suppliers_list[str(supplier['_id'])] = supplier['name']
+            return suppliers_list
+
+    def __validate_value(self, material, key):
+        if key in material:
+            return material[key]
+        return None
+
+    def __export_materials(self, materials):
+        suppliers_list = self.__suppliers_list()
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Materiales"
+
+        headers = [
+            'Proveedor', 'Nombre / Descripción', 'Unidad de Medida', 'Código Proveedor',
+            'Código Interno', 'Presentación', 'Área', 'Referencia',
+            'Mínimos de Stock', 'Máximos de Stock',
+            'Precio Unidad', 'Precio Presentación', 'Precio Mercado', 'Diferencia de Precio'
+        ]
+        ws.append(headers)
+
+        for material in materials:
+            ws.append([
+                suppliers_list[material['supplier_id']],
+                material['name'],
+                material['measurement'],
+                self.__validate_value(material, 'supplier_code'),
+                self.__validate_value(material, 'internal_code'),
+                self.__validate_value(material, 'presentation'),
+                self.__validate_value(material, 'area'),
+                self.__validate_value(material, 'reference'),
+                float(self.__validate_value(material, 'minimum') or 0),
+                float(self.__validate_value(material, 'maximum') or 0),
+                float(self.__validate_value(material, 'unit_price') or 0),
+                float(self.__validate_value(material, 'invetory_price') or 0),
+                float(self.__validate_value(material, 'market_price') or 0),
+                float(self.__validate_value(material, 'price_difference') or 0),
+            ])
+
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=materiales.xlsx'
+        wb.save(response)
+        return response
+
     def save(self):
         with MongoDBHandler('materials') as db:
             required_fields = ['name', 'supplier_id', 'measurement']
@@ -115,7 +170,19 @@ class MaterialUseCase:
 
     def get(self):
         with MongoDBHandler('materials') as db:
-            materials = db.extract()
+            filters = {}
+            if self.q:
+                filters['$or'] = [
+                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'measurement': {'$regex': self.q, '$options': 'i'}},
+                    {'supplier_code': {'$regex': self.q, '$options': 'i'}},
+                    {'internal_code': {'$regex': self.q, '$options': 'i'}},
+                    {'presentation': {'$regex': self.q, '$options': 'i'}},
+                    {'reference': {'$regex': self.q, '$options': 'i'}},
+                ]
+            if self.supplier:
+                filters['supplier_id'] = self.supplier
+            materials = db.extract(filters)
             paginator = Paginator(materials, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
@@ -164,7 +231,7 @@ class MaterialUseCase:
                     materials, errors = self.__process_workbook(workbook)
                     inserted, updated = self.__process_materials(materials)
                     return ok({
-                        "message": f"Materiales procesados correctamente: {len(inserted)} insertados, {len(updated)} atualizados y hubó {len(errors)} errores.",
+                        "message": f"Materiales procesados correctamente: {len(inserted)} insertado(s), {len(updated)} atualizado(s) y hubó {len(errors)} error(es).",
                         "inserted": inserted,
                         "updated": updated,
                         "errors": errors,
@@ -173,3 +240,20 @@ class MaterialUseCase:
                     return bad_request(f'Error: {str(e)}')
             return bad_request('Error al momento de cargar el arhivo Excel.')
         return bad_request('El proveedor así como el archivo en formaro Excel son requeridos.')
+
+    def download(self):
+        with MongoDBHandler('materials') as db:
+            filters = {}
+            if self.q:
+                filters['$or'] = [
+                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'measurement': {'$regex': self.q, '$options': 'i'}},
+                    {'supplier_code': {'$regex': self.q, '$options': 'i'}},
+                    {'internal_code': {'$regex': self.q, '$options': 'i'}},
+                    {'presentation': {'$regex': self.q, '$options': 'i'}},
+                    {'reference': {'$regex': self.q, '$options': 'i'}},
+                ]
+            if self.supplier:
+                filters['supplier_id'] = self.supplier
+            materials = db.extract(filters)
+            return self.__export_materials(materials)

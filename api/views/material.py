@@ -33,3 +33,11 @@ class MaterialByIdView(views.APIView):
     def delete(self, request, id):
         use_case = MaterialUseCase(id=id)
         return use_case.delete()
+
+
+class DownloadMaterialsView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request):
+        use_case = MaterialUseCase(request=request)
+        return use_case.download()

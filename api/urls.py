@@ -41,4 +41,6 @@ urlpatterns = [
          RefreshRateView.as_view(), name='refresh rate'),
     path('refresh_rates', RefreshRatesView.as_view(), name='refresh rates'),
     path('notifications', NotificationsView.as_view(), name='notifications'),
+    path('exportar-materiales', DownloadMaterialsView.as_view(),
+         name='exportar-materiales'),
 ]
