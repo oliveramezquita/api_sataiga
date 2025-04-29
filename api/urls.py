@@ -43,4 +43,6 @@ urlpatterns = [
     path('notifications', NotificationsView.as_view(), name='notifications'),
     path('exportar-materiales', DownloadMaterialsView.as_view(),
          name='exportar-materiales'),
+    path('material-images/<str:id>',
+         ImagesMaterialView.as_view(), name='material-images'),
 ]
