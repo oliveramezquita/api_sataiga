@@ -1,3 +1,4 @@
+import os
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
@@ -11,11 +12,14 @@ from openpyxl import load_workbook, Workbook
 from decimal import Decimal, InvalidOperation
 from rest_framework import exceptions
 from django.http import HttpResponse
+from PIL import Image
+from django.conf import settings
 
 
 class MaterialUseCase:
     def __init__(self, request=None, **kwargs):
         if request:
+            self.request = request
             params = parse_qs(request.META['QUERY_STRING'])
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
@@ -124,10 +128,10 @@ class MaterialUseCase:
         ws.title = "Materiales"
 
         headers = [
-            'Proveedor', 'Nombre / Descripción', 'Unidad de Medida', 'Código Proveedor',
-            'Código Interno', 'Presentación', 'Área', 'Referencia',
-            'Mínimos de Stock', 'Máximos de Stock',
-            'Precio Unidad', 'Precio Presentación', 'Precio Mercado', 'Diferencia de Precio'
+            'PROVEEDOR', 'NOMBRE / DESCRIPCIÓN', 'UNIDAD DE MEDIDA', 'CÓDIGO PROVEEDOR',
+            'CÓDIGO INTERNO', 'PRESENTACIÓN', 'ÁREA', 'REFERENCIA',
+            'MÍNIMOS DE STOCK', 'MÁXIMOS DE STOCK',
+            'PRECIO UNIDAD', 'PRECIO PRESENTACIÓN', 'PRECIO MERCADO', 'DIFERENCIA DE PRECIO'
         ]
         ws.append(headers)
 
@@ -257,3 +261,61 @@ class MaterialUseCase:
                 filters['supplier_id'] = self.supplier
             materials = db.extract(filters)
             return self.__export_materials(materials)
+
+    def upload_image(self):
+        with MongoDBHandler('materials') as db:
+            images = []
+            image = self.request.FILES['image']
+            material = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if material and image:
+                if 'images' in material[0]:
+                    images = material[0]['images']
+
+                img = Image.open(image)
+                if img.format not in ['JPEG', 'PNG']:
+                    return bad_request('El archivo cargado no es una imagen valida.')
+
+                material_folder = os.path.join(
+                    settings.MEDIA_ROOT, 'materials/' + str(self.id))
+                os.makedirs(material_folder, exist_ok=True)
+
+                image_path = os.path.join(material_folder, image.name)
+
+                with open(image_path, 'wb+') as destination:
+                    for chunk in image.chunks():
+                        destination.write(chunk)
+
+                relative_path = f"{settings.BASE_URL}/media/materials/{str(self.id)}/{image.name}"
+                images.append(relative_path)
+
+                db.update({'_id': ObjectId(self.id)}, {'images': images})
+
+                return ok(images)
+            return bad_request('El material no existe.')
+
+    def delete_image(self):
+        with MongoDBHandler('materials') as db:
+            if 'images' in self.data:
+                material = db.extract(
+                    {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+                if material:
+                    if 'images' in material[0] and isinstance(self.data['images'], list):
+                        deleted = []
+                        for idx in self.data['images']:
+                            deleted.append(material[0]['images'][idx])
+                            relative_path = material[0]['images'][idx].replace(
+                                settings.BASE_URL, '')
+                            file_path = os.path.join(
+                                settings.BASE_DIR, relative_path.strip('/'))
+                            if os.path.isfile(file_path):
+                                os.remove(file_path)
+
+                        new_images = [url for url in material[0]
+                                      ['images'] if url not in deleted]
+                        db.update({'_id': ObjectId(self.id)}, {
+                            'images': new_images})
+                        return ok(new_images)
+                    return bad_request('No existen imágenes en el material seleccionado y/o las imágenes seleccionadas para eliminar.')
+                return bad_request('El material no existe.')
+            return bad_request('Falta el índice de la imagen para poder eliminarla.')
