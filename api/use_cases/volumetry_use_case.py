@@ -101,7 +101,7 @@ class VolumetryUseCase:
                         material_id = self.__get_id_material_by_name(
                             name=material,
                             measurement=sheet[f"B{row_index}"].value,
-                            supplier_code=sheet[f"C{row_index}"].value,
+                            internal_code=sheet[f"C{row_index}"].value,
                         )
                         if not material_id:
                             warnings.append(

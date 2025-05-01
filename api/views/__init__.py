@@ -13,3 +13,6 @@ from .tax_data import TaxDataView
 from .bank_data import BankDataView
 from .refresh_rate import RefreshRateView, RefreshRatesView
 from .notification import NotificationsView
+from .home_production import HomeProductionView, HomeProductionByIdView
+from .lot import LotsView, LotView
+from .explosion import ExplosionView

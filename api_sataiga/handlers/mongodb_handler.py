@@ -47,7 +47,7 @@ class MongoDBHandler:
 
     def delete(self, query):
         collection = self.db[self.collection_name]
-        result = collection.delete_one(query)
+        result = collection.delete_many(query)
         return result.deleted_count
 
     def create_unique_index(self, field):

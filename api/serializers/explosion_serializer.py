@@ -1,12 +1,16 @@
 from rest_framework import serializers
-from api.models import Volumetry
+from api.models import Explosion
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from bson import ObjectId
 
 
-class VolumetrySerializer(serializers.ModelSerializer):
+class ExplosionSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField(
         "get_id"
+    )
+
+    home_production = serializers.SerializerMethodField(
+        "get_home_production"
     )
 
     material = serializers.SerializerMethodField(
@@ -15,6 +19,14 @@ class VolumetrySerializer(serializers.ModelSerializer):
 
     def get_id(self, data):
         return str(data['_id'])
+
+    def get_home_production(self, data):
+        with MongoDBHandler('home_production') as db:
+            home_production = db.extract(
+                {'_id': ObjectId(data['home_production_id'])})
+            if home_production:
+                return f"{home_production[0]['front']} - {home_production[0]['od']}"
+            return None
 
     def get_material(self, data):
         with MongoDBHandler('materials') as db:
@@ -27,5 +39,5 @@ class VolumetrySerializer(serializers.ModelSerializer):
             return None
 
     class Meta:
-        model = Volumetry
+        model = Explosion
         fields = '__all__'

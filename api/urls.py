@@ -45,4 +45,12 @@ urlpatterns = [
          name='exportar-materiales'),
     path('material-images/<str:id>',
          ImagesMaterialView.as_view(), name='material-images'),
+    path('home-production', HomeProductionView.as_view(), name='home-production'),
+    path('home-production/<str:id>', HomeProductionByIdView.as_view(),
+         name='home-production-by-id'),
+    path('lots/<str:home_production_id>', LotsView.as_view(), name='lots'),
+    path('lot/<str:id>', LotView.as_view(), name="lot"),
+    path('lots/<str:home_production_id>', LotsView.as_view(), name='lots'),
+    path('explosion/<str:home_production_id>',
+         ExplosionView.as_view(), name='explosion'),
 ]
