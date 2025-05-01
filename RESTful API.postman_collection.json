@@ -1769,13 +1769,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}api/material/67ec7c0331793fd0d42f8eb0",
+							"raw": "{{BASE_URL}}api/material/67f044b97c75d4753b87cd72",
 							"host": [
 								"{{BASE_URL}}api"
 							],
 							"path": [
 								"material",
-								"67ec7c0331793fd0d42f8eb0"
+								"67f044b97c75d4753b87cd72"
 							]
 						}
 					},
@@ -1841,6 +1841,150 @@
 							"path": [
 								"material",
 								"67e8ee5572d567d7ebfc18e8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload material",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "supplier_id",
+									"value": "67f043c47c75d4753b87cd5a",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/aemo/Downloads/TryPlay_Y_Laminados_ElSalto.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/materials",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"materials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Export materials",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/exportar-materiales",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"exportar-materiales"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/aemo/Pictures/736-BISAGRA-ARQUITECTONICA-C-BALEROS-2.2MM-3.5x3.5-ACERO-INOXIDABLE.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/material-images/67edf54651a54938075b0942",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"material-images",
+								"67edf54651a54938075b0942"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"images\": [8,9]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/material-images/67f044b97c75d4753b87cd72",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"material-images",
+								"67f044b97c75d4753b87cd72"
 							]
 						}
 					},
@@ -2112,6 +2256,335 @@
 							],
 							"path": [
 								"notifications"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Home Production",
+			"item": [
+				{
+					"name": "Lots",
+					"item": [
+						{
+							"name": "Save lots",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"lots\": [\n        {\n            \"prototype\": \"Tarento\",\n            \"block\": 1,\n            \"lot\": 1,\n            \"laid\": \"IZQUIERDO\"\n        },\n        {\n            \"prototype\": \"Tarento\",\n            \"block\": 1,\n            \"lot\": 2,\n            \"laid\": \"DERECHO\"\n        }\n        ,\n        {\n            \"prototype\": \"Tarento\",\n            \"block\": 1,\n            \"lot\": 2\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}api/lots/681139e86665b9ac1bc43a55",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"lots",
+										"681139e86665b9ac1bc43a55"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get lots",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/lots/681139e86665b9ac1bc43a55",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"lots",
+										"681139e86665b9ac1bc43a55"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update lot",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}api/lot/68114ea08b210f7e25031664",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"lot",
+										"68114ea08b210f7e25031664"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Explosion",
+					"item": [
+						{
+							"name": "Create explosion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/explosion/681139e86665b9ac1bc43a55",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"explosion",
+										"681139e86665b9ac1bc43a55"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get explosion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}api/explosion/681139e86665b9ac1bc43a55",
+									"host": [
+										"{{BASE_URL}}api"
+									],
+									"path": [
+										"explosion",
+										"681139e86665b9ac1bc43a55"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add home production",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"67edbd704c948592381dc1e4\",\n    \"front\": \"SACROMONTE 3\",\n    \"od\": \"650\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/home-production",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"home-production"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get home production",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/home-production",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"home-production"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update home production",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"od\": \"651\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}api/home-production/681063a6e4bf13a25166b500",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"home-production",
+								"681063a6e4bf13a25166b500"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete home production",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/home-production/68106aac72c3fcadaaf9a999",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"home-production",
+								"68106aac72c3fcadaaf9a999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}api/home-production/681139e86665b9ac1bc43a55",
+							"host": [
+								"{{BASE_URL}}api"
+							],
+							"path": [
+								"home-production",
+								"681139e86665b9ac1bc43a55"
 							]
 						}
 					},
