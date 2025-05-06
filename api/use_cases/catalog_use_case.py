@@ -4,6 +4,8 @@ from api.serializers.catalog_serializer import CatalogSerializer
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from urllib.parse import parse_qs
+from api.constants import DEFAULT_PAGE_SIZE
+from django.core.paginator import Paginator
 
 
 class CatalogUseCase:
@@ -18,8 +20,8 @@ class CatalogUseCase:
         with MongoDBHandler('catalogs') as db:
             required_fields = ['name', 'values']
             if all(i in self.data for i in required_fields):
-                db.insert(self.data)
-                return created('Catálogo creado correctamente.')
+                id = db.insert(self.data)
+                return created({'id': str(id)})
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
@@ -49,27 +51,31 @@ class CatalogUseCase:
             if catalog:
                 db.delete({'_id': ObjectId(self.id)})
                 return ok('Catálogo eliminado correctamente.')
-            return bad_request('El catálogo no existe.')
+            return not_found('El catálogo no existe.')
 
     def update(self):
         with MongoDBHandler('catalogs') as db:
-            required_fields = ['action', 'value']
             catalog = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if catalog:
-                if all(i in self.data for i in required_fields):
-                    if self.data['action'] == 'add':
-                        if self.data['value'] not in catalog[0]['values']:
-                            catalog[0]['values'].append(self.data['value'])
+                db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok('El catálogo ha sido modificado con éxito.')
+            return not_found('El catálogo no existe.')
+
+    @staticmethod
+    def external_update(name, new_value):
+        with MongoDBHandler('catalogs') as db:
+            current_values = db.extract({'name': name})
+            if current_values:
+                if isinstance(new_value, dict):
+                    for key, values in new_value.items():
+                        if key in current_values[0]['values']:
+                            if values not in current_values[0]['values'][key]:
+                                current_values[0]['values'][key].append(values)
                         else:
-                            return bad_request(f"El valor '{self.data['value']}' ya existe en el catálogo.")
-                    if self.data['action'] == 'delete':
-                        if self.data['value'] in catalog[0]['values']:
-                            catalog[0]['values'].remove(self.data['value'])
-                        else:
-                            return bad_request(f"'El valor {self.data['value']}' no está en la lista.")
-                    db.update({'_id': ObjectId(self.id)}, {
-                        'values': catalog[0]['values']})
-                    return ok('El catálogo ha sido modificado con éxito.')
-                return bad_request('Algunos campos requeridos no han sido completados.')
-            return bad_request('El catálogo no existe.')
+                            current_values[0]['values'][key] = [values]
+                elif isinstance(new_value, str):
+                    if new_value not in current_values[0]['values']:
+                        current_values[0]['values'].append(new_value)
+                db.update({'name': name}, {
+                          'values': current_values[0]['values']})

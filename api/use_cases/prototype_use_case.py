@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from api.serializers.prototype_serializer import PrototypeSerializer
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
+from api.use_cases.catalog_use_case import CatalogUseCase
 
 
 class PrototypeUseCase:
@@ -72,6 +73,11 @@ class PrototypeUseCase:
         })
         if prototype:
             return False
+        if 'client_name' in self.data:
+            CatalogUseCase.external_update(
+                'Frentes', {self.data['client_name']: self.data['front']})
+            CatalogUseCase.external_update(
+                'Prototipos', {self.data['client_name']: self.data['name']})
         return True
 
     def save(self):
