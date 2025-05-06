@@ -11,6 +11,14 @@ class LotsView(views.APIView):
             data=request.data, home_production_id=home_production_id)
         return use_case.save()
 
+    def patch(self, request, home_production_id):
+        use_case = LotUseCase(
+            request=request,
+            data=request.data,
+            home_production_id=home_production_id
+        )
+        return use_case.upload()
+
     def get(self, request, home_production_id):
         use_case = LotUseCase(home_production_id=home_production_id)
         return use_case.get()
