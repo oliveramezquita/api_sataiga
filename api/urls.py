@@ -53,4 +53,9 @@ urlpatterns = [
     path('lots/<str:home_production_id>', LotsView.as_view(), name='lots'),
     path('explosion/<str:home_production_id>',
          ExplosionView.as_view(), name='explosion'),
+    path('quantification', QuantificationView.as_view(), name='quantification'),
+    path('quantification-filters', QuantificationFiltersView.as_view(),
+         name='quantification-filters'),
+    path('contacts/<str:client_id>', ContactsView.as_view(), name='contacts'),
+    path('contact/<str:id>', ContactByIdView.as_view(), name='contact'),
 ]

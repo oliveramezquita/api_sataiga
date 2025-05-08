@@ -14,3 +14,5 @@ from .notification import Notification
 from .home_production import HomeProduction
 from .lot import Lot
 from .explosion import Explosion
+from .quantification import Quantification
+from .contact import Contact
