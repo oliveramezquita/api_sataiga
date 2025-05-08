@@ -7,6 +7,7 @@ from api.serializers.volumetry_serializer import VolumetrySerializer
 from api.serializers.file_serializer import FileUploadSerializer
 from urllib.parse import parse_qs
 from openpyxl import load_workbook
+from api.functions.quantify import quantify
 
 
 class VolumetryUseCase:
@@ -244,6 +245,7 @@ class VolumetryUseCase:
                     volumetries = db.extract({
                         'client_id': self.data['client_id'],
                         'front': self.data['front']})
+                    quantify.delay(self.data['client_id'], self.data['front'])
                     return ok({'data': VolumetrySerializer(volumetries, many=True).data, 'message': message})
                 return bad_request('Error al momento de procesar la información: el cliente o el material no existen.')
             return bad_request('Algunos campos requeridos no han sido completados.')

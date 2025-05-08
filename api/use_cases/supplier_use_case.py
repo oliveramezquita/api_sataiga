@@ -60,7 +60,7 @@ class SupplierUseCase:
             if supplier:
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok('Proveedor actualizado correctamente.')
-            return bad_request('El proveedor no existe.')
+            return not_found('El proveedor no existe.')
 
     def delete(self):
         with MongoDBHandler('suppliers') as db:
@@ -69,4 +69,4 @@ class SupplierUseCase:
             if supplier:
                 db.delete({'_id': ObjectId(self.id)})
                 return ok('Proveedor eliminado correctamente.')
-            return bad_request('El proveedor no existe.')
+            return not_found('El proveedor no existe.')
