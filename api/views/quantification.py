@@ -17,3 +17,12 @@ class QuantificationFiltersView(views.APIView):
     def get(self, request):
         use_case = QuantificationUseCase(request=request)
         return use_case.filters()
+
+
+class QuantificationByIdView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def patch(self, request, id, action):
+        use_case = QuantificationUseCase(
+            data=request.data, id=id, action=action)
+        return use_case.update()

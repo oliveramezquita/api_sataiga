@@ -16,5 +16,5 @@ from .notification import NotificationsView
 from .home_production import HomeProductionView, HomeProductionByIdView
 from .lot import LotsView, LotView
 from .explosion import ExplosionView
-from .quantification import QuantificationView, QuantificationFiltersView
+from .quantification import QuantificationView, QuantificationFiltersView, QuantificationByIdView
 from .contact import ContactsView, ContactByIdView
