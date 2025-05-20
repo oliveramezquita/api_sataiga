@@ -40,18 +40,18 @@ def quantify(client_id, front):
                 "front": volumetry[0]["front"],
                 "client_id": volumetry[0]["client_id"],
                 "quantification": {
-                    "PRODUCCION SOLO COCINA": [],
-                    "PRODUCCION SIN COCINA": [],
-                    "INSTALACION SOLO COCINA": [],
-                    "INSTALACION SIN COCINA": [],
-                    "CARPINTERIA": [],
+                    "PRODUCCIÓN SOLO COCINA": [],
+                    "PRODUCCIÓN SIN COCINA": [],
+                    "INSTALACIÓN SOLO COCINA": [],
+                    "INSTALACIÓN SIN COCINA": [],
+                    "CARPINTERÍA": [],
                     "EQUIPOS": [],
                 }
             }
 
             for item in volumetry:
                 material_info = {
-                    "material_id": item.get("material_id", item.get("_id")),
+                    "id": item.get("material_id", item.get("_id")),
                     "material": deepcopy(item["material"])
                 }
 
@@ -85,27 +85,31 @@ def quantify(client_id, front):
                     data = deepcopy(material_info)
                     data.update(prod_sin_cocina)
                     data["TOTAL"] = total_prod
-                    result["quantification"]["PRODUCCION SIN COCINA"].append(
-                        data)
+                    if total_prod > 0:
+                        result["quantification"]["PRODUCCIÓN SIN COCINA"].append(
+                            data)
 
                 if prod_cocina:
                     data = deepcopy(material_info)
                     data.update(prod_cocina)
-                    result["quantification"]["PRODUCCION SOLO COCINA"].append(
-                        data)
+                    if data['COCINA'] > 0:
+                        result["quantification"]["PRODUCCIÓN SOLO COCINA"].append(
+                            data)
 
                 if inst_sin_cocina:
                     data = deepcopy(material_info)
                     data.update(inst_sin_cocina)
                     data["TOTAL"] = total_inst
-                    result["quantification"]["INSTALACION SIN COCINA"].append(
-                        data)
+                    if total_inst > 0:
+                        result["quantification"]["INSTALACIÓN SIN COCINA"].append(
+                            data)
 
                 if inst_cocina:
                     data = deepcopy(material_info)
                     data.update(inst_cocina)
-                    result["quantification"]["INSTALACION SOLO COCINA"].append(
-                        data)
+                    if data['COCINA'] > 0:
+                        result["quantification"]["INSTALACIÓN SOLO COCINA"].append(
+                            data)
 
             if quantification:
                 db.update({

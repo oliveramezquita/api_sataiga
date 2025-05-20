@@ -56,6 +56,8 @@ urlpatterns = [
     path('quantification', QuantificationView.as_view(), name='quantification'),
     path('quantification-filters', QuantificationFiltersView.as_view(),
          name='quantification-filters'),
+    path('quantification/<str:id>/<str:action>', QuantificationByIdView.as_view(),
+         name='quantification by id'),
     path('contacts/<str:client_id>', ContactsView.as_view(), name='contacts'),
     path('contact/<str:id>', ContactByIdView.as_view(), name='contact'),
 ]
