@@ -33,3 +33,5 @@ jobs:
                   cd api_sataiga
                   git pull
                   sudo systemctl restart daphne.service
+                  sudo systemctl restart celery_worker
+                  sudo systemctl restart celery_beat
