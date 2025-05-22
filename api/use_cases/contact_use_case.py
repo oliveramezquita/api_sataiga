@@ -25,7 +25,7 @@ class ContactUseCase:
                     db.insert({
                         'client_id': self.client_id,
                         **self.data})
-                    return created('Proveedor creado correctamente.')
+                    return created('Contacto creado correctamente.')
                 return bad_request('Algunos campos requeridos no han sido completados.')
             return bad_request('Error al momento de procesar la información: el cliente no existen.')
 
@@ -35,7 +35,7 @@ class ContactUseCase:
                 contacts = db.extract({'client_id': self.client_id})
                 if contacts:
                     return ok(ContactSerializer(contacts, many=True).data)
-                return not_found('No existen contactos hasta el momento para el cliente seleccionado.')
+                return ok([])
             return bad_request('Error al momento de procesar la información: el cliente no existen.')
 
     def update(self):
