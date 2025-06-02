@@ -1,4 +1,5 @@
 import re
+import traceback
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.validations import objectid_validation
 from bson import ObjectId
@@ -43,10 +44,24 @@ class VolumetryUseCase:
                 return [item["name"] for item in prototypes]
             return False
 
+    def __sanitize_data(self, data):
+        if data.get('total') == '' or data.get('total') is None:
+            data['total'] = 0
+
+        for proto in data.get('prototypes', []):
+            quantities = proto.get('quantities', {})
+            for key in ['factory', 'instalation']:
+                if quantities.get(key) == '' or quantities.get(key) is None:
+                    quantities[key] = 0
+                elif isinstance(quantities[key], str) and quantities[key].isdigit():
+                    quantities[key] = int(quantities[key])
+        return data
+
     def __calculate_totals(self):
         gran_total = 0
         pattern = re.compile(r'^\d+(\.\d{1,2})?$')
-        for item in self.data['volumetry']:
+        for i, item in enumerate(self.data['volumetry']):
+            self.data['volumetry'][i] = self.__sanitize_data(item)
             total = sum(
                 float(q) if isinstance(q, (int, float, str)) and pattern.match(
                     str(q)) else 0
@@ -295,5 +310,5 @@ class VolumetryUseCase:
                     'volumetry': volumetry,
                 })
             except Exception as e:
-                return bad_request(f'Error: {str(e)}')
+                return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
         return bad_request(serializer.errors)

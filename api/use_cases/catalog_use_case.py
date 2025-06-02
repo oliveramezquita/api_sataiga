@@ -20,8 +20,12 @@ class CatalogUseCase:
         with MongoDBHandler('catalogs') as db:
             required_fields = ['name', 'values']
             if all(i in self.data for i in required_fields):
-                id = db.insert(self.data)
-                return created({'id': str(id)})
+                if isinstance(self.data['values'], list):
+                    self.data['values'] = [x for x in self.data['values'] if x]
+                if len(self.data['values']) > 0:
+                    id = db.insert(self.data)
+                    return created({'id': str(id)})
+                return bad_request('Inserte al menos un elemento al catálogo.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
@@ -58,8 +62,12 @@ class CatalogUseCase:
             catalog = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if catalog:
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('El catálogo ha sido modificado con éxito.')
+                if isinstance(self.data['values'], list):
+                    self.data['values'] = [x for x in self.data['values'] if x]
+                if len(self.data['values']) > 0:
+                    db.update({'_id': ObjectId(self.id)}, self.data)
+                    return ok('El catálogo ha sido modificado con éxito.')
+                return bad_request('Inserte al menos un elemento al catálogo.')
             return not_found('El catálogo no existe.')
 
     @staticmethod

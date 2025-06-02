@@ -1,3 +1,5 @@
+import traceback
+from copy import deepcopy
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import bad_request, ok, not_found
 from api.serializers.lot_serializer import LotSerializer
@@ -7,6 +9,7 @@ from collections import Counter
 from api.use_cases.explosion_use_case import ExplosionUseCase
 from openpyxl import load_workbook
 from api.serializers.file_serializer import FileUploadSerializer
+from api.constants import OD_STATUS
 
 
 class LotUseCase:
@@ -20,48 +23,25 @@ class LotUseCase:
     def __update_hp_lots(self, db, home_production_id):
         lots = db.extract({'home_production_id': home_production_id})
         if lots:
-            status_map = {
-                0: 'Pendiente',
-                1: 'En Progreso',
-                2: 'Finalizado'
-            }
-
             prototype_counter = Counter()
-            status_counter = Counter()
 
-            for item in lots:
-                prototype_counter[item['prototype']] += 1
-                status_counter[status_map[item['status']]] += 1
+            for lot in lots:
+                prototype_counter[lot['prototype']] += 1
 
             result = {
                 'total': len(lots),
                 'prototypes': dict(prototype_counter),
-                'status': dict(status_counter)
             }
 
-            status = 0
-            if 'Pendiente' in result['status'] and result['status']['Pendiente'] == len(lots):
-                status = 0
-            elif 'En Progreso' in result['status'] and result['status']['En Progreso'] > 0:
-                status = 1
-            elif 'Finalizado' in result['status'] and result['status']['Finalizado'] < len(lots):
-                status = 1
-            elif 'Finalizado' in result['status'] and result['status']['Finalizado'] == len(lots):
-                status = 2
-
-            progress = 0
-            if 'Finalizado' in result['status'] and result['status']['Finalizado'] > 0:
-                progress = (result['status']['Finalizado'] / len(lots)) * 100
-
+            total_sum = sum(l["status"]["total"] for l in lots)
             MongoDBHandler.modify(db, 'home_production', {'_id': ObjectId(home_production_id)}, {
                 'lots': result,
-                'progress': int(progress),
-                'status': status,
+                'progress': round(total_sum / len(lots), 2)
             })
 
-    def __update_explosion(self):
+    def __update_explosion(self, home_production_id):
         explosion_use_case = ExplosionUseCase(
-            home_production_id=self.home_production_id)
+            home_production_id=home_production_id)
         explosion_use_case.create()
 
     def __get_prototypes(self):
@@ -75,7 +55,6 @@ class LotUseCase:
     def __process_workbook(self, workbook, existing_prototypes):
         valid_laid = ['IZQUIERDO', 'DERECHO']
         valid_prototypes = existing_prototypes
-        valid_status = {'PENDIENTE': 0, 'EN PROGRESO': 1, 'FINALIZADO': 2}
 
         valid_entries = []
         errors = []
@@ -90,7 +69,9 @@ class LotUseCase:
             lot = row[1].value
             laid = row[2].value
             prototype = row[3].value
-            status = row[4].value
+            area = row[4].value
+            status = row[5].value
+            percentage = row[6].value
 
             if block is None:
                 row_errors.append("MANZANA vacía")
@@ -112,12 +93,17 @@ class LotUseCase:
             else:
                 entry["prototype"] = str(prototype).strip()
 
-            if status is None:
-                entry["status"] = 0
-            elif str(status).strip().upper() not in valid_status.keys():
-                row_errors.append(f"ESTATUS inválido: {status}")
-            else:
-                entry["status"] = valid_status[str(status)]
+            entry["status"] = deepcopy(OD_STATUS)
+            if area and area in OD_STATUS.keys():
+                if status and status in OD_STATUS[area].keys():
+                    if percentage and isinstance(percentage, int):
+                        entry["status"][area][status] = percentage
+                    else:
+                        row_errors.append(f"PORCENTAJE inválido: {percentage}")
+                elif status:
+                    row_errors.append(f"ESTATUS inválido: {status}")
+            elif area:
+                row_errors.append(f"ÁREA inválida: {area}")
 
             if row_errors:
                 errors.append({"row": row_index, "errors": row_errors})
@@ -125,32 +111,73 @@ class LotUseCase:
                 valid_entries.append(entry)
         return valid_entries, errors
 
+    def __calculate_status_totals(self, status):
+        grand_total = 0
+        num_areas = 0
+
+        for area, data in status.items():
+            if area == "total":
+                continue
+
+            stages = [v for k, v in data.items() if k != 'total']
+            if stages:
+                average = round(sum(stages) / len(stages), 2)
+            else:
+                average = 0
+
+            status[area]['total'] = average
+
+            grand_total += average
+            num_areas += 1
+
+        status['total'] = round(grand_total / num_areas, 2) if num_areas else 0
+
+        return status
+
+    def __split_and_process_lots(self, data_list):
+        insertions = []
+        updates = []
+
+        for item in data_list:
+            if all(value not in ('', None) for value in item['current_status'].values()):
+                current_status = item['current_status']
+                item["status"][current_status["area"]
+                               ][current_status["status"]] = current_status["percentage"]
+            item["status"] = self.__calculate_status_totals(item["status"])
+            item.pop('current_status', None)
+            if "_id" in item:
+                insertions.append(item)
+            else:
+                updates.append(item)
+
+        return insertions, updates
+
     def save(self):
         with MongoDBHandler('lots') as db:
             errors = []
             lots = []
             if 'lots' in self.data and len(self.data['lots']) > 0:
-                current_lots = db.extract(
-                    {'home_production_id': self.home_production_id})
-                if current_lots:
-                    db.delete(
-                        {'home_production_id': self.home_production_id})
-
+                insertions, updates = self.__split_and_process_lots(
+                    self.data['lots'])
+                if len(insertions) > 0:
+                    for lot in insertions:
+                        _id = ObjectId(lot['_id'])
+                        lot.pop('_id', None)
+                        db.update({'_id': _id}, {**lot})
                 required_fields = ['prototype', 'block', 'lot', 'laid']
-                for lot in self.data['lots']:
-                    if all(i in lot for i in required_fields):
-                        status = lot['status'] if 'status' in lot else 0
-                        db.insert({
-                            'home_production_id': self.home_production_id,
-                            **lot,
-                            'status': status,
-                        })
-                        lots = db.extract(
-                            {'home_production_id': self.home_production_id})
-                    else:
-                        errors.append(lot)
+                if len(updates) > 0:
+                    for lot in updates:
+                        if all(i in lot for i in required_fields):
+                            db.insert({
+                                'home_production_id': self.home_production_id,
+                                **lot,
+                            })
+                        else:
+                            errors.append(lot)
                 self.__update_hp_lots(db, self.home_production_id)
-                self.__update_explosion()
+                self.__update_explosion(self.home_production_id)
+                lots = db.extract(
+                    {'home_production_id': self.home_production_id})
                 return ok({
                     'success': LotSerializer(lots, many=True).data,
                     'errors': errors,
@@ -169,9 +196,18 @@ class LotUseCase:
             lot = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if lot:
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                self.__update_hp_lots(db, lot[0]['home_production_id'])
-                return ok('Lote actualizado correctamente.')
+                required_fields = ['area', 'status', 'percentage']
+                if all(i in self.data for i in required_fields):
+                    area = self.data['area']
+                    status = self.data['status']
+                    percentage = self.data['percentage']
+                    lot_status = deepcopy(lot[0]['status'])
+                    lot_status[area][status] = percentage
+
+                    db.update({'_id': ObjectId(self.id)},
+                              {'status': self.__calculate_status_totals(lot_status)})
+                    self.__update_hp_lots(db, lot[0]['home_production_id'])
+                    return ok('Lote actualizado correctamente.')
             return not_found('El lote no existe.')
 
     def delete(self):
@@ -181,6 +217,7 @@ class LotUseCase:
             if lot:
                 db.delete({'_id': ObjectId(self.id)})
                 self.__update_hp_lots(db, lot[0]['home_production_id'])
+                self.__update_explosion(lot[0]['home_production_id'])
                 return ok('Lote eliminado correctamente.')
             return not_found('El lote no existe.')
 
@@ -203,18 +240,20 @@ class LotUseCase:
                     lots, errors = self.__process_workbook(
                         workbook, prototypes)
                     for lot in lots:
+                        lot["status"] = self.__calculate_status_totals(
+                            lot["status"])
                         db.insert({
                             'home_production_id': self.home_production_id,
                             **lot,
                         })
-                        new_lots = db.extract(
-                            {'home_production_id': self.home_production_id})
+                    new_lots = db.extract(
+                        {'home_production_id': self.home_production_id})
                     self.__update_hp_lots(db, self.home_production_id)
-                    self.__update_explosion()
+                    self.__update_explosion(self.home_production_id)
                     return ok({
                         'success': LotSerializer(new_lots, many=True).data,
                         'errors': errors,
                     })
                 except Exception as e:
-                    return bad_request(f'Error: {str(e)}')
+                    return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
             return bad_request(serializer.errors)

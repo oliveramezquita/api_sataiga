@@ -1,4 +1,5 @@
 import os
+import traceback
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
@@ -14,6 +15,7 @@ from rest_framework import exceptions
 from django.http import HttpResponse
 from PIL import Image
 from django.conf import settings
+from api.functions.internal_code import InternalCode
 
 
 class MaterialUseCase:
@@ -68,16 +70,15 @@ class MaterialUseCase:
                 "name": str(name).strip() if name else '',
                 "measurement": str(measurement).strip() if measurement else '',
                 "supplier_code": str(row[2]).strip() if row[2] else None,
-                "internal_code": str(row[3]).strip() if row[3] else None,
-                "presentation": str(row[4]).strip() if row[4] else None,
-                "area": str(row[5]).strip() if row[5] else None,
-                "reference": str(row[6]).strip() if row[6] else None,
-                "minimum": get_decimal(row[7], "MÍNIMOS DE STOCK"),
-                "maximum": get_decimal(row[8], "MÁXIMOS DE STOCK"),
-                "unit_price": get_decimal(row[9], "PRECIO UNIDAD"),
-                "inventory_price": get_decimal(row[10], "PRECIO PRESENTACIÓN"),
-                "market_price": get_decimal(row[11], "PRECIO MERCADO"),
-                "price_difference": get_decimal(row[12], "DIFERENCIA DE PRECIO")
+                "presentation": str(row[3]).strip() if row[3] else None,
+                "area": str(row[4]).strip() if row[4] else None,
+                "reference": str(row[5]).strip() if row[5] else None,
+                "minimum": get_decimal(row[6], "MÍNIMOS DE STOCK"),
+                "maximum": get_decimal(row[7], "MÁXIMOS DE STOCK"),
+                "unit_price": get_decimal(row[8], "PRECIO UNIDAD"),
+                "inventory_price": get_decimal(row[9], "PRECIO PRESENTACIÓN"),
+                "market_price": get_decimal(row[10], "PRECIO MERCADO"),
+                "price_difference": get_decimal(row[11], "DIFERENCIA DE PRECIO")
             }
 
             if row_errors:
@@ -99,9 +100,16 @@ class MaterialUseCase:
                         'measurement': item['measurement'],
                     })
                     if material:
+                        if 'internal_code' not in material[0] or not material[0]['internal_code']:
+                            internal_code = InternalCode(
+                                material[0]['name'], material[0]['measurement'])
+                            item['internal_code'] = internal_code.value()
                         db.update({'_id': ObjectId(material[0]['_id'])}, item)
                         updated.append(item['name'])
                     else:
+                        internal_code = InternalCode(
+                            item['name'], item['measurement'])
+                        item['internal_code'] = internal_code.value()
                         db.insert(item)
                         inserted.append(item['name'])
                 return inserted, updated
@@ -167,6 +175,10 @@ class MaterialUseCase:
                 if self.__check_supplier(db):
                     if 'automation' not in self.data:
                         self.data['automation'] = False
+                    internal_code = InternalCode(
+                        name=self.data['name'],
+                        measurement=self.data['measurement'])
+                    self.data['internal_code'] = internal_code.value()
                     id = db.insert(self.data)
                     return created({'id': str(id)})
                 return bad_request('El proveedor selecionado no existe.')
@@ -210,8 +222,12 @@ class MaterialUseCase:
             if material:
                 if 'supplier_id' in self.data and not self.__check_supplier(db):
                     return bad_request('El proveedor selecionado no existe.')
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('Material actualizado correctamente.')
+                if 'internal_code' not in material[0] or not material[0]['internal_code']:
+                    internal_code = InternalCode(
+                        material[0]['name'], material[0]['measurement'])
+                    self.data['internal_code'] = internal_code.value()
+                updated = db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok(MaterialSerializer(updated[0]).data)
             return bad_request('El material no existe.')
 
     def delete(self):
@@ -241,7 +257,7 @@ class MaterialUseCase:
                         "errors": errors,
                     })
                 except Exception as e:
-                    return bad_request(f'Error: {str(e)}')
+                    return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
             return bad_request('Error al momento de cargar el arhivo Excel.')
         return bad_request('El proveedor así como el archivo en formaro Excel son requeridos.')
 
