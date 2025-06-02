@@ -2,9 +2,6 @@ from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from api.helpers.http_responses import not_found, ok
-from urllib.parse import parse_qs
-from api.constants import DEFAULT_PAGE_SIZE
-from django.core.paginator import Paginator
 from api.serializers.explosion_serializer import ExplosionSerializer
 
 
@@ -60,7 +57,6 @@ class ExplosionUseCase:
             if home_production:
                 volumetries = self.__get_volumetry(
                     db, home_production['front'])
-
                 for volumetry in volumetries:
                     amounts = self.__takeout_amounts(
                         volumetry['volumetry'],

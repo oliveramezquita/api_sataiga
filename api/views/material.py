@@ -14,6 +14,10 @@ class MatrialView(views.APIView):
         use_case = MaterialUseCase(request=request)
         return use_case.get()
 
+    def put(self, request):
+        use_case = MaterialUseCase(request=request, data=request.data)
+        return use_case.upload()
+
 
 class MaterialByIdView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
@@ -25,10 +29,6 @@ class MaterialByIdView(views.APIView):
     def patch(self, request, id):
         use_case = MaterialUseCase(data=request.data, id=id)
         return use_case.update()
-
-    def put(self, request, id):
-        use_case = MaterialUseCase(request=request, id=id)
-        return use_case.upload_image()
 
     def delete(self, request, id):
         use_case = MaterialUseCase(id=id)
