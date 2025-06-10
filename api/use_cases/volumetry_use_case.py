@@ -214,23 +214,26 @@ class VolumetryUseCase:
             for item in volumetry_data:
                 is_exist = db.extract(
                     {'client_id': self.client_id, 'front': self.front, 'material_id': item['material_id']})
-                if is_exist:
-                    db.update({
-                        'client_id': self.client_id,
-                        'front': self.front,
-                        'material_id': item['material_id']},
-                        {
-                            'volumetry': item['volumetry'],
-                            'gran_total': item['gran_total'],
-                    })
-                    updated += 1
-                else:
-                    db.insert({
-                        'client_id': self.client_id,
-                        'front': self.front,
-                        **item
-                    })
-                    inserted += 1
+                material = self.__material_validation(db)
+                if self.__client_validation(db) and material:
+                    if is_exist:
+                        db.update({
+                            'client_id': self.client_id,
+                            'front': self.front,
+                            'material_id': item['material_id']},
+                            {
+                                'volumetry': item['volumetry'],
+                                'gran_total': item['gran_total'],
+                        })
+                        updated += 1
+                    else:
+                        db.insert({
+                            'client_id': self.client_id,
+                            'front': self.front,
+                            'supplier_id': material[0]['supplier_id'],
+                            **item
+                        })
+                        inserted += 1
         return inserted, updated
 
     def __extract(self):
@@ -255,7 +258,9 @@ class VolumetryUseCase:
                             self.__calculate_totals())
                         message = f'El material: {material[0]['name']} ha sido actualizado correctamente en la volumetría.'
                     else:
-                        db.insert(self.__calculate_totals())
+                        db.insert({
+                            'supplier_id': material[0]['supplier_id'],
+                            **self.__calculate_totals()})
                         message = f'El material: {material[0]['name']} ha sido añadido correctamente en la volumetría.'
                     volumetries = db.extract({
                         'client_id': self.data['client_id'],

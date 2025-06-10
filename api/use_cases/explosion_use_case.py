@@ -16,6 +16,15 @@ class ExplosionUseCase:
             return home_production[0]
         return None
 
+    def __get_home_production_by_data(self, db, client_id, front):
+        home_production = MongoDBHandler.find(db, 'home_production', {
+            'client_id': client_id,
+            'front': front
+        })
+        if home_production:
+            return home_production[0]
+        return None
+
     def __get_volumetry(self, db, front):
         volumetries = MongoDBHandler.find(db, 'volumetries', {'front': front})
         if volumetries:
@@ -51,6 +60,42 @@ class ExplosionUseCase:
                 })
         return amounts
 
+    def __assign_color(self, db, **kwargs):
+        data = MongoDBHandler.find(db, 'quantification', {
+            'prototype': kwargs.get('prototype', None),
+            'front': kwargs.get('front', None),
+            'client_id': kwargs.get('client_id', None),
+        })
+        if data:
+            results = []
+            seen = set()
+
+            for item in data:
+                quantification = item.get('quantification', {})
+                for _, materials in quantification.items():
+                    for material_item in materials:
+                        material = material_item.get('material', {})
+                        color = material.get('color')
+                        material_id = material_item.get('id')
+
+                        if color and material_id:
+                            key = (material_id, color)
+                            if key not in seen:
+                                results.append(
+                                    {'id': material_id, 'color': color})
+                                seen.add(key)
+
+            for material in results:
+                MongoDBHandler.modify(
+                    db,
+                    'explosion',
+                    {
+                        'home_production_id': kwargs.get('home_production_id', None),
+                        'material_id': material['id'],
+                    },
+                    {'color': material['color'], }
+                )
+
     def create(self):
         with MongoDBHandler('explosion') as db:
             home_production = self.__get_home_production(db)
@@ -75,9 +120,18 @@ class ExplosionUseCase:
                         db.insert({
                             'home_production_id': self.home_production_id,
                             'material_id': volumetry['material_id'],
+                            'supplier_id': volumetry['supplier_id'],
                             'explosion': amounts,
                             'gran_total': gran_total
                         })
+                for prototype in home_production['lots']['prototypes'].keys():
+                    self.__assign_color(
+                        db,
+                        prototype=prototype,
+                        front=home_production['front'],
+                        client_id=home_production['client_id'],
+                        home_production_id=self.home_production_id,
+                    )
 
     def get(self):
         with MongoDBHandler('explosion') as db:

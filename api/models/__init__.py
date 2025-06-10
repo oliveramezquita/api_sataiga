@@ -16,3 +16,4 @@ from .lot import Lot
 from .explosion import Explosion
 from .quantification import Quantification
 from .contact import Contact
+from .purchase_order import PurchaseOrder
