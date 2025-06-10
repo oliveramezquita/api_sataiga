@@ -25,7 +25,6 @@ class PurchaseOrder(models.Model):
     request_by_name = models.CharField(max_length=50)
     approved_by = models.CharField(max_length=50, null=True)
     created = models.DateField()
-    approved_date = models.DateField(null=True)
     estimated_delivery = models.DateField(null=True)
     items = models.JSONField(null=True)
     selected_rows = models.JSONField(null=True)

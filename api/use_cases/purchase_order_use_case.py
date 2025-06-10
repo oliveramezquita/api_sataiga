@@ -22,6 +22,7 @@ class PurchaseOrderUseCase:
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
             self.q = params['q'][0] if 'q' in params else None
+            self.supplier = params['supplier'][0] if 'supplier' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.home_production_id = kwargs.get('home_production_id', None)
@@ -263,6 +264,8 @@ class PurchaseOrderUseCase:
                     {'request_by_name': {'$regex': self.q, '$options': 'i'}},
                     {'approved_by_name': {'$regex': self.q, '$options': 'i'}},
                 ]
+            if self.supplier:
+                filters['supplier_id'] = self.supplier
             purchase_orders = db.extract(filters)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
             page = paginator.get_page(self.page)
@@ -377,6 +380,8 @@ class PurchaseOrderUseCase:
                     data = self.__prepare_data_files(db, purchase_order[0])
                     self.data[
                         'excel_file'] = f"{settings.BASE_URL}/{self.__create_purchase_order_xls(data)}"
+                self.data['approved_by_name'] = self.__check_user(
+                    db, data['approved_by'])
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')
