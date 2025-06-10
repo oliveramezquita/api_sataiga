@@ -30,6 +30,7 @@ class MaterialUseCase:
             self.supplier = params['supplier'][0] if 'supplier' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
+        self.supplier_id = kwargs.get('supplier_id', None)
 
     def __check_supplier(self, db):
         supplier = MongoDBHandler.find(db, 'suppliers', {'_id': ObjectId(
@@ -214,6 +215,13 @@ class MaterialUseCase:
             if material:
                 return ok(MaterialSerializer(material[0]).data)
             return not_found('El material no existe.')
+
+    def get_by_supplier(self):
+        with MongoDBHandler('materials') as db:
+            materials = db.extract({'supplier_id': self.supplier_id})
+            if materials:
+                return ok(MaterialSerializer(materials, many=True).data)
+            return ok([])
 
     def update(self):
         with MongoDBHandler('materials') as db:

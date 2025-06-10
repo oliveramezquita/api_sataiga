@@ -1,7 +1,6 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from django.conf import settings
 from datetime import datetime
-from rest_framework.exceptions import APIException
 
 
 class MongoDBHandler:
@@ -53,6 +52,16 @@ class MongoDBHandler:
     def create_unique_index(self, field):
         collection = self.db[self.collection_name]
         collection.create_index([(field, 1)], unique=True)
+
+    def get_next_folio(self, element):
+        collection = self.db['counters']
+        result = collection.find_one_and_update(
+            {"_id": element},
+            {"$inc": {"seq": 1}},
+            return_document=ReturnDocument.AFTER,
+            upsert=True
+        )
+        return result["seq"]
 
     @staticmethod
     def find(inst, collection_name, query):

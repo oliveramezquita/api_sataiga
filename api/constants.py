@@ -79,3 +79,17 @@ OD_STATUS = {
     },
     'total': 0,
 }
+
+FIXED_PRESENTATIONS = {
+    "PAR": 2,
+    "DOCENA": 12,
+    "MEDIA DOCENA": 6,
+    "DECENA": 10,
+    "CENTENA": 100,
+    "CENTENAR": 100,
+    "MILLAR": 1000,
+    "HOJA": 1,
+    "TRAMO": 1,
+    "BOBINA": 1,
+    "PZS": 1,
+}

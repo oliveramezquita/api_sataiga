@@ -7,7 +7,7 @@ from .client import ClientView, ClientByTypeView, ClientByIdView
 from .supplier import SupplierView, SupplierByIdView
 from .prototype import PrototypeView, PrototypeByIdView, PrototypeByClientView
 from .catalog import CatalogView, CatalogByIdView
-from .material import MatrialView, MaterialByIdView, DownloadMaterialsView, ImagesMaterialView
+from .material import MatrialView, MaterialByIdView, DownloadMaterialsView, ImagesMaterialView, MaterialBySupplierView
 from .volumetry import VolumetryView, VolumetryByIdView, VolumetryUploadView
 from .tax_data import TaxDataSupplierView, TaxDataClientView
 from .bank_data import BankDataView
@@ -18,3 +18,4 @@ from .lot import LotsView, LotView
 from .explosion import ExplosionView
 from .quantification import QuantificationView, QuantificationFiltersView, QuantificationByIdView
 from .contact import ContactsView, ContactByIdView
+from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, ProjectsView
