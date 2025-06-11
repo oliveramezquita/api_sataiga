@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from api.models import PurchaseOrder
-from datetime import datetime
 
 
 class PurchaseOrderSerializer(serializers.ModelSerializer):

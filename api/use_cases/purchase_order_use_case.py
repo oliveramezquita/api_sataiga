@@ -9,9 +9,10 @@ from api.helpers.http_responses import created, bad_request, ok_paginated, ok, n
 from api.constants import FIXED_PRESENTATIONS
 from django.core.paginator import Paginator
 from api.serializers.purchase_order_serializer import PurchaseOrderSerializer
-from openpyxl import Workbook
 from datetime import datetime
 from django.conf import settings
+from api.functions.oc_pdf import create_pdf
+from api.functions.oc_xlsx import create_xlsx
 
 
 class PurchaseOrderUseCase:
@@ -146,10 +147,6 @@ class PurchaseOrderUseCase:
             }
         return None
 
-    def __clean_name(self, name):
-        clean = re.sub(r'[^a-zA-Z]', '', name)
-        return clean
-
     def __prepare_data_files(self, db, purchase_order):
         data = purchase_order
 
@@ -186,52 +183,6 @@ class PurchaseOrderUseCase:
             data['phone'] = supplier.get('phone', '')
             data['email'] = supplier.get('email', '')
         return data
-
-    def __create_purchase_order_xls(self, data):
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "ORDEN DE COMPRA"
-
-        ws.append(["ORDEN DE COMPRA", f"{data['folio']}-{datetime.now().strftime('%y')}", None, "FECHA", data['created'],
-                  None, "FECHA ESTIMADA DE ENTREGA", data['estimated_delivery']])
-        ws.append(["CLIENTE", data['client'], None, None,
-                  None, "ESTATUS", "APROBADA"])
-        ws.append(["PROYECTO", data['project']])
-        ws.append(["FRENTE", data['front'], "OD", data['od'],
-                  None, "PROVEEDOR", data['supplier_name']])
-        ws.append([None, None, None, None, None,
-                  "RFC", data['rfc']])
-        ws.append(["ASUNTO", None, None, None, None,
-                  "DIRECCIÓN", data['address']])
-        ws.append([data['subject'], None, None, None, None,
-                  "TELÉFONO", data['phone']])
-        ws.append([None, None, None, None, None,
-                  "EMAIL", data['email']])
-        ws.append(["PROTOTIPOS:"])
-        prototypes = data.get("prototypes", {})
-        ws.append(list(prototypes.keys()))
-        ws.append(list(prototypes.values()))
-        ws.append([])
-
-        header = ["MATERIAL", "CÓDIGO DE PROVEEDOR", "UNIDAD DE MEDIDA",
-                  "PRESENTACIÓN", "REFERENCIA", "CANTIDAD", "PRECIO", "TOTAL"]
-        ws.append(header)
-
-        for item in data['items']:
-            ws.append([
-                item["name"],
-                item.get("supplier_code", None),
-                item["measurement"],
-                item.get("presentation", None),
-                item.get("reference", None),
-                round(float(item["total_quantity"]), 2),
-                round(float(item["inventory_price"]), 2),
-                round(float(item["total"]), 2)
-            ])
-
-        name = f'media/purchase_orders/excel/OC{data['folio']}_{self.__clean_name(data['client'])}_{self.__clean_name(data['front'])}_OD{data['od']}_{self.__clean_name(data['supplier_name'])}.xlsx'
-        wb.save(name)
-        return name
 
     def save(self):
         with MongoDBHandler('purchase_orders') as db:
@@ -336,6 +287,7 @@ class PurchaseOrderUseCase:
                         'quantities': item['explosion'],
                         'color': item.get('color', None),
                         'source': 'volumetry',
+                        'delivered': 0,
                         **material,
                     })
                     subtotal = sum(item['total'] for item in data)
@@ -379,9 +331,10 @@ class PurchaseOrderUseCase:
                 if self.data['status'] == 2:
                     data = self.__prepare_data_files(db, purchase_order[0])
                     self.data[
-                        'excel_file'] = f"{settings.BASE_URL}/{self.__create_purchase_order_xls(data)}"
+                        'excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
+                    self.data['pdf_file'] = f"{settings.BASE_URL}/{create_pdf(data)}"
                 self.data['approved_by_name'] = self.__check_user(
-                    db, data['approved_by'])
+                    db, self.data['approved_by'])
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')
