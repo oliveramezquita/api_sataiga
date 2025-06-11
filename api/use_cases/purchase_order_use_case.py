@@ -134,7 +134,12 @@ class PurchaseOrderUseCase:
             'quantity': None,
             'total_quantity': item['gran_total'],
             'modified': 0,
-            'total': round(float(item['gran_total'])*float(material['inventory_price']), 2)
+            'total': round(float(item['gran_total'])*float(material['inventory_price']), 2),
+            'delivered': {
+                'quantity': 0,
+                'notes': None,
+                'registration_date': None
+            },
         }
 
     def __process_material(self, db, item):
@@ -287,7 +292,6 @@ class PurchaseOrderUseCase:
                         'quantities': item['explosion'],
                         'color': item.get('color', None),
                         'source': 'volumetry',
-                        'delivered': 0,
                         **material,
                     })
                     subtotal = sum(item['total'] for item in data)
@@ -329,6 +333,7 @@ class PurchaseOrderUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
                 if self.data['status'] == 2:
+
                     data = self.__prepare_data_files(db, purchase_order[0])
                     self.data[
                         'excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
@@ -347,4 +352,15 @@ class PurchaseOrderUseCase:
             if purchase_order:
                 db.delete({'_id': ObjectId(self.id)})
                 return ok('Orden de compra eliminada correctamente.')
+            return not_found('La orden de compra no existe.')
+
+    def input_register(self):
+        with MongoDBHandler('purchase_orders') as db:
+            purchase_order = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if purchase_order:
+                if 'items' in self.data:
+                    db.update({'_id': ObjectId(self.id)}, self.data)
+                    return ok('Registro de entrada de materiales guardado correctamente')
+                return bad_request('Algunos campos requeridos no han sido completados.')
             return not_found('La orden de compra no existe.')

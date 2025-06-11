@@ -57,3 +57,11 @@ class PurchaseOrderMaterialsView(views.APIView):
     def get(self, request, supplier_id):
         use_case = PurchaseOrderUseCase(supplier_id=supplier_id)
         return use_case.get_materials()
+
+
+class InputRegisterView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def patch(self, request, id):
+        use_case = PurchaseOrderUseCase(id=id, data=request.data)
+        return use_case.input_register()

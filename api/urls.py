@@ -72,5 +72,8 @@ urlpatterns = [
          PurchaseOrderSuppliersView.as_view(), name='purchase order suppliers'),
     path('purchase_orders/get_materials/<str:supplier_id>',
          PurchaseOrderMaterialsView.as_view(), name='purchase order materials'),
-    path('purchase_orders/get_projects', ProjectsView.as_view(), name='projects')
+    path('purchase_orders/get_projects',
+         ProjectsView.as_view(), name='projects'),
+    path('purchase_orders/input_register/<str:id>',
+         InputRegisterView.as_view(), name='input register'),
 ]
