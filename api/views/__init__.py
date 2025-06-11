@@ -18,4 +18,4 @@ from .lot import LotsView, LotView
 from .explosion import ExplosionView
 from .quantification import QuantificationView, QuantificationFiltersView, QuantificationByIdView
 from .contact import ContactsView, ContactByIdView
-from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, ProjectsView
+from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, ProjectsView, InputRegisterView

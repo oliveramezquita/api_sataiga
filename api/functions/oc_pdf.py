@@ -79,7 +79,8 @@ def create_pdf(data):
 
     # TÍTULO
     logo_path = f"{settings.BASE_URL}/media/images/svg-logo-bellarti.png"
-    qr_code = qr.QrCodeWidget(f"OC-{data['folio']}")
+    qr_code = qr.QrCodeWidget(
+        f"{settings.ADMIN_URL}purchase-orders/view/{str(data['_id'])}?input=true")
     width_qr = 40
     height_qr = 40
     d = Drawing(width_qr, height_qr)
