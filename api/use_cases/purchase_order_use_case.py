@@ -250,12 +250,16 @@ class PurchaseOrderUseCase:
             home_production = db.extract()
             if home_production:
                 for hp in home_production:
+                    empty_lots = {
+                        'total': 0,
+                        'prototypes': {}
+                    }
                     projects.append({
                         'home_production_id': str(hp['_id']),
                         'name': f"{hp['front']} - OD {hp['od']}",
                         'od': hp['od'],
                         'front': hp['front'],
-                        'lots': hp['lots']['prototypes']
+                        'lots': hp['lots']['prototypes'] if 'prototypes' in hp['lots'] else empty_lots
                     })
             return ok(projects)
 
