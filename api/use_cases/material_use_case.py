@@ -15,6 +15,7 @@ from rest_framework import exceptions
 from django.http import HttpResponse
 from PIL import Image
 from django.conf import settings
+from api.functions.concept_n_sku import generate_concept_and_sku
 
 
 class MaterialUseCase:
@@ -38,6 +39,19 @@ class MaterialUseCase:
             return True
         return False
 
+    def __valid_value(self, data, idx):
+        if len(data) <= idx:
+            return None
+
+        not_valid = ['', 'None']
+        if not data[idx] or data[idx] in not_valid:
+            return None
+
+        if not isinstance(data[idx], str):
+            return str(data[idx]).strip()
+
+        return data[idx].strip()
+
     def __process_workbook(self, workbook):
         sheet = workbook.active
 
@@ -58,27 +72,35 @@ class MaterialUseCase:
                         f"Fila {idx}: '{field_name}' no es un número decimal válido.")
                     return None
 
-            name = row[0]
-            measurement = row[1]
+            division = row[0]
+            name = row[1]
+            measurement = row[7]
 
-            if not name or not measurement:
+            if not division or not name or not measurement:
                 row_errors.append(
-                    f"Fila {idx}: 'NOMBRE / DESCRIPCIÓN' y 'UNIDAD DE MEDIDA' son obligatorios.")
+                    f"Fila {idx}: 'DIVISIÓN', 'MATERIAL' y 'UNIDAD DE MEDIDA' son obligatorios.")
 
             record = {
                 "supplier_id": self.data['supplier_id'],
-                "name": str(name).strip() if name else '',
-                "measurement": str(measurement).strip() if measurement else '',
-                "supplier_code": str(row[2]).strip() if row[2] else None,
-                "presentation": str(row[3]).strip() if row[3] else None,
-                "area": str(row[4]).strip() if row[4] else None,
-                "reference": str(row[5]).strip() if row[5] else None,
-                "minimum": get_decimal(row[6], "MÍNIMOS DE STOCK"),
-                "maximum": get_decimal(row[7], "MÁXIMOS DE STOCK"),
-                "unit_price": get_decimal(row[8], "PRECIO UNIDAD"),
-                "inventory_price": get_decimal(row[9], "PRECIO PRESENTACIÓN"),
-                "market_price": get_decimal(row[10], "PRECIO MERCADO"),
-                "price_difference": get_decimal(row[11], "DIFERENCIA DE PRECIO")
+                "division": division.strip() if division else '',
+                "name": name.strip() if name else '',
+                "espec1": self.__valid_value(row, 2),
+                "espec2": self.__valid_value(row, 3),
+                "espec3": self.__valid_value(row, 4),
+                "espec4": self.__valid_value(row, 5),
+                "espec5": self.__valid_value(row, 6),
+                "measurement": measurement.strip() if measurement else '',
+                "supplier_code": self.__valid_value(row, 8),
+                "presentation": self.__valid_value(row, 9),
+                "area": self.__valid_value(row, 10),
+                "reference": self.__valid_value(row, 11),
+                "minimum": get_decimal(row[12], "MÍNIMOS DE STOCK"),
+                "maximum": get_decimal(row[13], "MÁXIMOS DE STOCK"),
+                "unit_price": get_decimal(row[14], "PRECIO UNIDAD"),
+                "inventory_price": get_decimal(row[15], "PRECIO PRESENTACIÓN"),
+                "market_price": get_decimal(row[16], "PRECIO MERCADO"),
+                "price_difference": get_decimal(row[17], "DIFERENCIA DE PRECIO"),
+                "automation": len(row) > 18 and str(row[18]) == 'SI'
             }
 
             if row_errors:
@@ -94,24 +116,30 @@ class MaterialUseCase:
             updated = []
             if self.__check_supplier(db):
                 for item in materials:
-                    material = db.extract({
+                    filters = {
                         'supplier_id': item['supplier_id'],
+                        'division': item['division'],
                         'name': item['name'],
                         'measurement': item['measurement'],
-                    })
+                    }
+                    for f in ['espec1', 'espec2', 'espec3', 'espec4', 'espec5', 'supplier_code', 'presentation']:
+                        if f in item and item[f]:
+                            filters[f] = item[f]
+                    material = db.extract(filters)
                     if material:
-                        if 'internal_code' not in material[0] or not material[0]['internal_code']:
-                            internal_code = InternalCode(
-                                material[0]['name'], material[0]['measurement'])
-                            item['internal_code'] = internal_code.value()
+                        if 'sku' not in material[0] or not material[0]['sku']:
+                            concept, sku = generate_concept_and_sku(
+                                material[0])
+                            item['concept'] = concept
+                            item['sku'] = sku
                         db.update({'_id': ObjectId(material[0]['_id'])}, item)
-                        updated.append(item['name'])
+                        updated.append(item['concept'])
                     else:
-                        internal_code = InternalCode(
-                            item['name'], item['measurement'])
-                        item['internal_code'] = internal_code.value()
+                        concept, sku = generate_concept_and_sku(item)
+                        item['concept'] = concept
+                        item['sku'] = sku
                         db.insert(item)
-                        inserted.append(item['name'])
+                        inserted.append(item['concept'])
                 return inserted, updated
             raise exceptions.NotFound('El proveedor seleccionado no existe.')
 
@@ -241,7 +269,7 @@ class MaterialUseCase:
 
     def upload(self):
         required_fields = ['supplier_id', 'file']
-        data = {key: value for key, value in self.data.items()}
+        data = dict(self.data.items())
         if all(i in data for i in required_fields):
             serializer = FileUploadSerializer(data=self.data)
             if serializer.is_valid():
