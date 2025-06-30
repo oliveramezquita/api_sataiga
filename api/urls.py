@@ -70,7 +70,7 @@ urlpatterns = [
          PurchaseOrderView.as_view(), name='purchase order'),
     path('purchase_orders/get_suppliers/<str:home_production_id>',
          PurchaseOrderSuppliersView.as_view(), name='purchase order suppliers'),
-    path('purchase_orders/get_materials/<str:supplier_id>',
+    path('purchase_orders/get_materials/<str:home_production_id>/<str:supplier_id>',
          PurchaseOrderMaterialsView.as_view(), name='purchase order materials'),
     path('purchase_orders/get_projects',
          ProjectsView.as_view(), name='projects'),

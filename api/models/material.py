@@ -9,9 +9,16 @@ class Material(models.Model):
 
     _id = models.CharField(max_length=50)
     supplier_id = models.CharField(max_length=50)
-    name = models.TextField()
+    division = models.CharField(max_length=25)
+    name = models.CharField(max_length=25)
+    espec1 = models.CharField(max_length=25, null=True)
+    espec2 = models.CharField(max_length=25, null=True)
+    espec3 = models.CharField(max_length=25, null=True)
+    espec4 = models.CharField(max_length=25, null=True)
+    espec5 = models.CharField(max_length=50, null=True)
+    concept = models.CharField(max_length=50, null=True)
     supplier_code = models.CharField(max_length=25, null=True)
-    internal_code = models.CharField(max_length=25, null=True)
+    sku = models.CharField(max_length=50, null=True)
     area = models.CharField(
         max_length=25,
         choices=AREAS,
