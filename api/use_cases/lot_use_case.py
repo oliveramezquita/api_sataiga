@@ -9,7 +9,6 @@ from collections import Counter
 from api.use_cases.explosion_use_case import ExplosionUseCase
 from openpyxl import load_workbook
 from api.serializers.file_serializer import FileUploadSerializer
-from api.constants import OD_STATUS
 
 
 class LotUseCase:
@@ -33,7 +32,7 @@ class LotUseCase:
                 'prototypes': dict(prototype_counter),
             }
 
-            total_sum = sum(l["status"]["total"] for l in lots)
+            total_sum = sum(float(l["percentage"]) for l in lots)
             MongoDBHandler.modify(db, 'home_production', {'_id': ObjectId(home_production_id)}, {
                 'lots': result,
                 'progress': round(total_sum / len(lots), 2)
@@ -69,9 +68,6 @@ class LotUseCase:
             lot = row[1].value
             laid = row[2].value
             prototype = row[3].value
-            area = row[4].value
-            status = row[5].value
-            percentage = row[6].value
 
             if block is None:
                 row_errors.append("MANZANA vacía")
@@ -93,62 +89,21 @@ class LotUseCase:
             else:
                 entry["prototype"] = str(prototype).strip()
 
-            entry["status"] = deepcopy(OD_STATUS)
-            if area and area in OD_STATUS.keys():
-                if status and status in OD_STATUS[area].keys():
-                    if percentage and isinstance(percentage, int):
-                        entry["status"][area][status] = percentage
-                    else:
-                        row_errors.append(f"PORCENTAJE inválido: {percentage}")
-                elif status:
-                    row_errors.append(f"ESTATUS inválido: {status}")
-            elif area:
-                row_errors.append(f"ÁREA inválida: {area}")
-
             if row_errors:
                 errors.append({"row": row_index, "errors": row_errors})
             else:
                 valid_entries.append(entry)
         return valid_entries, errors
 
-    def __calculate_status_totals(self, status):
-        grand_total = 0
-        num_areas = 0
-
-        for area, data in status.items():
-            if area == "total":
-                continue
-
-            stages = [v for k, v in data.items() if k != 'total']
-            if stages:
-                average = round(sum(stages) / len(stages), 2)
-            else:
-                average = 0
-
-            status[area]['total'] = average
-
-            grand_total += average
-            num_areas += 1
-
-        status['total'] = round(grand_total / num_areas, 2) if num_areas else 0
-
-        return status
-
     def __split_and_process_lots(self, data_list):
         insertions = []
         updates = []
 
         for item in data_list:
-            if all(value not in ('', None) for value in item['current_status'].values()):
-                current_status = item['current_status']
-                item["status"][current_status["area"]
-                               ][current_status["status"]] = current_status["percentage"]
-            item["status"] = self.__calculate_status_totals(item["status"])
-            item.pop('current_status', None)
             if "_id" in item:
-                insertions.append(item)
-            else:
                 updates.append(item)
+            else:
+                insertions.append(item)
 
         return insertions, updates
 
@@ -159,18 +114,45 @@ class LotUseCase:
             if 'lots' in self.data and len(self.data['lots']) > 0:
                 insertions, updates = self.__split_and_process_lots(
                     self.data['lots'])
-                if len(insertions) > 0:
-                    for lot in insertions:
+                if len(updates) > 0:
+                    for lot in updates:
                         _id = ObjectId(lot['_id'])
                         lot.pop('_id', None)
                         db.update({'_id': _id}, {**lot})
                 required_fields = ['prototype', 'block', 'lot', 'laid']
-                if len(updates) > 0:
-                    for lot in updates:
+                if len(insertions) > 0:
+                    for lot in insertions:
                         if all(i in lot for i in required_fields):
                             db.insert({
                                 'home_production_id': self.home_production_id,
                                 **lot,
+                                'percentage': 0,
+                                'progress': {
+                                    'cocina': {
+                                        'stages': [],
+                                        'percentage': 0.0,
+                                    },
+                                    'closet': {
+                                        'stages': [],
+                                        'percentage': 0.0,
+                                    },
+                                    'puertas': {
+                                        'stages': [],
+                                        'percentage': 0.0,
+                                    },
+                                    'mdeb': {
+                                        'stages': [],
+                                        'percentage': 0.0,
+                                    },
+                                    'waldras': {
+                                        'stages': [],
+                                        'percentage': 0.0,
+                                    },
+                                    'instalacion': {
+                                        'stages': [],
+                                        'percentage': 0.0,
+                                    },
+                                },
                             })
                         else:
                             errors.append(lot)
@@ -196,18 +178,9 @@ class LotUseCase:
             lot = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if lot:
-                required_fields = ['area', 'status', 'percentage']
-                if all(i in self.data for i in required_fields):
-                    area = self.data['area']
-                    status = self.data['status']
-                    percentage = self.data['percentage']
-                    lot_status = deepcopy(lot[0]['status'])
-                    lot_status[area][status] = percentage
-
-                    db.update({'_id': ObjectId(self.id)},
-                              {'status': self.__calculate_status_totals(lot_status)})
-                    self.__update_hp_lots(db, lot[0]['home_production_id'])
-                    return ok('Lote actualizado correctamente.')
+                db.update({'_id': ObjectId(self.id)}, self.data)
+                self.__update_hp_lots(db, lot[0]['home_production_id'])
+                return ok('Lote actualizado correctamente.')
             return not_found('El lote no existe.')
 
     def delete(self):
@@ -240,11 +213,37 @@ class LotUseCase:
                     lots, errors = self.__process_workbook(
                         workbook, prototypes)
                     for lot in lots:
-                        lot["status"] = self.__calculate_status_totals(
-                            lot["status"])
+
                         db.insert({
                             'home_production_id': self.home_production_id,
                             **lot,
+                            'percentage': 0,
+                            'progress': {
+                                'cocina': {
+                                    'stages': [],
+                                    'percentage': 0.0,
+                                },
+                                'closet': {
+                                    'stages': [],
+                                    'percentage': 0.0,
+                                },
+                                'puertas': {
+                                    'stages': [],
+                                    'percentage': 0.0,
+                                },
+                                'mdeb': {
+                                    'stages': [],
+                                    'percentage': 0.0,
+                                },
+                                'waldras': {
+                                    'stages': [],
+                                    'percentage': 0.0,
+                                },
+                                'instalacion': {
+                                    'stages': [],
+                                    'percentage': 0.0,
+                                },
+                            },
                         })
                     new_lots = db.extract(
                         {'home_production_id': self.home_production_id})

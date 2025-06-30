@@ -8,4 +8,6 @@ class Lot(models.Model):
     block = models.CharField(max_length=25)
     lot = models.CharField(max_length=25)
     laid = models.CharField(max_length=10)
-    status = models.JSONField()
+    percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True)
+    progress = models.JSONField(null=True)

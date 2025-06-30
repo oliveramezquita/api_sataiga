@@ -15,7 +15,6 @@ from rest_framework import exceptions
 from django.http import HttpResponse
 from PIL import Image
 from django.conf import settings
-from api.functions.internal_code import InternalCode
 
 
 class MaterialUseCase:
@@ -171,17 +170,14 @@ class MaterialUseCase:
 
     def save(self):
         with MongoDBHandler('materials') as db:
-            required_fields = ['name', 'supplier_id', 'measurement']
+            required_fields = ['division', 'name',
+                               'concept', 'measurement', 'supplier_id', 'sku']
             if all(i in self.data for i in required_fields):
                 if self.__check_supplier(db):
                     if 'automation' not in self.data:
                         self.data['automation'] = False
-                    internal_code = InternalCode(
-                        name=self.data['name'],
-                        measurement=self.data['measurement'])
-                    self.data['internal_code'] = internal_code.value()
-                    id = db.insert(self.data)
-                    return created({'id': str(id)})
+                    material_id = db.insert(self.data)
+                    return created({'id': str(material_id)})
                 return bad_request('El proveedor selecionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
@@ -190,7 +186,7 @@ class MaterialUseCase:
             filters = {}
             if self.q:
                 filters['$or'] = [
-                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'concept': {'$regex': self.q, '$options': 'i'}},
                     {'measurement': {'$regex': self.q, '$options': 'i'}},
                     {'supplier_code': {'$regex': self.q, '$options': 'i'}},
                     {'internal_code': {'$regex': self.q, '$options': 'i'}},
@@ -230,10 +226,6 @@ class MaterialUseCase:
             if material:
                 if 'supplier_id' in self.data and not self.__check_supplier(db):
                     return bad_request('El proveedor selecionado no existe.')
-                if 'internal_code' not in material[0] or not material[0]['internal_code']:
-                    internal_code = InternalCode(
-                        material[0]['name'], material[0]['measurement'])
-                    self.data['internal_code'] = internal_code.value()
                 updated = db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok(MaterialSerializer(updated[0]).data)
             return bad_request('El material no existe.')
@@ -274,7 +266,7 @@ class MaterialUseCase:
             filters = {}
             if self.q:
                 filters['$or'] = [
-                    {'name': {'$regex': self.q, '$options': 'i'}},
+                    {'concept': {'$regex': self.q, '$options': 'i'}},
                     {'measurement': {'$regex': self.q, '$options': 'i'}},
                     {'supplier_code': {'$regex': self.q, '$options': 'i'}},
                     {'internal_code': {'$regex': self.q, '$options': 'i'}},

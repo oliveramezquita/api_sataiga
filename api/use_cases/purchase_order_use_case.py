@@ -1,5 +1,7 @@
+import copy
 import math
 import re
+from collections import defaultdict
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
@@ -147,6 +149,7 @@ class PurchaseOrderUseCase:
             item['material_id'])}) if objectid_validation(item['material_id']) else None
         if material:
             return {
+                'material_id': item['material_id'],
                 **self.__extract_material_fields(material[0]),
                 **self.__process_material_quantities(item, material[0]),
             }
@@ -188,6 +191,33 @@ class PurchaseOrderUseCase:
             data['phone'] = supplier.get('phone', '')
             data['email'] = supplier.get('email', '')
         return data
+
+    def __check_materials(self, db, materials):
+        purchase_orders = MongoDBHandler.find(db, 'purchase_orders', {
+                                              'home_production_id': self.home_production_id, 'supplier_id': self.supplier_id, 'status': {'$in': [1, 2]}})
+        if purchase_orders:
+            total_quantity_sum = defaultdict(float)
+
+            for purchase_order in purchase_orders:
+                for item in purchase_order['items']:
+                    mat_id = item['material_id']
+                    total_quantity_sum[mat_id] += float(
+                        item.get('total_quantity', 0))
+
+            result = []
+            for material in materials:
+                mat_id = material['material_id']
+                required = float(material.get('required', 0))
+                consumed = total_quantity_sum.get(mat_id, 0.0)
+                diff = required - consumed
+
+                if diff > 0:
+                    new_item = copy.deepcopy(material)
+                    new_item['total_quantity'] = diff
+                    result.append(new_item)
+
+            return result
+        return materials
 
     def save(self):
         with MongoDBHandler('purchase_orders') as db:
@@ -285,7 +315,8 @@ class PurchaseOrderUseCase:
         with MongoDBHandler('explosion') as db:
             data = []
             costs = {}
-            items = db.extract({'supplier_id': self.supplier_id})
+            items = db.extract(
+                {'home_production_id': self.home_production_id, 'supplier_id': self.supplier_id})
             for i, item in enumerate(items):
                 material = self.__process_material(db, item)
                 if item and material:
@@ -298,13 +329,22 @@ class PurchaseOrderUseCase:
                         'source': 'volumetry',
                         **material,
                     })
-                    subtotal = sum(item['total'] for item in data)
-                    costs = {
-                        'subtotal': subtotal,
-                        'iva': round(subtotal*.16, 2),
-                        'total': round(subtotal*1.16, 2),
-                    }
-            return ok({'costs': costs, 'items': data})
+            materials = self.__check_materials(db, data)
+            if len(materials) > 0:
+                subtotal = sum(item['total'] for item in materials)
+                costs = {
+                    'subtotal': subtotal,
+                    'iva': round(subtotal*.16, 2),
+                    'total': round(subtotal*1.16, 2),
+                }
+            else:
+                costs = {
+                    'subtotal': 0,
+                    'iva': 0,
+                    'total': 0,
+                }
+
+            return ok({'costs': costs, 'items': materials})
 
     def update(self):
         with MongoDBHandler('purchase_orders') as db:
