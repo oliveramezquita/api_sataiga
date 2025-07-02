@@ -177,7 +177,7 @@ class MaterialUseCase:
                 material['name'],
                 material['measurement'],
                 self.__validate_value(material, 'supplier_code'),
-                self.__validate_value(material, 'internal_code'),
+                self.__validate_value(material, 'sku'),
                 self.__validate_value(material, 'presentation'),
                 self.__validate_value(material, 'area'),
                 self.__validate_value(material, 'reference'),
@@ -217,7 +217,7 @@ class MaterialUseCase:
                     {'concept': {'$regex': self.q, '$options': 'i'}},
                     {'measurement': {'$regex': self.q, '$options': 'i'}},
                     {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                    {'internal_code': {'$regex': self.q, '$options': 'i'}},
+                    {'sku': {'$regex': self.q, '$options': 'i'}},
                     {'presentation': {'$regex': self.q, '$options': 'i'}},
                     {'reference': {'$regex': self.q, '$options': 'i'}},
                 ]
@@ -297,7 +297,7 @@ class MaterialUseCase:
                     {'concept': {'$regex': self.q, '$options': 'i'}},
                     {'measurement': {'$regex': self.q, '$options': 'i'}},
                     {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                    {'internal_code': {'$regex': self.q, '$options': 'i'}},
+                    {'sku': {'$regex': self.q, '$options': 'i'}},
                     {'presentation': {'$regex': self.q, '$options': 'i'}},
                     {'reference': {'$regex': self.q, '$options': 'i'}},
                 ]
