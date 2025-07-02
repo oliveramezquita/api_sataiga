@@ -164,8 +164,8 @@ class MaterialUseCase:
         ws.title = "Materiales"
 
         headers = [
-            'PROVEEDOR', 'NOMBRE / DESCRIPCIÓN', 'UNIDAD DE MEDIDA', 'CÓDIGO PROVEEDOR',
-            'CÓDIGO INTERNO', 'PRESENTACIÓN', 'ÁREA', 'REFERENCIA',
+            'PROVEEDOR', 'CONCEPTO', 'UNIDAD DE MEDIDA', 'CÓDIGO PROVEEDOR',
+            'SKU', 'PRESENTACIÓN', 'ÁREA', 'REFERENCIA',
             'MÍNIMOS DE STOCK', 'MÁXIMOS DE STOCK',
             'PRECIO UNIDAD', 'PRECIO PRESENTACIÓN', 'PRECIO MERCADO', 'DIFERENCIA DE PRECIO'
         ]
@@ -174,7 +174,7 @@ class MaterialUseCase:
         for material in materials:
             ws.append([
                 suppliers_list[material['supplier_id']],
-                material['name'],
+                material['concept'],
                 material['measurement'],
                 self.__validate_value(material, 'supplier_code'),
                 self.__validate_value(material, 'sku'),

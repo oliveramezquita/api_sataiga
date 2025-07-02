@@ -85,11 +85,11 @@ class VolumetryUseCase:
     def __get_id_material_by_name(self, **kwargs):
         with MongoDBHandler('materials') as db:
             filters = {
-                'name': kwargs.get('name'),
+                'concept': kwargs.get('concept'),
                 'measurement': kwargs.get('measurement'),
             }
-            if kwargs.get('supplier_code'):
-                filters['supplier_code'] = kwargs.get('supplier_code')
+            if kwargs.get('sku'):
+                filters['sku'] = kwargs.get('sku')
             material = db.extract(filters)
             if material:
                 return str(material[0]['_id'])
