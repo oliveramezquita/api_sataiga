@@ -32,10 +32,10 @@ class ExplosionSerializer(serializers.ModelSerializer):
         with MongoDBHandler('materials') as db:
             material = db.extract({'_id': ObjectId(data['material_id'])})
             if material:
-                internal_code = ''
-                if 'internal_code' in material[0] and material[0]['internal_code']:
-                    internal_code = material[0]['internal_code']
-                return {'name': material[0]['name'], 'measurement': material[0]['measurement'], 'internal_code': internal_code}
+                sku = ''
+                if 'sku' in material[0] and material[0]['sku']:
+                    sku = material[0]['sku']
+                return {'concept': material[0]['concept'], 'measurement': material[0]['measurement'], 'sku': sku}
             return None
 
     class Meta:

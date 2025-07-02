@@ -85,11 +85,11 @@ class VolumetryUseCase:
     def __get_id_material_by_name(self, **kwargs):
         with MongoDBHandler('materials') as db:
             filters = {
-                'name': kwargs.get('name'),
+                'concept': kwargs.get('concept'),
                 'measurement': kwargs.get('measurement'),
             }
-            if kwargs.get('supplier_code'):
-                filters['supplier_code'] = kwargs.get('supplier_code')
+            if kwargs.get('sku'):
+                filters['sku'] = kwargs.get('sku')
             material = db.extract(filters)
             if material:
                 return str(material[0]['_id'])
@@ -115,9 +115,9 @@ class VolumetryUseCase:
                     material = sheet[f"A{row_index}"].value
                     if material:
                         material_id = self.__get_id_material_by_name(
-                            name=material,
+                            concept=material,
                             measurement=sheet[f"B{row_index}"].value,
-                            internal_code=sheet[f"C{row_index}"].value,
+                            sku=sheet[f"C{row_index}"].value,
                         )
                         if not material_id:
                             warnings.append(
@@ -138,7 +138,7 @@ class VolumetryUseCase:
                 for prototype_name in existing_prototypes:
                     sheet = workbook[prototype_name]
                     for row_index in range(2, sheet.max_row + 1):
-                        if sheet[f"A{row_index}"].value == material['name']:
+                        if sheet[f"A{row_index}"].value == material['concept']:
                             material_data["reference"] = sheet[f"D{row_index}"].value
 
                             col_index = 5
@@ -256,12 +256,12 @@ class VolumetryUseCase:
                             'front': self.data['front'],
                             'material_id': self.data['material_id']},
                             self.__calculate_totals())
-                        message = f'El material: {material[0]['name']} ha sido actualizado correctamente en la volumetría.'
+                        message = f'El material: {material[0]['concept']} ha sido actualizado correctamente en la volumetría.'
                     else:
                         db.insert({
                             'supplier_id': material[0]['supplier_id'],
                             **self.__calculate_totals()})
-                        message = f'El material: {material[0]['name']} ha sido añadido correctamente en la volumetría.'
+                        message = f'El material: {material[0]['concept']} ha sido añadido correctamente en la volumetría.'
                     volumetries = db.extract({
                         'client_id': self.data['client_id'],
                         'front': self.data['front']})

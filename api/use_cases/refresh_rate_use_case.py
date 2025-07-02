@@ -22,7 +22,7 @@ class RefreshRateUseCase:
         return False
 
     def save(self):
-        with MongoDBHandler('regresh_rate') as db:
+        with MongoDBHandler('refresh_rate') as db:
             if 'value' in self.data:
                 if self.__check_supplier(db, self.supplier_id):
                     is_exists = db.extract({'supplier_id': self.supplier_id})
@@ -36,7 +36,7 @@ class RefreshRateUseCase:
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get_by_supplier(self):
-        with MongoDBHandler('regresh_rate') as db:
+        with MongoDBHandler('refresh_rate') as db:
             refresh_rate = db.extract({'supplier_id': self.supplier_id})
             if refresh_rate:
                 return ok(RefreshRateSerializer(refresh_rate[0]).data)

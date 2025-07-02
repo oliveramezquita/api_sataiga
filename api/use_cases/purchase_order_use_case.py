@@ -68,9 +68,9 @@ class PurchaseOrderUseCase:
 
     def __extract_material_fields(self, material):
         fields = [
-            "name", "measurement", "supplier_code", "unit_price",
+            "concept", "measurement", "supplier_code", "unit_price",
             "inventory_price", "market_price", "price_difference",
-            "automation", "images", "internal_code", "presentation",
+            "automation", "images", "sku", "presentation",
             "reference"
         ]
 

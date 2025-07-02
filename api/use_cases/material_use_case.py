@@ -164,8 +164,8 @@ class MaterialUseCase:
         ws.title = "Materiales"
 
         headers = [
-            'PROVEEDOR', 'NOMBRE / DESCRIPCIÓN', 'UNIDAD DE MEDIDA', 'CÓDIGO PROVEEDOR',
-            'CÓDIGO INTERNO', 'PRESENTACIÓN', 'ÁREA', 'REFERENCIA',
+            'PROVEEDOR', 'CONCEPTO', 'UNIDAD DE MEDIDA', 'CÓDIGO PROVEEDOR',
+            'SKU', 'PRESENTACIÓN', 'ÁREA', 'REFERENCIA',
             'MÍNIMOS DE STOCK', 'MÁXIMOS DE STOCK',
             'PRECIO UNIDAD', 'PRECIO PRESENTACIÓN', 'PRECIO MERCADO', 'DIFERENCIA DE PRECIO'
         ]
@@ -174,10 +174,10 @@ class MaterialUseCase:
         for material in materials:
             ws.append([
                 suppliers_list[material['supplier_id']],
-                material['name'],
+                material['concept'],
                 material['measurement'],
                 self.__validate_value(material, 'supplier_code'),
-                self.__validate_value(material, 'internal_code'),
+                self.__validate_value(material, 'sku'),
                 self.__validate_value(material, 'presentation'),
                 self.__validate_value(material, 'area'),
                 self.__validate_value(material, 'reference'),
@@ -217,7 +217,7 @@ class MaterialUseCase:
                     {'concept': {'$regex': self.q, '$options': 'i'}},
                     {'measurement': {'$regex': self.q, '$options': 'i'}},
                     {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                    {'internal_code': {'$regex': self.q, '$options': 'i'}},
+                    {'sku': {'$regex': self.q, '$options': 'i'}},
                     {'presentation': {'$regex': self.q, '$options': 'i'}},
                     {'reference': {'$regex': self.q, '$options': 'i'}},
                 ]
@@ -297,7 +297,7 @@ class MaterialUseCase:
                     {'concept': {'$regex': self.q, '$options': 'i'}},
                     {'measurement': {'$regex': self.q, '$options': 'i'}},
                     {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                    {'internal_code': {'$regex': self.q, '$options': 'i'}},
+                    {'sku': {'$regex': self.q, '$options': 'i'}},
                     {'presentation': {'$regex': self.q, '$options': 'i'}},
                     {'reference': {'$regex': self.q, '$options': 'i'}},
                 ]

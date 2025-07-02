@@ -48,7 +48,7 @@ def format_list(suppliers):
 
 @shared_task
 def refresh_rates():
-    with MongoDBHandler('regresh_rate') as db:
+    with MongoDBHandler('refresh_rate') as db:
         data = db.extract()
         suppliers = []
         message = ''
