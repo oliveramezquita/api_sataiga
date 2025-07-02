@@ -29,13 +29,13 @@ def create_xlsx(data):
     ws.append(list(prototypes.values()))
     ws.append([])
 
-    header = ["MATERIAL", "CÓDIGO DE PROVEEDOR", "UNIDAD DE MEDIDA",
+    header = ["CONCEPTO MATERIAL", "CÓDIGO DE PROVEEDOR", "UNIDAD DE MEDIDA",
               "PRESENTACIÓN", "REFERENCIA", "CANTIDAD", "PRECIO", "TOTAL"]
     ws.append(header)
 
     for item in data['items']:
         ws.append([
-            item["name"],
+            item["concept"],
             item.get("supplier_code", None),
             item["measurement"],
             item.get("presentation", None),

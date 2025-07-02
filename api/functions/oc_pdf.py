@@ -22,7 +22,7 @@ def format_items(items):
             item.get('supplier_code', ''),
             item.get('color', ''),
             item.get('total_quantity', ''),
-            item.get('name', ''),
+            item.get('concept', ''),
             item.get('measurement', ''),
             item.get('presentation', ''),
             item.get('inventory_price', ''),
