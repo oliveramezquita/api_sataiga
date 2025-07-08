@@ -70,6 +70,14 @@ class MongoDBHandler:
         return list(result)
 
     @staticmethod
+    def record(inst, collection_name, data):
+        collection = inst.db[collection_name]
+        data['created_at'] = datetime.now()
+        data['updated_at'] = datetime.now()
+        result = collection.insert_one(data)
+        return result.inserted_id
+
+    @staticmethod
     def modify(inst, collection_name, query, modify_data):
         collection = inst.db[collection_name]
         modify_data['updated_at'] = datetime.now()

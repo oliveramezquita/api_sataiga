@@ -15,6 +15,7 @@ from datetime import datetime
 from django.conf import settings
 from api.functions.oc_pdf import create_pdf
 from api.functions.oc_xlsx import create_xlsx
+from api.use_cases.inbound_use_case import InboundUseCase
 
 
 class PurchaseOrderUseCase:
@@ -377,7 +378,6 @@ class PurchaseOrderUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
                 if self.data['status'] == 2:
-
                     data = self.__prepare_data_files(db, purchase_order[0])
                     self.data[
                         'excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
@@ -404,7 +404,21 @@ class PurchaseOrderUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
                 if 'items' in self.data:
+                    _ = [item["delivered"].update(
+                        {"registration_date": datetime.now().isoformat()}) for item in self.data['items']]
                     db.update({'_id': ObjectId(self.id)}, self.data)
+                    fields = ["color", "source", "material_id", "concept", "measurement", "supplier_id", "supplier_code",
+                              "inventory_price", "market_price", "sku", "presentation", "reference", "delivered"]
+                    items = [{k: d[k] for k in fields if k in d}
+                             for d in self.data['items']]
+                    InboundUseCase.register(
+                        purchase_order_id=self.id,
+                        project={
+                            'name': purchase_order[0]['project'],
+                            'type': 'OD' if purchase_order[0]['home_production_id'] else 'Proyecto especial'
+                        },
+                        items=items
+                    )
                     return ok('Registro de entrada de materiales guardado correctamente')
                 return bad_request('Algunos campos requeridos no han sido completados.')
             return not_found('La orden de compra no existe.')

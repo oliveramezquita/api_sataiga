@@ -133,6 +133,7 @@ class MaterialUseCase:
                             item['concept'] = concept
                             item['sku'] = sku
                         db.update({'_id': ObjectId(material[0]['_id'])}, item)
+                        # TODO: Check this error
                         updated.append(item['concept'])
                     else:
                         concept, sku = generate_concept_and_sku(item)
