@@ -33,3 +33,11 @@ class PrototypeByClientView(views.APIView):
     def get(self, request, client_id):
         use_case = PrototypeUseCase(client_id=client_id)
         return use_case.get_by_client()
+
+
+class PrototypesByDataView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request, client_id, front):
+        use_case = PrototypeUseCase(client_id=client_id, front=front)
+        return use_case.get_prototype_by_data()

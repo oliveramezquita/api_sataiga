@@ -36,7 +36,7 @@ class HomeProdcutionUseCase:
                         'progress': 0,
                         'status': 0})
                     return created('OD creada correctamente.')
-                return bad_request('El clinte seleccionado no existe.')
+                return bad_request('El cliente seleccionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):

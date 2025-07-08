@@ -28,6 +28,8 @@ urlpatterns = [
     path('prototype/<str:id>', PrototypeByIdView.as_view(), name='prototype'),
     path('prototype_by_client/<str:client_id>',
          PrototypeByClientView.as_view(), name='prototype by client'),
+    path('prototypes_by_data/<str:client_id>/<str:front>',
+         PrototypesByDataView.as_view(), name='prototype by data'),
     path('catalogs', CatalogView.as_view(), name="catalogs"),
     path('catalog/<str:id>', CatalogByIdView.as_view(), name='catalog'),
     path('materials', MatrialView.as_view(), name='materials'),
@@ -76,4 +78,8 @@ urlpatterns = [
          ProjectsView.as_view(), name='projects'),
     path('purchase_orders/input_register/<str:id>',
          InputRegisterView.as_view(), name='input register'),
+    path('inventory', InventoryView.as_view(), name='inventory'),
+    path('inbounds', InboundsView.as_view(), name='inbounds'),
+    path('inbounds/get_project/<str:project_type>',
+         ProjectsListView.as_view(), name='projects list'),
 ]
