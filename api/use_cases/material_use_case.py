@@ -28,6 +28,7 @@ class MaterialUseCase:
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
             self.q = params['q'][0] if 'q' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
+            self.division = params['division'][0] if 'division' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.supplier_id = kwargs.get('supplier_id', None)
@@ -133,8 +134,8 @@ class MaterialUseCase:
                             item['concept'] = concept
                             item['sku'] = sku
                         db.update({'_id': ObjectId(material[0]['_id'])}, item)
-                        # TODO: Check this error
-                        updated.append(item['concept'])
+                        updated.append(
+                            item['concept'] if 'concept' in item else material[0]['concept'])
                     else:
                         concept, sku = generate_concept_and_sku(item)
                         item['concept'] = concept
@@ -243,7 +244,14 @@ class MaterialUseCase:
 
     def get_by_supplier(self):
         with MongoDBHandler('materials') as db:
-            materials = db.extract({'supplier_id': self.supplier_id})
+            filter_query = {
+                "supplier_id": self.supplier_id
+            }
+
+            if self.division and len(self.division) > 0:
+                filter_query["division"] = {"$in": self.division.split(',')}
+
+            materials = db.extract(filter_query)
             if materials:
                 return ok(MaterialSerializer(materials, many=True).data)
             return ok([])

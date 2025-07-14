@@ -8,15 +8,19 @@ class PurchaseOrder(models.Model):
     STATUS_RECHAZADA = 3
 
     STATUS_CHOICES = [
-        (STATUS_GENERADA, 'Generada'),
-        (STATUS_PENDIENTE, 'Pendiente'),
+        (STATUS_GENERADA, 'Pendiente de aprobar'),
+        (STATUS_PENDIENTE, 'Borrador'),
         (STATUS_APROBADA, 'Aprobada'),
-        (STATUS_RECHAZADA, 'Rechazada'),
+        (STATUS_RECHAZADA, 'Cancelada'),
     ]
 
     _id = models.CharField(max_length=50)
     home_production_id = models.CharField(max_length=50)
+    linked_id = models.CharField(max_length=50, null=True)
+    company_id = models.CharField(max_length=50)
     project = models.CharField(max_length=50)
+    number = models.CharField(max_length=25)
+    folio = models.SmallIntegerField()
     lots = models.JSONField(null=True)
     supplier_id = models.CharField(max_length=50)
     supplier = models.CharField(max_length=50)
@@ -26,6 +30,7 @@ class PurchaseOrder(models.Model):
     approved_by = models.CharField(max_length=50, null=True)
     created = models.DateField()
     estimated_delivery = models.DateField(null=True)
+    division = models.JSONField(null=True)
     items = models.JSONField(null=True)
     selected_rows = models.JSONField(null=True)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)

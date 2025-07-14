@@ -82,4 +82,6 @@ urlpatterns = [
     path('inbounds', InboundsView.as_view(), name='inbounds'),
     path('inbounds/get_project/<str:project_type>',
          ProjectsListView.as_view(), name='projects list'),
+    path('companies', CompaniesView.as_view(), name='companies'),
+    path('company/<str:id>', CompanyByIdView.as_view(), name='copmany'),
 ]

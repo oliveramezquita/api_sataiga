@@ -21,3 +21,4 @@ from .contact import ContactsView, ContactByIdView
 from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, ProjectsView, InputRegisterView
 from .inventory import InventoryView
 from .inbound import InboundsView, ProjectsListView
+from .company import CompaniesView, CompanyByIdView

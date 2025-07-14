@@ -19,3 +19,4 @@ from .contact import Contact
 from .purchase_order import PurchaseOrder
 from .inventory import Inventory
 from .inbound import Inbound
+from .company import Company

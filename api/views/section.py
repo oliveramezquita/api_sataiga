@@ -22,6 +22,10 @@ class SectionViewById(views.APIView):
         use_case = SectionUseCase(data=request.data, id=id)
         return use_case.update()
 
+    def delete(self, request, id):
+        use_case = SectionUseCase(id=id)
+        return use_case.delete()
+
 
 class TreeView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]

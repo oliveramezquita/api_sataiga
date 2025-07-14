@@ -55,6 +55,13 @@ class MongoDBHandler:
 
     def get_next_folio(self, element):
         collection = self.db['counters']
+        result = collection.find_one({"_id": element})
+        if result:
+            return result["seq"] + 1
+        return 1
+
+    def set_next_folio(self, element):
+        collection = self.db['counters']
         result = collection.find_one_and_update(
             {"_id": element},
             {"$inc": {"seq": 1}},

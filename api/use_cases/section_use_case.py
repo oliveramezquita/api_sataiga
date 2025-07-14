@@ -4,7 +4,7 @@ from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from pymongo import errors
-from api.helpers.http_responses import created, bad_request, ok_paginated, ok
+from api.helpers.http_responses import created, bad_request, ok_paginated, ok, not_found
 from django.core.paginator import Paginator
 from api.serializers.section_serializer import SectionSerializer
 from bson import ObjectId
@@ -18,6 +18,7 @@ class SectionUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
+            self.q = params['q'][0] if 'q' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -35,7 +36,14 @@ class SectionUseCase:
 
     def get(self):
         with MongoDBHandler('sections') as db:
-            sections = db.extract()
+            filters = {}
+            if self.q:
+                filters['$or'] = [
+                    {'parent': {'$regex': self.q, '$options': 'i'}},
+                    {'level_1': {'$regex': self.q, '$options': 'i'}},
+                    {'value': {'$regex': self.q, '$options': 'i'}},
+                ]
+            sections = db.extract(filters)
             paginator = Paginator(sections, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
@@ -52,6 +60,15 @@ class SectionUseCase:
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok('Sección actualizada correctamente.')
             return bad_request('La sección no existe')
+
+    def delete(self):
+        with MongoDBHandler('sections') as db:
+            section = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if section:
+                db.delete({'_id': ObjectId(self.id)})
+                return ok('sección eliminada correctamente.')
+            return not_found('La sección no existe.')
 
     def tree_view(self):
         with MongoDBHandler('sections') as db:
