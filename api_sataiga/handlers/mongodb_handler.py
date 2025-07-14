@@ -55,6 +55,13 @@ class MongoDBHandler:
 
     def get_next_folio(self, element):
         collection = self.db['counters']
+        result = collection.find_one({"_id": element})
+        if result:
+            return result["seq"] + 1
+        return 1
+
+    def set_next_folio(self, element):
+        collection = self.db['counters']
         result = collection.find_one_and_update(
             {"_id": element},
             {"$inc": {"seq": 1}},
@@ -68,6 +75,14 @@ class MongoDBHandler:
         collection = inst.db[collection_name]
         result = collection.find(query)
         return list(result)
+
+    @staticmethod
+    def record(inst, collection_name, data):
+        collection = inst.db[collection_name]
+        data['created_at'] = datetime.now()
+        data['updated_at'] = datetime.now()
+        result = collection.insert_one(data)
+        return result.inserted_id
 
     @staticmethod
     def modify(inst, collection_name, query, modify_data):

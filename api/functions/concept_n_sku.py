@@ -51,7 +51,7 @@ def generate_concept_and_sku(data):
     for key in ["espec3", "espec4"]:
         value = data.get(key)
         if is_valid(value):
-            sku_parts.append(str(value).strip()[:7])
+            sku_parts.append(str(value).strip()[:15])
 
     sku = "-".join(part.upper() for part in sku_parts if is_valid(part))
 

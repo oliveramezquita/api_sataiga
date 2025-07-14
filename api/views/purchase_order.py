@@ -56,7 +56,9 @@ class PurchaseOrderMaterialsView(views.APIView):
 
     def get(self, request, home_production_id, supplier_id):
         use_case = PurchaseOrderUseCase(
-            home_production_id=home_production_id, supplier_id=supplier_id)
+            request=request,
+            home_production_id=home_production_id,
+            supplier_id=supplier_id)
         return use_case.get_materials()
 
 

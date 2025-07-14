@@ -10,5 +10,5 @@ class TaxData(models.Model):
     name = models.CharField(max_length=100)
     regime = models.CharField(max_length=50, null=True)
     postal_code = models.CharField(max_length=5, null=True)
-    address = models.CharField(max_length=150, null=True)
+    address = models.CharField(max_length=255, null=True)
     constancy = models.CharField(max_length=255, null=True)

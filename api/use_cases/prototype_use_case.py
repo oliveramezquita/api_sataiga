@@ -20,6 +20,7 @@ class PrototypeUseCase:
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.client_id = kwargs.get('client_id', None)
+        self.front = kwargs.get('front', None)
 
     def __client_validation(self, db, client_id):
         client = MongoDBHandler.find(db, 'clients', {'_id': ObjectId(
@@ -97,7 +98,7 @@ class PrototypeUseCase:
                         self.__update_volumetry(db)
                         return created('Prototipo creado correctamente.')
                     return bad_request('El prototipo ya existe.')
-                return bad_request('El clinte seleccionado no existe.')
+                return bad_request('El cliente seleccionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
@@ -126,7 +127,19 @@ class PrototypeUseCase:
                     fronts = sorted(set(item["front"] for item in results))
                     return ok(fronts)
                 return not_found(f'No se encontraron frentes / fraccionamientos para el cliente: {client['name']}')
-            return bad_request('El clinte seleccionado no existe.')
+            return bad_request('El cliente seleccionado no existe.')
+
+    def get_prototype_by_data(self):
+        with MongoDBHandler('prototypes') as db:
+            client = self.__client_validation(db, self.client_id)
+            if client:
+                results = db.extract(
+                    {'client_id': self.client_id, 'front': self.front})
+                if results:
+                    prototypes = sorted(set(item["name"] for item in results))
+                    return ok(prototypes)
+                return not_found(f'No se encontraron prototipos para el cliente: {client['name']}, y el frente / fraccionamiento: {self.front}.')
+            return bad_request('El cliente seleccionado no existe.')
 
     def update(self):
         with MongoDBHandler('prototypes') as db:

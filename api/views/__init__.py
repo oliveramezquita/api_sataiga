@@ -5,7 +5,7 @@ from .auth import AuthView, PasswordRequestView, RestorePasswordView
 from .dashboard import DashboardView
 from .client import ClientView, ClientByTypeView, ClientByIdView
 from .supplier import SupplierView, SupplierByIdView
-from .prototype import PrototypeView, PrototypeByIdView, PrototypeByClientView
+from .prototype import PrototypeView, PrototypeByIdView, PrototypeByClientView, PrototypesByDataView
 from .catalog import CatalogView, CatalogByIdView
 from .material import MatrialView, MaterialByIdView, DownloadMaterialsView, ImagesMaterialView, MaterialBySupplierView
 from .volumetry import VolumetryView, VolumetryByIdView, VolumetryUploadView
@@ -19,3 +19,6 @@ from .explosion import ExplosionView
 from .quantification import QuantificationView, QuantificationFiltersView, QuantificationByIdView
 from .contact import ContactsView, ContactByIdView
 from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, ProjectsView, InputRegisterView
+from .inventory import InventoryView
+from .inbound import InboundsView, ProjectsListView
+from .company import CompaniesView, CompanyByIdView

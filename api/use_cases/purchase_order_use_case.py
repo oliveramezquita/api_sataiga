@@ -15,6 +15,7 @@ from datetime import datetime
 from django.conf import settings
 from api.functions.oc_pdf import create_pdf
 from api.functions.oc_xlsx import create_xlsx
+from api.use_cases.inbound_use_case import InboundUseCase
 
 
 class PurchaseOrderUseCase:
@@ -26,6 +27,8 @@ class PurchaseOrderUseCase:
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
             self.q = params['q'][0] if 'q' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
+            self.status = params['status'][0] if 'status' in params else None
+            self.division = params['division'][0] if 'division' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.home_production_id = kwargs.get('home_production_id', None)
@@ -71,7 +74,7 @@ class PurchaseOrderUseCase:
             "concept", "measurement", "supplier_code", "unit_price",
             "inventory_price", "market_price", "price_difference",
             "automation", "images", "sku", "presentation",
-            "reference"
+            "reference", "division",
         ]
 
         retult = {}
@@ -147,7 +150,7 @@ class PurchaseOrderUseCase:
     def __process_material(self, db, item):
         material = MongoDBHandler.find(db, 'materials', {'_id': ObjectId(
             item['material_id'])}) if objectid_validation(item['material_id']) else None
-        if material:
+        if material and (self.division is None or material[0].get('division') in self.division.split(',')):
             return {
                 'material_id': item['material_id'],
                 **self.__extract_material_fields(material[0]),
@@ -229,7 +232,7 @@ class PurchaseOrderUseCase:
                 supplier = self.__check_supplier(db, self.data['supplier_id'])
                 if home_production and supplier:
                     data = self.data
-                    data['folio'] = db.get_next_folio('purchase_order')
+                    data['folio'] = db.set_next_folio('purchase_order')
                     data['project'] = f"{home_production['front']} - OD {home_production['od']}"
                     data['supplier'] = supplier['name']
                     data['request_by_name'] = self.__check_user(
@@ -242,11 +245,16 @@ class PurchaseOrderUseCase:
     def get(self):
         with MongoDBHandler('purchase_orders') as db:
             filters = {}
+            if self.supplier:
+                filters['supplier_id'] = self.supplier
+            if self.status:
+                filters['status'] = self.status
+                if self.status == 'processed':
+                    filters['status'] = {"$gt": 1}
             if self.q:
                 filters['$or'] = [
                     {'project': {'$regex': self.q, '$options': 'i'}},
                     {'subject': {'$regex': self.q, '$options': 'i'}},
-                    {'supplier': {'$regex': self.q, '$options': 'i'}},
                     {'request_by_name': {'$regex': self.q, '$options': 'i'}},
                     {'approved_by_name': {'$regex': self.q, '$options': 'i'}},
                 ]
@@ -309,7 +317,7 @@ class PurchaseOrderUseCase:
                             'name': supplier['name']
                         })
                         viewed.add(supplier_id)
-            return ok(suppliers)
+            return ok({'suppliers_list': suppliers, 'last_consecutive': db.get_next_folio('purchase_order')})
 
     def get_materials(self):
         with MongoDBHandler('explosion') as db:
@@ -377,7 +385,6 @@ class PurchaseOrderUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
                 if self.data['status'] == 2:
-
                     data = self.__prepare_data_files(db, purchase_order[0])
                     self.data[
                         'excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
@@ -404,7 +411,21 @@ class PurchaseOrderUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
                 if 'items' in self.data:
+                    _ = [item["delivered"].update(
+                        {"registration_date": datetime.now().isoformat()}) for item in self.data['items']]
                     db.update({'_id': ObjectId(self.id)}, self.data)
+                    fields = ["color", "source", "material_id", "concept", "measurement", "supplier_id", "supplier_code",
+                              "inventory_price", "market_price", "sku", "presentation", "reference", "delivered"]
+                    items = [{k: d[k] for k in fields if k in d}
+                             for d in self.data['items']]
+                    InboundUseCase.register(
+                        purchase_order_id=self.id,
+                        project={
+                            'name': purchase_order[0]['project'],
+                            'type': 'OD' if purchase_order[0]['home_production_id'] else 'Proyecto especial'
+                        },
+                        items=items
+                    )
                     return ok('Registro de entrada de materiales guardado correctamente')
                 return bad_request('Algunos campos requeridos no han sido completados.')
             return not_found('La orden de compra no existe.')

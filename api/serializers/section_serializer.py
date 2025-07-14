@@ -11,8 +11,6 @@ class SectionSerializer(serializers.ModelSerializer):
         name = data['parent']
         if 'level_1' in data and data['level_1'] != '':
             name = name + ' - ' + data['level_1']
-        if 'level_2' in data and data['level_2'] != '':
-            name = data['level_1'] + ' - ' + data['level_2']
         return name
 
     class Meta:
