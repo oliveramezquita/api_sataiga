@@ -26,6 +26,7 @@ class PurchaseOrderUseCase:
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
             self.q = params['q'][0] if 'q' in params else None
+            self.project = params['project'][0] if 'project' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
             self.status = params['status'][0] if 'status' in params else None
             self.division = params['division'][0] if 'division' in params else None
@@ -141,6 +142,9 @@ class PurchaseOrderUseCase:
             'modified': 0,
             'total': round(float(item['gran_total'])*float(material['inventory_price']), 2),
             'delivered': {
+                'rack': None,
+                'level': None,
+                'module': None,
                 'quantity': 0,
                 'notes': None,
                 'registration_date': None
@@ -248,7 +252,8 @@ class PurchaseOrderUseCase:
             if self.supplier:
                 filters['supplier_id'] = self.supplier
             if self.status:
-                filters['status'] = self.status
+                filters['status'] = int(
+                    self.status) if self.status.isdigit() else self.status
                 if self.status == 'processed':
                     filters['status'] = {"$gt": 1}
             if self.q:
@@ -260,6 +265,9 @@ class PurchaseOrderUseCase:
                 ]
             if self.supplier:
                 filters['supplier_id'] = self.supplier
+            if self.project:
+                filters['home_production_id'] = self.project
+            print(filters)
             purchase_orders = db.extract(filters)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
             page = paginator.get_page(self.page)
@@ -313,7 +321,7 @@ class PurchaseOrderUseCase:
                     supplier_id = str(supplier['_id'])
                     if supplier_id not in viewed:
                         suppliers.append({
-                            'id': supplier_id,
+                            '_id': supplier_id,
                             'name': supplier['name']
                         })
                         viewed.add(supplier_id)
