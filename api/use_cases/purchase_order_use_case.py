@@ -267,7 +267,6 @@ class PurchaseOrderUseCase:
                 filters['supplier_id'] = self.supplier
             if self.project:
                 filters['home_production_id'] = self.project
-            print(filters)
             purchase_orders = db.extract(filters)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
             page = paginator.get_page(self.page)

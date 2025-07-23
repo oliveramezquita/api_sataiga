@@ -28,6 +28,7 @@ class PurchaseOrder(models.Model):
     request_by = models.CharField(max_length=50)
     request_by_name = models.CharField(max_length=50)
     approved_by = models.CharField(max_length=50, null=True)
+    approved_by_name = models.CharField(max_length=50, null=True)
     created = models.DateField()
     estimated_delivery = models.DateField(null=True)
     division = models.JSONField(null=True)

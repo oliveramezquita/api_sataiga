@@ -2,8 +2,10 @@ from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from django.core.paginator import Paginator
-from api.helpers.http_responses import ok_paginated
+from api.helpers.http_responses import ok, ok_paginated, not_found
 from api.serializers.inventory_serializer import InventorySerializer
+from bson import ObjectId
+from api.helpers.validations import objectid_validation
 
 
 class InventoryUseCase:
@@ -42,3 +44,11 @@ class InventoryUseCase:
                 page,
                 InventorySerializer(page.object_list, many=True).data
             )
+
+    def get_by_id(self):
+        with MongoDBHandler('inventory') as db:
+            inventory = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if inventory:
+                return ok(InventorySerializer(inventory[0]).data)
+            return not_found('El inventario no existe.')
