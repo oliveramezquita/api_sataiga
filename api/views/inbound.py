@@ -10,6 +10,22 @@ class InboundsView(views.APIView):
         use_case = InboundUseCase(request=request)
         return use_case.get()
 
+    def post(self, request):
+        use_case = InboundUseCase(data=request.data)
+        return use_case.save()
+
+
+class InboundView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request, id):
+        use_case = InboundUseCase(id=id)
+        return use_case.get_by_id()
+
+    def delete(self, request, id):
+        use_case = InboundUseCase(id=id)
+        return use_case.delete()
+
 
 class ProjectsListView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
@@ -17,3 +33,11 @@ class ProjectsListView(views.APIView):
     def get(self, request, project_type):
         use_case = InboundUseCase(request=request, project_type=project_type)
         return use_case.get_project()
+
+
+class InboundsByMaterialView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request, material):
+        use_case = InboundUseCase(request=request, material=material)
+        return use_case.get_by_material()

@@ -11,9 +11,9 @@ class MaterialSerializer(serializers.ModelSerializer):
 
     def get_supplier(self, data):
         with MongoDBHandler('suppliers') as db:
-            client = db.extract({'_id': ObjectId(data['supplier_id'])})
-            if client:
-                return client[0]['name']
+            supplier = db.extract({'_id': ObjectId(data['supplier_id'])})
+            if supplier:
+                return supplier[0]['name']
             return None
 
     class Meta:
