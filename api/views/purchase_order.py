@@ -68,3 +68,9 @@ class InputRegisterView(views.APIView):
     def patch(self, request, id):
         use_case = PurchaseOrderUseCase(id=id, data=request.data)
         return use_case.input_register()
+
+
+class GeneratePDFTestView(views.APIView):
+    def get(self, request):
+        use_case = PurchaseOrderUseCase()
+        return use_case.test_pdf_generate()

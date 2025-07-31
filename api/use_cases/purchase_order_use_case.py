@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from api.serializers.purchase_order_serializer import PurchaseOrderSerializer
 from datetime import datetime
 from django.conf import settings
-from api.functions.oc_pdf import create_pdf
+from api.functions.oc_pdf import create_pdf, generate_pdf
 from api.functions.oc_xlsx import create_xlsx
 from api.use_cases.inbound_use_case import InboundUseCase
 
@@ -267,6 +267,7 @@ class PurchaseOrderUseCase:
                 filters['supplier_id'] = self.supplier
             if self.project:
                 filters['home_production_id'] = self.project
+            print(f"filters={filters}")
             purchase_orders = db.extract(filters)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
             page = paginator.get_page(self.page)
@@ -436,3 +437,7 @@ class PurchaseOrderUseCase:
                     return ok('Registro de entrada de materiales guardado correctamente')
                 return bad_request('Algunos campos requeridos no han sido completados.')
             return not_found('La orden de compra no existe.')
+
+    def test_pdf_generate(self):
+        generate_pdf()
+        return ok('PDF generado correctamente')
