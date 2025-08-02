@@ -43,7 +43,7 @@ class RefreshRateUseCase:
             return ok({'value': None, 'next_date': datetime.now(self.current_timezone).strftime('%Y-%m-%d')})
 
     def refresh_rates(self):
-        response = refresh_rates()
+        response = refresh_rates.delay()
         if response:
             return ok(response)
         return bad_request('Hubó un error al procesar la información.')

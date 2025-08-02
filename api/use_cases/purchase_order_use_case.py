@@ -13,9 +13,10 @@ from django.core.paginator import Paginator
 from api.serializers.purchase_order_serializer import PurchaseOrderSerializer
 from datetime import datetime
 from django.conf import settings
-from api.functions.oc_pdf import create_pdf, generate_pdf
+from api.functions.oc_pdf import generate_pdf
 from api.functions.oc_xlsx import create_xlsx
 from api.use_cases.inbound_use_case import InboundUseCase
+import random  # TODO: Remover despues del VoBo de las ordenes de compra en PDF
 
 
 class PurchaseOrderUseCase:
@@ -396,7 +397,8 @@ class PurchaseOrderUseCase:
                     data = self.__prepare_data_files(db, purchase_order[0])
                     self.data[
                         'excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
-                    self.data['pdf_file'] = f"{settings.BASE_URL}/{create_pdf(data)}"
+                    # TODO: Change final function to create PDF
+                    # self.data['pdf_file'] = f"{settings.BASE_URL}/{create_pdf(data)}"
                 self.data['approved_by_name'] = self.__check_user(
                     db, self.data['approved_by'])
                 db.update({'_id': ObjectId(self.id)}, self.data)
@@ -439,5 +441,76 @@ class PurchaseOrderUseCase:
             return not_found('La orden de compra no existe.')
 
     def test_pdf_generate(self):
-        generate_pdf()
+        materials = []
+        descriptions = [
+            'Soporte frontal derecho para corredera Cerrajes "Impaz" niquelado con taquete de Ø=10mm',
+            'Bisagra recta 35mm con cierre suave y montaje rápido',
+            'Corredera telescópica 40cm acero zincado',
+            'Tirador aluminio anodizado negro 96mm',
+            'Tornillo M4x16mm cabeza plana para mueble',
+            'Soporte lateral izquierdo para repisa flotante',
+            'Conector minifix 15mm con excéntrica de zamak',
+            'Soporte L metálico para entrepaños 30x30mm',
+            'Tubo colgador ovalado 30x15mm cromado',
+            'Soporte para tubo ovalado 30x15mm con tornillo',
+        ]
+
+        colors = [
+            "Encino Polar / Alto Brillo - Granito San Gabriel",
+            "Nogal Americano / Mate - Mármol Carrara",
+            "Roble Sonoma / Satinado - Ónix Negro",
+            "Gris Oxford / Mate - Acero Pulido",
+            "Blanco Brillante / Mármol Travertino"
+        ]
+
+        units = ["Pza", "Caja", "Bolsa", "Par", "Juego"]
+
+        for i in range(1, 11):
+            code = f"0601-{368+i}"
+            color = random.choice(colors)
+            qty = str(random.randint(1, 20))
+            desc = random.choice(descriptions)
+            unit = random.choice(units)
+            price = round(random.uniform(20, 100), 2)
+            total = float(qty) * price
+
+            materials.append([
+                code,
+                color,
+                qty,
+                desc,
+                unit,
+                f"${price:,.2f}",
+                f"${total:,.2f}"
+            ])
+        data_test = {
+            'client': 'INMOBILIARIA GESTORIA Y ASESORIA',
+            'purchase_order_id': '26-OD101-07-25',
+            'supplier': {
+                'name': 'Bruken Internacional S.A. de C.V.',
+                'rfc': 'CME971020753',
+                'address': 'AV. PEÑUELAS 3-1 FRACC. IND SAN PEDRITO PEÑUELAS SANTIAGO, QRO.',
+                'zipcode': '45678',
+                'email': 'mramirez@cerrajes.com',
+                'phone': '477-151-0674',
+            },
+            'company': [
+                'NORMA PATRICIA RODRÍGUEZ RODRÍGUEZ',
+                'RFC: RORN770318IQ1',
+                'BLVD. ADOLFO LOPEZ MATEOS #2607 INT. 4D. COL. BARRIO DE GUADALUPE',
+                'CP. 37289 LEÓN, GTO.',
+                'facturas@bellarti.com.mx'
+            ],
+            'date': '12/05/2025',
+            'location': 'S3- 4 PIAMONTE, 2 VENETO',
+            'division': 'HERRAJES',
+            'materials': materials,
+            'subtotal': [
+                ["$ 53,005.48"],  # subtotal,
+                ["-"],  # descuento,
+                ["$ 8,480.88"],  # iva
+            ],
+            'total': '$ 61,486.36',
+        }
+        generate_pdf.delay(data_test)
         return ok('PDF generado correctamente')
