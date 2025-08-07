@@ -1,3 +1,4 @@
+import logging
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
@@ -12,9 +13,11 @@ from reportlab.pdfbase.ttfonts import TTFont
 from PyPDF2 import PdfReader, PdfWriter
 from io import BytesIO
 
+log = logging.getLogger(__name__)
+
 
 class PDFGenerator:
-    def __init__(self, template, output_path, purchase_order_id):
+    def __init__(self, template, output_path, number):
         pdfmetrics.registerFont(TTFont('Arial', 'media/fonts/Arial.ttf'))
         pdfmetrics.registerFont(
             TTFont('Arial Italic', 'media/fonts/ArialItalic.ttf'))
@@ -24,11 +27,11 @@ class PDFGenerator:
         self.template = template
         self.output_path = output_path
         self.page_height = letter[1]
-        self.page_margin = 235  # margen superior e inferior
+        self.page_margin = 235
         self.y_cursor = self.page_height - self.page_margin
         self.current_page_index = 0
         self.is_new_page = False
-        self.purchase_order_id = purchase_order_id
+        self.number = number
 
     def _wrap_text(self, text, font_name, font_size, max_width):
         lines = []
@@ -66,12 +69,12 @@ class PDFGenerator:
         self.y_cursor = self.page_height - margin_top
         self.is_new_page = True
 
-    def _add_footer(self, page_num, total_pages):
-        self.c.setFont("Arial", 8)
-        footer_text = f"NÚM. ORDEN: {self.purchase_order_id} | PÁGINA {page_num} DE {total_pages}"
-        x_position = self.width - 32  # margen derecho
-        y_position = 20  # distancia desde el borde inferior
-        self.c.drawRightString(x_position, y_position, footer_text)
+    def _add_footer_to_canvas(self, canvas_obj, page_num, total_pages):
+        canvas_obj.setFont("Arial", 8)
+        footer_text = f"NÚM. ORDEN: {self.number} | PÁGINA {page_num} DE {total_pages}"
+        x_position = self.width - 32
+        y_position = 15
+        canvas_obj.drawRightString(x_position, y_position, footer_text)
 
     def add_wrap_text(self, coord_x, coord_y, width, content, **kwargs):
         text = "\n".join(content)
@@ -97,7 +100,7 @@ class PDFGenerator:
 
         self.c.drawText(text_obj)
 
-    def add_table(self, coord_x, coord_y, data, col_widths=None, row_height=15, **kwargs):
+    def add_table(self, coord_x, coord_y, data, col_widths=None, **kwargs):
         font_name = kwargs.get('font_name', 'Arial')
         font_size = kwargs.get('font_size', 8)
         show_grid = kwargs.get('show_grid', False)
@@ -154,7 +157,8 @@ class PDFGenerator:
 
         table.setStyle(style)
         table.wrapOn(self.c, 0, 0)
-        table.drawOn(self.c, coord_x, y - row_height * len(data))
+        table.drawOn(self.c, coord_x, y - 9 * len(data))
+        return coord_y + (9 * len(data))
 
     def add_materials_table(self, coord_x, data, col_widths=None, **kwargs):
         font_name = kwargs.get('font_name', 'Arial')
@@ -239,11 +243,11 @@ class PDFGenerator:
         # Poner el cursor para la primera página sólo una vez antes del ciclo
         self.y_cursor = self.page_height - first_page_margin_top
         total_pages = len(pages_data)
+
         for i, table_rows in enumerate(pages_data):
             if i > 0:
                 self._add_page(margin_top=other_pages_margin_top)
                 self.c.setFont(font_name, font_size)
-            # Para la página 0 no llamar _add_page, ya que es la página inicial
 
             table = Table(table_rows, colWidths=col_widths)
             table.setStyle(table_style)
@@ -253,14 +257,16 @@ class PDFGenerator:
             _, table_height = table.wrap(available_width, self.y_cursor)
             table.drawOn(self.c, coord_x, self.y_cursor - table_height)
 
-            self.y_cursor -= table_height + 10
-
-            self._add_footer(i + 1, total_pages)
+            self.y_cursor -= table_height
 
         # NO incrementar current_page_index aquí porque _add_page ya lo hace
         self.is_new_page = False
 
-        return self.current_page_index, self.y_cursor
+        # Ajustar correctamente el índice de página actual (recordar que empieza en 0)
+        final_page = self.current_page_index if total_pages > 1 else 0
+        final_y_cursor = self.y_cursor
+
+        return final_page, self.height - (final_y_cursor - 15)
 
     def add_qr_code(self, coord_x, coord_y, data, size=100):
         qr_code = qr.QrCodeWidget(data)
@@ -288,6 +294,12 @@ class PDFGenerator:
             line_y = y - (i + 1) * line_spacing
             self.c.line(coord_x, line_y, coord_x + line_width, line_y)
 
+    def ensure_space(self, y, required_height):
+        if (y + required_height) > (self.height - 40):
+            self._add_page(margin_top=30)
+            return 30
+        return y
+
     def merge(self):
         if not self.is_new_page:
             self.c.showPage()
@@ -299,14 +311,31 @@ class PDFGenerator:
         overlay = PdfReader(self.buffer)
         writer = PdfWriter()
 
-        # Mezclar la primera página del template con la primera página del overlay
-        page = template.pages[0]
-        page.merge_page(overlay.pages[0])
-        writer.add_page(page)
+        total_pages = len(overlay.pages)
 
-        # Añadir las páginas restantes del overlay (buffer) sin template
-        for i in range(1, len(overlay.pages)):
-            writer.add_page(overlay.pages[i])
+        for i, overlay_page in enumerate(overlay.pages):
+            if total_pages == 1:
+                # Solo una página: fusiona sin pie
+                if i == 0:
+                    page = template.pages[0]
+                    page.merge_page(overlay_page)
+                    writer.add_page(page)
+            else:
+                # Varias páginas: añadir pie de página correcto
+                packet = BytesIO()
+                temp_canvas = canvas.Canvas(packet, pagesize=letter)
+                self._add_footer_to_canvas(temp_canvas, i + 1, total_pages)
+                temp_canvas.save()
+                packet.seek(0)
+                footer_overlay = PdfReader(packet).pages[0]
+                overlay_page.merge_page(footer_overlay)
+
+                if i == 0:
+                    page = template.pages[0]
+                    page.merge_page(overlay_page)
+                    writer.add_page(page)
+                else:
+                    writer.add_page(overlay_page)
 
         with open(self.output_path, "wb") as f:
             writer.write(f)

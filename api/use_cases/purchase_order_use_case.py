@@ -64,13 +64,6 @@ class PurchaseOrderUseCase:
             return client[0]
         return False
 
-    def __check_user(self, db, user_id):
-        user = MongoDBHandler.find(db, 'users', {'_id': ObjectId(
-            user_id)}) if objectid_validation(user_id) else None
-        if user:
-            return user[0]['name'] + ' ' + user[0]['lastname'] if 'lastname' in user[0] and user[0]['lastname'] != '' else user[0]['name']
-        return None
-
     def __extract_material_fields(self, material):
         fields = [
             "concept", "measurement", "supplier_code", "unit_price",
@@ -163,9 +156,37 @@ class PurchaseOrderUseCase:
             }
         return None
 
+    def __format_location(self, data):
+        parts = []
+
+        if data.get('postal_code'):
+            parts.append(f"CP. {data['postal_code']}")
+
+        if data.get('city'):
+            parts.append(data['city'])
+
+        if data.get('state'):
+            parts.append(data['state'])
+
+        return ' '.join(parts)
+
+    def __format_money(self, value):
+        try:
+            amount = float(value)
+            return "$ {:,.2f}".format(amount)
+        except (ValueError, TypeError):
+            return value
+
     def __prepare_data_files(self, db, purchase_order):
         data = purchase_order
+        data['client'] = ''
+        data['location'] = ''
+        data['company'] = []
+        data['front'] = ''
+        data['od'] = ''
+        data['prototypes'] = ''
 
+        # DATES
         created = datetime.fromisoformat(
             data['created'].replace("Z", "+00:00"))
         data['created'] = created.strftime("%Y-%m-%d")
@@ -177,27 +198,66 @@ class PurchaseOrderUseCase:
         else:
             data['estimated_delivery'] = 'S/D'
 
-        data['subject'] = data['subject'] if 'subject' in data else ''
-
+        # HOME PRODUCTION
         home_production = self.__check_home_production(
             db, data['home_production_id'])
         if home_production:
-            data['front'] = home_production['front']
-            data['od'] = home_production['od']
-
             client = self.__check_client(
                 db, home_production['client_id'])
             data['client'] = client['name'] if 'name' in client else ''
-            data['prototypes'] = home_production['lots']['prototypes']
+            front = home_production['front']
+            data['front'] = front
+            data['od'] = home_production['od']
+            prototypes = home_production['lots']['prototypes']
+            data['prototypes'] = prototypes
+            prototypes_items = [f"{v} {k}" for k, v in prototypes.items()]
+            data['location'] = 'front'
+            if len(prototypes_items) == 1:
+                data['location'] = f'{front} - {prototypes_items[0]}'
+            else:
+                data['location'] = f'{front} - ' + ', '.join(
+                    prototypes_items[:-1]) + ' y ' + prototypes_items[-1]
 
-        supplier = self.__check_supplier(db, data['supplier_id'])
-        tax_data = self.__check_tax_data(db, data['supplier_id'])
-        if supplier:
-            data['supplier_name'] = supplier['name']
-            data['rfc'] = tax_data['rfc'] if tax_data and 'rfc' in tax_data else ''
-            data['address'] = supplier.get('address', '')
-            data['phone'] = supplier.get('phone', '')
-            data['email'] = supplier.get('email', '')
+        # COMPANY
+        company = MongoDBHandler.find(db, 'companies', {'_id': ObjectId(
+            data['company_id'])}) if objectid_validation(data['company_id']) else None
+        if company and len(company) > 0:
+            data['company'] = [company[0]['name']]
+            if 'rfc' in company[0]:
+                data['company'].append(f'RFC: {company[0]['rfc']}')
+            if 'address' in company[0]:
+                data['company'].append(company[0]['address'])
+            if any(company[0].get(key) for key in ['rfc', 'city', 'state']):
+                data['company'].append(self.__format_location(company[0]))
+            if 'email' in company[0]:
+                data['company'].append(company[0]['email'])
+
+        # DIVISION
+        data['division'] = ', '.join(data['division'])
+
+        # MATERIALS
+        data['materials'] = []
+        for item in data['items']:
+            data['materials'].append([
+                item.get('supplier_code', ''),
+                item.get('color', ''),
+                item.get('total_quantity', 0),
+                item.get('concept', ''),
+                item.get('measurement', ''),
+                item.get('inventory_price', 0),
+                item.get('total', 0),
+            ])
+
+        # SUBTOTAL
+        data['subtotal'] = [
+            [self.__format_money(data.get('subtotal', 0))],
+            [self.__format_money(data.get('discount', '-'))],
+            [self.__format_money(data.get('iva', 0))],
+        ]
+
+        # TOTAL
+        data['total'] = self.__format_money(data.get('total', 0))
+
         return data
 
     def __check_materials(self, db, materials):
@@ -239,9 +299,6 @@ class PurchaseOrderUseCase:
                     data = self.data
                     data['folio'] = db.set_next_folio('purchase_order')
                     data['project'] = f"{home_production['front']} - OD {home_production['od']}"
-                    data['supplier'] = supplier['name']
-                    data['request_by_name'] = self.__check_user(
-                        db, data['request_by'])
                     id = db.insert(data)
                     return created({'id': str(id)})
                 return bad_request('El proveedor seleccionado no existe.')
@@ -268,7 +325,6 @@ class PurchaseOrderUseCase:
                 filters['supplier_id'] = self.supplier
             if self.project:
                 filters['home_production_id'] = self.project
-            print(f"filters={filters}")
             purchase_orders = db.extract(filters)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
             page = paginator.get_page(self.page)
@@ -378,9 +434,6 @@ class PurchaseOrderUseCase:
                     if home_production and supplier:
                         data = self.data
                         data['project'] = f"{home_production['front']} - OD {home_production['od']}"
-                        data['supplier'] = supplier['name']
-                        data['request_by_name'] = self.__check_user(
-                            db, data['request_by'])
                         db.update({'_id': ObjectId(self.id)}, data)
                         message_status = 'guardada' if data['status'] == 0 else 'generada'
                         return ok(f'Orden de compra {message_status} correctamente.')
@@ -394,13 +447,27 @@ class PurchaseOrderUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
                 if self.data['status'] == 2:
-                    data = self.__prepare_data_files(db, purchase_order[0])
-                    self.data[
-                        'excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
-                    # TODO: Change final function to create PDF
-                    # self.data['pdf_file'] = f"{settings.BASE_URL}/{create_pdf(data)}"
-                self.data['approved_by_name'] = self.__check_user(
-                    db, self.data['approved_by'])
+                    data = self.__prepare_data_files(
+                        db, PurchaseOrderSerializer(purchase_order[0]).data)
+                    self.data['excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
+                    pdf = generate_pdf({
+                        'purchase_order_id': str(data['_id']),
+                        'client': data['client'],
+                        'number': data['number'],
+                        'supplier': data['supplier'],
+                        'company': data['company'],
+                        'date': data['created'],
+                        'location': data['location'],
+                        'division': data['division'],
+                        'materials': data['materials'],
+                        'subtotal': data['subtotal'],
+                        'total': data['total'],
+                        'payment_method': data.get('payment_method', ''),
+                        'payment_form': data.get('payment_form', ''),
+                        'cfd': data.get('cfd', ''),
+                        'invoice_email': data.get('invoice_email', ''),
+                    })
+                    self.data['pdf_file'] = f"{settings.BASE_URL}/{pdf}"
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')
@@ -465,7 +532,7 @@ class PurchaseOrderUseCase:
 
         units = ["Pza", "Caja", "Bolsa", "Par", "Juego"]
 
-        for i in range(1, 11):
+        for i in range(1, 15):
             code = f"0601-{368+i}"
             color = random.choice(colors)
             qty = str(random.randint(1, 20))
@@ -512,5 +579,103 @@ class PurchaseOrderUseCase:
             ],
             'total': '$ 61,486.36',
         }
+
+        # data = {
+        #     '_id': ObjectId('6893e4538837e75233d70ece'),
+        #     'supplier_id': '6862f0dbc0e33a43b7e05dc3',
+        #     'number': '29-OD101-08-25',
+        #     'company_id': '686dd47a08a24131abebdf65',
+        #     'home_production_id': '6864be5d610b0e930dfa58a1',
+        #     'division': ['Herraje'],
+        #     'request_by': '67c52becb1addc5dcd775524',
+        #     'created': '2025-08-06',
+        #     'estimated_delivery': '2025-08-15',
+        #     'items': [
+        #         {
+        #             'id': 0,
+        #             'supplier_id': '6862f0dbc0e33a43b7e05dc3',
+        #             'required': 28,
+        #             'quantities': [
+        #                 {
+        #                     'area': 'CLOSET 1',
+        #                     'prototypes': [
+        #                         {
+        #                             'prototype': 'Prototipo prueba',
+        #                             'quantities': {
+        #                                 'factory': 16,
+        #                                 'instalation': 0
+        #                             }
+        #                         }
+        #                     ],
+        #                     'total': 16
+        #                 }, {
+        #                     'area': 'CLOSET 2',
+        #                     'prototypes': [
+        #                         {
+        #                             'prototype': 'Prototipo prueba',
+        #                             'quantities': {
+        #                                 'factory': 12,
+        #                                 'instalation': 0
+        #                             }
+        #                         }
+        #                     ],
+        #                     'total': 12
+        #                 }
+        #             ],
+        #             'color': None,
+        #             'source': 'volumetry',
+        #             'material_id': '686314297083bed59896d643',
+        #             'concept': 'BISAGRA CIERRE SUAVE BRK 5320',
+        #             'measurement': 'PZS',
+        #             'supplier_code': 'Mx66549',
+        #             'unit_price': '16.31',
+        #             'inventory_price': '16.31',
+        #             'market_price': '17.78',
+        #             'price_difference': '1.47',
+        #             'automation': False,
+        #             'images': None,
+        #             'sku': 'HER-BIS-CIE-SUA-BRK-5320',
+        #             'presentation': None,
+        #             'reference': None,
+        #             'division': 'Herraje',
+        #             'quantity': None,
+        #             'total_quantity': 28,
+        #             'modified': 0,
+        #             'total': 456.68,
+        #             'delivered': {
+        #                 'rack': None,
+        #                 'level': None,
+        #                 'module': None,
+        #                 'quantity': 0,
+        #                 'notes': None,
+        #                 'registration_date': None
+        #             }
+        #         }, {'id': 1, 'supplier_id': '6862f0dbc0e33a43b7e05dc3', 'required': 6, 'quantities': [{'area': 'COCINA', 'prototypes': [{'prototype': 'Prototipo prueba', 'quantities': {'factory': 2, 'instalation': 2}}], 'total': 4}, {'area': 'CLOSET 1', 'prototypes': [{'prototype': 'Prototipo prueba', 'quantities': {'factory': 2, 'instalation': 0}}], 'total': 2}], 'color': None, 'source': 'volumetry', 'material_id': '686314297083bed59896d647', 'concept': 'CHAPA CUADRADA RECAMARA BRK 4743NS', 'measurement': 'PZS', 'supplier_code': 'Mx66611', 'unit_price': '298.05', 'inventory_price': '298.05', 'market_price': '310.41', 'price_difference': '12.36', 'automation': False, 'images': None, 'sku': 'HER-CHA-CUA-REC-BRK-4743NS', 'presentation': None, 'reference': None, 'division': 'Herraje', 'quantity': None, 'total_quantity': 6, 'modified': 0, 'total': 1788.3, 'delivered': {'rack': None, 'level': None, 'module': None, 'quantity': 0, 'notes': None, 'registration_date': None}}],
+        #     'subtotal': '2244.98',
+        #     'iva': 359.2,
+        #     'total': 2604.18,
+        #     'status': 1,
+        #     'payment_method': 'Por Definir',
+        #     'payment_form': 'PPD (Pago en Parcialidades)',
+        #     'cfd': 'Adquisición de Mercancías',
+        #     'invoice_email': 'facturas@bellarti.com.mx',
+        #     'folio': 29,
+        #     'project': 'Frente prueba - OD 101',
+        #     'supplier': 'Bruken Internacional S.A. de C.V.',
+        #     'request_by_name': 'Super Administrador',
+        #     'created_at': datetime.datetime(2025, 8, 6, 17, 25, 7, 850000),
+        #     'updated_at': datetime.datetime(2025, 8, 6, 17, 25, 7, 850000),
+        #     'subject': '',
+        #     'front': 'Frente prueba',
+        #     'od': '101',
+        #     'client': 'INMOBILIARIA GESTORIA Y ASESORIA',
+        #     'prototypes': {'Prototipo prueba': 2},
+        #     'supplier_name': 'Bruken Internacional S.A. de C.V.',
+        #     'rfc': '',
+        #     'address': 'Blvd. Miguel Cervantes Saavedra #1803 Col. Piletas CP 37310',
+        #     'phone': '477 358 3959',
+        #     'email': 'gerenciacomercialacoroz@hotmail.com'
+        # }
+
         generate_pdf.delay(data_test)
         return ok('PDF generado correctamente')
