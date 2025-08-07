@@ -89,4 +89,5 @@ urlpatterns = [
     path('inbound/<str:id>', InboundView.as_view(), name='inbound'),
     path('companies', CompaniesView.as_view(), name='companies'),
     path('company/<str:id>', CompanyByIdView.as_view(), name='copmany'),
+    path('test_pdf_generate', GeneratePDFTestView.as_view(), name='generate PDF'),
 ]

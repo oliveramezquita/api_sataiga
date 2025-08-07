@@ -117,9 +117,11 @@ class InboundUseCase:
     def get_by_material(self):
         with MongoDBHandler('inventory_quantity') as db:
             query = {'material_id': self.material_id}
-            created_at_param = self.created_at.replace(
-                ' to ', '+to+') if self.created_at else None
-            if created_at_param:
+            created_at_param = None
+            if self.created_at:
+                created_at_param = self.created_at.replace(' to ', '+to+')
+
+            if isinstance(created_at_param, str):
                 try:
                     if '+to+' in created_at_param:
                         start_str, end_str = created_at_param.split('+to+')
@@ -136,7 +138,6 @@ class InboundUseCase:
                             '$gte': single_date, '$lt': next_day}
                 except ValueError as e:
                     return bad_request(f'Error al parsear la fecha: {created_at_param} — {e}')
-            print(query)
             inbounds = db.extract(query)
 
             if inbounds:
