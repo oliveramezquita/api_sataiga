@@ -4,6 +4,7 @@ from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from django.core.paginator import Paginator
 from api.helpers.http_responses import ok, ok_paginated, not_found
 from api.serializers.inventory_serializer import InventorySerializer
+from api.serializers.inventory_quantity_serializer import InventoryQuantitySerializer
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 
@@ -21,6 +22,7 @@ class InventoryUseCase:
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.supplier_id = kwargs.get('supplier_id', None)
+        self.material_id = kwargs.get('material_id', None)
 
     def get(self):
         with MongoDBHandler('inventory') as db:
@@ -52,3 +54,15 @@ class InventoryUseCase:
             if inventory:
                 return ok(InventorySerializer(inventory[0]).data)
             return not_found('El inventario no existe.')
+
+    def get_by_material(self):
+        return ok(InventoryUseCase.get_material_availability(self.material_id))
+
+    @staticmethod
+    def get_material_availability(material_id):
+        with MongoDBHandler('inventory_quantity') as db:
+            filters = {'material_id': material_id}
+            iq = db.extract(filters)
+            if len(iq) > 0:
+                return InventoryQuantitySerializer(iq, many=True).data
+            return []

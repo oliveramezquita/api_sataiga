@@ -459,7 +459,7 @@ class PurchaseOrderUseCase:
                         'total': data['total'],
                         'payment_method': data.get('payment_method', ''),
                         'payment_form': data.get('payment_form', ''),
-                        'cfd': data.get('cfd', ''),
+                        'cfdi': data.get('cfdi', ''),
                         'invoice_email': data.get('invoice_email', ''),
                     })
                     self.data['pdf_file'] = f"{settings.BASE_URL}/{pdf}"
@@ -492,11 +492,14 @@ class PurchaseOrderUseCase:
                              for d in self.data['items']]
                     InboundUseCase.register(
                         purchase_order_id=self.id,
+                        supplier_id=purchase_order[0]['supplier_id'],
                         project={
+                            'id': str(purchase_order[0]['_id']),
                             'name': purchase_order[0]['project'],
-                            'type': 'OD' if purchase_order[0]['home_production_id'] else 'Proyecto especial'
+                            'type': 'OD' if purchase_order[0]['home_production_id'] else 'Proyecto Especial'
                         },
-                        items=items
+                        items=items,
+                        folio=db.set_next_folio('purchase_order'),
                     )
                     return ok('Registro de entrada de materiales guardado correctamente')
                 return bad_request('Algunos campos requeridos no han sido completados.')

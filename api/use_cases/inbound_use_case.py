@@ -29,16 +29,16 @@ class InboundUseCase:
         for item in items:
             material = {
                 'id': item['material_id'],
-                'color': item['color'],
+                'color': item.get('color', ''),
                 'concept': item['concept'],
                 'measurement': item['measurement'],
                 'sku': item['sku'],
                 'supplier_id': item['supplier_id'],
-                'supplier_code': item['supplier_code'],
-                'inventory_price': item['inventory_price'],
-                'market_price': item['market_price'],
-                'presentation': item['presentation'],
-                'reference': item['reference'],
+                'supplier_code': item.get('supplier_code', ''),
+                'inventory_price': item.get('inventory_price', ''),
+                'market_price': item.get('market_price', ''),
+                'presentation': item.get('presentation', ''),
+                'reference': item.get('reference', ''),
             }
             inventory = MongoDBHandler.find(
                 db, 'inventory', {'material.id': item['material_id']})
@@ -154,12 +154,14 @@ class InboundUseCase:
             return bad_request('La entrada no existe.')
 
     @staticmethod
-    def register(purchase_order_id, project, items):
+    def register(purchase_order_id, supplier_id, project, items, folio):
         with MongoDBHandler('inbounds') as db:
             inbound_id = db.insert({
                 'purchase_order_id': purchase_order_id,
+                'supplier_id': supplier_id,
                 'project': project,
                 'items': items,
+                'folio': folio,
             })
             use_case = InboundUseCase()
             use_case.perform_counting(db, project, items, inbound_id)

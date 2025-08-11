@@ -18,7 +18,7 @@ class InventorySerializer(serializers.ModelSerializer):
     def get_last_inbound(self, data):
         with MongoDBHandler('inventory_quantity') as db:
             last_inbound = db.extract(
-                {'inventory_id': str(data['_id'])}, 'created_at')
+                {'inventory_id': str(data['_id'])}, 'created_at', -1)
             if last_inbound:
                 last_inbound[0].pop('_id', None)
                 return last_inbound[0]
