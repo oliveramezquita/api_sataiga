@@ -81,6 +81,8 @@ urlpatterns = [
     path('inventory', InventoryView.as_view(), name='inventory'),
     path('inventory_item/<str:id>',
          InventoryItemView.as_view(), name='inventory item'),
+    path('inventory/material_availability/<str:material_id>',
+         InventoryMaterialView.as_view(), name='material_availability'),
     path('inbounds', InboundsView.as_view(), name='inbounds'),
     path('inbounds/get_project/<str:project_type>',
          ProjectsListView.as_view(), name='projects list'),
@@ -89,5 +91,6 @@ urlpatterns = [
     path('inbound/<str:id>', InboundView.as_view(), name='inbound'),
     path('companies', CompaniesView.as_view(), name='companies'),
     path('company/<str:id>', CompanyByIdView.as_view(), name='copmany'),
-    path('test_pdf_generate', GeneratePDFTestView.as_view(), name='generate PDF'),
+    path('outputs', OutputsView.as_view(), name='outputs'),
+    path('output/<str:id>', OutputView.as_view(), name='output'),
 ]

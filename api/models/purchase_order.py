@@ -38,7 +38,7 @@ class PurchaseOrder(models.Model):
     pdf_file = models.CharField(max_length=255, null=True)
     payment_method = models.CharField(max_length=50, null=True)
     payment_form = models.CharField(max_length=50, null=True)
-    cfd = models.CharField(max_length=50, null=True)
+    cfdi = models.CharField(max_length=50, null=True)
     invoice_email = models.CharField(max_length=50, null=True)
     status = models.IntegerField(
         choices=STATUS_CHOICES, default=STATUS_GENERADA)

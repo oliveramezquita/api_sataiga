@@ -58,7 +58,7 @@ def generate_pdf(data):
     billing_table = [
         ["FACTURACIÓN:", f"MÉTODO DE PAGO: {data['payment_method']}"],
         ["", f"FORMA DE PAGO: {data['payment_form']}"],
-        ["", f"USO DE CFD: {data['cfd']}"],
+        ["", f"USO DE CFDI: {data['cfdi']}"],
         ["", f"ENVIAR FACTURA A: {data['invoice_email']}"]
     ]
     remaining_y = pdf_generator.add_table(29, remaining_y + 25, billing_table,

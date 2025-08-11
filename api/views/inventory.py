@@ -17,3 +17,11 @@ class InventoryItemView(views.APIView):
     def get(self, request, id):
         use_case = InventoryUseCase(id=id)
         return use_case.get_by_id()
+
+
+class InventoryMaterialView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request, material_id):
+        use_case = InventoryUseCase(material_id=material_id)
+        return use_case.get_by_material()

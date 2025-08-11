@@ -1,5 +1,4 @@
 import traceback
-from copy import deepcopy
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import bad_request, ok, not_found
 from api.serializers.lot_serializer import LotSerializer

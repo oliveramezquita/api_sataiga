@@ -5,6 +5,7 @@ from api.helpers.http_responses import ok, not_found, bad_request
 from collections import defaultdict
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
+from api.use_cases.inventory_use_case import InventoryUseCase
 
 
 class QuantificationUseCase:
@@ -14,6 +15,7 @@ class QuantificationUseCase:
             self.client_id = params['client_id'][0] if 'client_id' in params else None
             self.front = params['front'][0] if 'front' in params else None
             self.prototype = params['prototype'][0] if 'prototype' in params else None
+            self.availability = params['get_availability'][0] if 'get_availability' in params else False
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.action = kwargs.get('action', None)
@@ -38,6 +40,21 @@ class QuantificationUseCase:
                 quantification[self.data['area']]) if i not in deleted]
         return quantification
 
+    def __get_material_availability(self, data):
+        for area, materials in data['quantification'].items():
+            for i, material in enumerate(materials):
+                data['quantification'][area][i]['total_output'] = 0
+                data['quantification'][area][i]['availability'] = InventoryUseCase.get_material_availability(
+                    material['id'])
+                if 'COCINA' in data['quantification'][area][i]:
+                    data['quantification'][area][i]['TOTAL'] = data['quantification'][area][i]['COCINA']
+        for key, items in list(data['quantification'].items()):
+            data['quantification'][key] = [
+                item for item in items if item.get("availability")]
+            if not data['quantification'][key]:
+                del data['quantification'][key]
+        return data
+
     def get(self):
         with MongoDBHandler('quantification') as db:
             quantification = db.extract({
@@ -45,7 +62,9 @@ class QuantificationUseCase:
                 'front': self.front,
                 'prototype': self.prototype})
             if quantification:
-                return ok(QuantificationSerializer(quantification[0]).data)
+                q = self.__get_material_availability(
+                    quantification[0]) if self.availability else quantification[0]
+                return ok(QuantificationSerializer(q).data)
             return not_found("No se encontró la cuantificación para los datos proporcionados.")
 
     def filters(self):
