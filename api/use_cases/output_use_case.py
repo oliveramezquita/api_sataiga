@@ -20,12 +20,35 @@ class OutputUseCase:
         self.data = kwargs.get('data', [])
         self.id = kwargs.get('id', None)
 
+    def __update_iq(self, db, items):
+        for item in items:
+            inventory = MongoDBHandler.find(
+                db, 'inventory', {'material.id': item['id']})
+            if inventory and len(inventory) > 0:
+                quantity = float(
+                    inventory[0]['quantity']) - float(item['quantity'])
+                MongoDBHandler.modify(db, 'inventory', {'_id': inventory[0]['_id']}, {
+                    'quantity': round(float(quantity), 2)
+                })
+            for source in item['source']:
+                iq = MongoDBHandler.find(db, 'inventory_quantity', {
+                                         '_id': ObjectId(source['iq_id'])})
+                if iq and len(iq) > 0:
+                    status = 1 if float(source['output']) < float(
+                        iq[0]['quantity']) else 2
+                    new_quantity = float(
+                        iq[0]['quantity']) - float(source['output'])
+                    MongoDBHandler.modify(db, 'inventory_quantity', {'_id': iq[0]['_id']}, {
+                        'quantity': round(float(new_quantity), 2),
+                        'status': status
+                    })
+
     def save(self):
         if 'outputs' in self.data:
             try:
                 outputs = [
                     {
-                        'id': i,
+                        'id': item['id'],
                         'material': item['material'],
                         'quantity': item['total_output'],
                         'source': [
@@ -40,7 +63,7 @@ class OutputUseCase:
                             for av in item['availability']
                         ]
                     }
-                    for i, item in enumerate(self.data['outputs'])
+                    for item in self.data['outputs']
                 ]
                 self.data['items'] = outputs
                 del self.data['outputs']
@@ -48,7 +71,8 @@ class OutputUseCase:
                     data = self.data
                     data['folio'] = db.set_next_folio('output')
                     id = db.insert(data)
-                    # TODO: Remove amount in inventory and update inventory_quantity
+                    if id:
+                        self.__update_iq(db, data['items'])
                     return created({'id': str(id)})
             except Exception as e:
                 return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
