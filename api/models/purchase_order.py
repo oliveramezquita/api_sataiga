@@ -14,6 +14,16 @@ class PurchaseOrder(models.Model):
         (STATUS_RECHAZADA, 'Cancelada'),
     ]
 
+    SIN_ENTREGAR = 0
+    ENTREGADO_PARCIAL = 1
+    ENTREGADO_TOTAL = 2
+
+    DELIVERED_CHOICES = [
+        (SIN_ENTREGAR, 'Sin entregar'),
+        (ENTREGADO_PARCIAL, 'Entregado parcial'),
+        (ENTREGADO_TOTAL, 'Entregado total'),
+    ]
+
     _id = models.CharField(max_length=50)
     home_production_id = models.CharField(max_length=50)
     linked_id = models.CharField(max_length=50, null=True)
@@ -42,3 +52,6 @@ class PurchaseOrder(models.Model):
     invoice_email = models.CharField(max_length=50, null=True)
     status = models.IntegerField(
         choices=STATUS_CHOICES, default=STATUS_GENERADA)
+    invoiced = models.BooleanField(default=False)
+    delivered = models.IntegerField(
+        choices=DELIVERED_CHOICES, default=SIN_ENTREGAR)

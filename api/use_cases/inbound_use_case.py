@@ -33,6 +33,7 @@ class InboundUseCase:
                 'concept': item['concept'],
                 'measurement': item['measurement'],
                 'sku': item['sku'],
+                'division': item.get['division'],
                 'supplier_id': item['supplier_id'],
                 'supplier_code': item.get('supplier_code', ''),
                 'inventory_price': item.get('inventory_price', ''),
@@ -64,6 +65,7 @@ class InboundUseCase:
                 'rack': item['delivered']['rack'],
                 'level': item['delivered']['level'],
                 'module': item['delivered']['module'],
+                'status': 0,
             })
 
     def get(self):

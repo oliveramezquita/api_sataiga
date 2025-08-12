@@ -37,8 +37,13 @@ class InventoryUseCase:
                     # {'reference': {'$regex': self.q, '$options': 'i'}},
                 ]
             if self.supplier:
-                filters['supplier_id'] = self.supplier
-            materials = db.extract(filters)
+                filters['material.supplier_id'] = self.supplier
+            items = db.extract(filters)
+            materials = []
+            for item in items:
+                item['availability'] = InventoryUseCase.get_material_availability(
+                    item['material']['id'])
+                materials.append(item)
             paginator = Paginator(materials, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
@@ -61,7 +66,7 @@ class InventoryUseCase:
     @staticmethod
     def get_material_availability(material_id):
         with MongoDBHandler('inventory_quantity') as db:
-            filters = {'material_id': material_id}
+            filters = {'material_id': material_id, 'status': {'$lt': 2}}
             iq = db.extract(filters)
             if len(iq) > 0:
                 return InventoryQuantitySerializer(iq, many=True).data
