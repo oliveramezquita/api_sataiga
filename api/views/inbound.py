@@ -22,6 +22,10 @@ class InboundView(views.APIView):
         use_case = InboundUseCase(id=id)
         return use_case.get_by_id()
 
+    def patch(self, request, id):
+        use_case = InboundUseCase(data=request.data, id=id)
+        return use_case.update()
+
     def delete(self, request, id):
         use_case = InboundUseCase(id=id)
         return use_case.delete()

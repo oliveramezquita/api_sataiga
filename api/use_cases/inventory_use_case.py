@@ -18,6 +18,7 @@ class InventoryUseCase:
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
             self.q = params['q'][0] if 'q' in params else None
+            self.available = params['available'][0] if 'available' in params else False
             self.supplier = params['supplier'][0] if 'supplier' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
@@ -27,15 +28,17 @@ class InventoryUseCase:
     def get(self):
         with MongoDBHandler('inventory') as db:
             filters = {}
-            if self.q:
-                filters['$or'] = [
-                    {'rack': {'$regex': self.q, '$options': 'i'}},
-                    {'level': {'$regex': self.q, '$options': 'i'}},
-                    {'module': {'$regex': self.q, '$options': 'i'}},
-                    # {'sku': {'$regex': self.q, '$options': 'i'}},
-                    # {'presentation': {'$regex': self.q, '$options': 'i'}},
-                    # {'reference': {'$regex': self.q, '$options': 'i'}},
-                ]
+            # if self.q:
+            #     filters['$or'] = [
+            #         {'rack': {'$regex': self.q, '$options': 'i'}},
+            #         {'level': {'$regex': self.q, '$options': 'i'}},
+            #         {'module': {'$regex': self.q, '$options': 'i'}},
+            #         {'sku': {'$regex': self.q, '$options': 'i'}},
+            #         {'presentation': {'$regex': self.q, '$options': 'i'}},
+            #         {'reference': {'$regex': self.q, '$options': 'i'}},
+            #     ]
+            if self.available:
+                filters['quantity'] = {'$gt': 0}
             if self.supplier:
                 filters['material.supplier_id'] = self.supplier
             items = db.extract(filters)

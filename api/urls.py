@@ -92,5 +92,7 @@ urlpatterns = [
     path('companies', CompaniesView.as_view(), name='companies'),
     path('company/<str:id>', CompanyByIdView.as_view(), name='copmany'),
     path('outputs', OutputsView.as_view(), name='outputs'),
+    path('outputs/material/<str:material>',
+         OutputsByMaterialView.as_view(), name='outputs by material'),
     path('output/<str:id>', OutputView.as_view(), name='output'),
 ]

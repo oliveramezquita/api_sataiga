@@ -25,7 +25,7 @@ class InboundUseCase:
         self.project_type = kwargs.get('project_type', None)
         self.material_id = kwargs.get('material', None)
 
-    def perform_counting(self, db, project, items, inbound_id):
+    def __perform_counting(self, db, project, items, inbound_id):
         for item in items:
             material = {
                 'id': item['material_id'],
@@ -33,7 +33,7 @@ class InboundUseCase:
                 'concept': item['concept'],
                 'measurement': item['measurement'],
                 'sku': item['sku'],
-                'division': item.get['division'],
+                'division': item['division'],
                 'supplier_id': item['supplier_id'],
                 'supplier_code': item.get('supplier_code', ''),
                 'inventory_price': item.get('inventory_price', ''),
@@ -103,10 +103,22 @@ class InboundUseCase:
                 # TODO - Calculate the total of new materials added
                 data = self.data
                 data['folio'] = db.set_next_folio('inbound')
+                data['status'] = 0
                 id = db.insert(data)
-                self.perform_counting(db, data['project'], data['items'], id)
                 return created({'id': str(id)})
             return bad_request('Algunos campos requeridos no han sido completados.')
+
+    def update(self):
+        with MongoDBHandler('inbounds') as db:
+            inbound = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if inbound:
+                if 'items' in self.data:
+                    self.__perform_counting(
+                        db, inbound[0]['project'], self.data['items'], inbound[0]['_id'])
+                db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok('La entrada de materiales fue almacenda correctamente.')
+            return not_found('La entrada no existe o no hay materiales de entrada para almacenar.')
 
     def get_by_id(self):
         with MongoDBHandler('inbounds') as db:
@@ -117,34 +129,33 @@ class InboundUseCase:
             return not_found('La entrada no existe.')
 
     def get_by_material(self):
-        with MongoDBHandler('inventory_quantity') as db:
-            query = {'material_id': self.material_id}
-            created_at_param = None
-            if self.created_at:
-                created_at_param = self.created_at.replace(' to ', '+to+')
+        query = {'status': {'$in': [0, 1, 2]}}
+        created_at_param = None
+        if self.created_at:
+            created_at_param = self.created_at.replace(' to ', '+to+')
 
-            if isinstance(created_at_param, str):
-                try:
-                    if '+to+' in created_at_param:
-                        start_str, end_str = created_at_param.split('+to+')
-                        start_date = datetime.strptime(start_str, '%Y-%m-%d')
-                        end_date = datetime.strptime(
-                            end_str, '%Y-%m-%d') + timedelta(days=1)
-                        query['created_at'] = {
-                            '$gte': start_date, '$lt': end_date}
-                    else:
-                        single_date = datetime.strptime(
-                            created_at_param, '%Y-%m-%d')
-                        next_day = single_date + timedelta(days=1)
-                        query['created_at'] = {
-                            '$gte': single_date, '$lt': next_day}
-                except ValueError as e:
-                    return bad_request(f'Error al parsear la fecha: {created_at_param} — {e}')
-            inbounds = db.extract(query)
+        if isinstance(created_at_param, str):
+            try:
+                if '+to+' in created_at_param:
+                    start_str, end_str = created_at_param.split('+to+')
+                    start_date = datetime.strptime(start_str, '%Y-%m-%d')
+                    end_date = datetime.strptime(
+                        end_str, '%Y-%m-%d') + timedelta(days=1)
+                    query['updated_at'] = {
+                        '$gte': start_date, '$lt': end_date}
+                else:
+                    single_date = datetime.strptime(
+                        created_at_param, '%Y-%m-%d')
+                    next_day = single_date + timedelta(days=1)
+                    query['updated_at'] = {
+                        '$gte': single_date, '$lt': next_day}
+            except ValueError as e:
+                return bad_request(f'Error al parsear la fecha: {created_at_param} — {e}')
 
-            if inbounds:
-                return ok(InventoryQuantitySerializer(inbounds, many=True).data)
-            return ok([])
+        inbounds = InboundUseCase.get_by_external(self.material_id, query)
+        if inbounds:
+            return ok(inbounds)
+        return ok([])
 
     def delete(self):
         with MongoDBHandler('inbounds') as db:
@@ -156,14 +167,34 @@ class InboundUseCase:
             return bad_request('La entrada no existe.')
 
     @staticmethod
-    def register(purchase_order_id, supplier_id, project, items, folio):
+    def check_quantities(items):
+        for item in items:
+            delivered_qty = item.get('delivered', {}).get('quantity', 0)
+            total_qty = item.get('total_quantity', 0)
+
+            if float(delivered_qty) < float(total_qty):
+                return 1
+        return 2
+
+    @staticmethod
+    def register(purchase_order_id, supplier_id, project, items, folio, notes):
         with MongoDBHandler('inbounds') as db:
-            inbound_id = db.insert({
+            db.insert({
                 'purchase_order_id': purchase_order_id,
                 'supplier_id': supplier_id,
                 'project': project,
                 'items': items,
                 'folio': folio,
+                'notes': notes,
+                'status': 0,
             })
-            use_case = InboundUseCase()
-            use_case.perform_counting(db, project, items, inbound_id)
+
+    @staticmethod
+    def get_by_external(material_id, query):
+        with MongoDBHandler('inbounds') as db:
+            inbounds = db.extract(query, 'updated_at', -1)
+            if inbounds:
+                result = [inbound for inbound in inbounds if any(
+                    item["material_id"] == material_id for item in inbound.get("items", []))]
+                return InboundSerializer(result, many=True).data
+            return []

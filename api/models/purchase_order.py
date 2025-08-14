@@ -19,15 +19,15 @@ class PurchaseOrder(models.Model):
     ENTREGADO_TOTAL = 2
 
     DELIVERED_CHOICES = [
-        (SIN_ENTREGAR, 'Sin entregar'),
-        (ENTREGADO_PARCIAL, 'Entregado parcial'),
-        (ENTREGADO_TOTAL, 'Entregado total'),
+        (SIN_ENTREGAR, 'Pendiente'),
+        (ENTREGADO_PARCIAL, 'Entrega parcial'),
+        (ENTREGADO_TOTAL, 'Entrega total'),
     ]
 
     _id = models.CharField(max_length=50)
     home_production_id = models.CharField(max_length=50)
     linked_id = models.CharField(max_length=50, null=True)
-    company_id = models.CharField(max_length=50)
+    company_id = models.CharField(max_length=50, null=True)
     project = models.CharField(max_length=50)
     number = models.CharField(max_length=25)
     folio = models.SmallIntegerField()
@@ -52,6 +52,6 @@ class PurchaseOrder(models.Model):
     invoice_email = models.CharField(max_length=50, null=True)
     status = models.IntegerField(
         choices=STATUS_CHOICES, default=STATUS_GENERADA)
-    invoiced = models.BooleanField(default=False)
-    delivered = models.IntegerField(
+    invoiced_status = models.BooleanField(default=False)
+    delivered_status = models.IntegerField(
         choices=DELIVERED_CHOICES, default=SIN_ENTREGAR)
