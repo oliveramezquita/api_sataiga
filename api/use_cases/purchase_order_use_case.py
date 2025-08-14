@@ -102,7 +102,14 @@ class PurchaseOrderUseCase:
                 'quantity': presentation,
                 'total_quantity': total_quantity,
                 'modified': 1,
-                'total': round(float(total_quantity)*float(price), 2)
+                'total': round(float(total_quantity)*float(price), 2),
+                'delivered': {
+                    'rack': None,
+                    'level': None,
+                    'module': None,
+                    'quantity': 0,
+                    'registration_date': None
+                },
             }
         else:
             # TODO: Por el momento sólo se tomará el primer valor de la presentación hasta saber como se manejará el precios
@@ -132,7 +139,6 @@ class PurchaseOrderUseCase:
                 'level': None,
                 'module': None,
                 'quantity': 0,
-                'notes': None,
                 'registration_date': None
             },
         }
@@ -294,6 +300,8 @@ class PurchaseOrderUseCase:
                     data = self.data
                     data['folio'] = db.set_next_folio('purchase_order')
                     data['project'] = f"{home_production['front']} - OD {home_production['od']}"
+                    data['invoiced_status'] = False
+                    data['delivered_status'] = 0
                     id = db.insert(data)
                     return created({'id': str(id)})
                 return bad_request('El proveedor seleccionado no existe.')
@@ -485,9 +493,11 @@ class PurchaseOrderUseCase:
                 if 'items' in self.data:
                     _ = [item["delivered"].update(
                         {"registration_date": datetime.now().isoformat()}) for item in self.data['items']]
+                    self.data['delivered_status'] = InboundUseCase.check_quantities(
+                        self.data['items'])
                     db.update({'_id': ObjectId(self.id)}, self.data)
                     fields = ["color", "source", "material_id", "concept", "measurement", "supplier_id", "supplier_code",
-                              "inventory_price", "market_price", "sku", "presentation", "reference", "delivered"]
+                              "inventory_price", "market_price", "sku", "presentation", "reference", "delivered", "total_quantity", "division"]
                     items = [{k: d[k] for k in fields if k in d}
                              for d in self.data['items']]
                     InboundUseCase.register(
@@ -500,6 +510,7 @@ class PurchaseOrderUseCase:
                         },
                         items=items,
                         folio=db.set_next_folio('purchase_order'),
+                        notes=self.data['notes'] if 'notes' in self.data and self.data['notes'] else None
                     )
                     return ok('Registro de entrada de materiales guardado correctamente')
                 return bad_request('Algunos campos requeridos no han sido completados.')

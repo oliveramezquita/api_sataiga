@@ -22,4 +22,4 @@ from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrder
 from .inventory import InventoryView, InventoryItemView, InventoryMaterialView
 from .inbound import InboundsView, ProjectsListView, InboundView, InboundsByMaterialView
 from .company import CompaniesView, CompanyByIdView
-from .output import OutputsView, OutputView
+from .output import OutputsView, OutputView, OutputsByMaterialView
