@@ -296,7 +296,7 @@ class MaterialUseCase:
                 except Exception as e:
                     return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
             return bad_request('Error al momento de cargar el arhivo Excel.')
-        return bad_request('El proveedor así como el archivo en formaro Excel son requeridos.')
+        return bad_request('El proveedor así como el archivo en formato Excel son requeridos.')
 
     def download(self):
         with MongoDBHandler('materials') as db:
