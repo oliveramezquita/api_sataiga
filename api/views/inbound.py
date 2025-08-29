@@ -45,3 +45,11 @@ class InboundsByMaterialView(views.APIView):
     def get(self, request, material):
         use_case = InboundUseCase(request=request, material=material)
         return use_case.get_by_material()
+
+
+class InboundsByFileView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def post(self, request):
+        use_case = InboundUseCase(data=request.data)
+        return use_case.upload()

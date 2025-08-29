@@ -23,6 +23,12 @@ MESSAGE_CONFIG = {
         "user_id": None,
         "roles": ['super', 'admin', 'ceo', 'buyer'],
     },
+    "purchase_order_generated": {
+        "title": "Nueva orden de compra generada",
+        "icon": "tabler-shopping-cart-plus",
+        "user_id": None,
+        "roles": ['super', 'admin', 'ceo', 'buyer'],
+    },
 }
 
 FIXED_PRESENTATIONS = {

@@ -1,6 +1,8 @@
 import copy
 import math
 import re
+import traceback
+import os
 from collections import defaultdict
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
@@ -16,6 +18,12 @@ from django.conf import settings
 from api.functions.oc_pdf import generate_pdf
 from api.functions.oc_xlsx import create_xlsx
 from api.use_cases.inbound_use_case import InboundUseCase
+from api_sataiga.functions import send_notification
+from api.helpers.get_message import get_message
+from api.serializers.invoice_serializer import InvoiceUploadSerializer
+from django.core.files.storage import FileSystemStorage
+from api_sataiga.settings import BASE_URL
+from rest_framework import exceptions
 
 
 class PurchaseOrderUseCase:
@@ -288,6 +296,24 @@ class PurchaseOrderUseCase:
             return result
         return materials
 
+    def __upload_file(self, invoice_file, ext):
+        fs = FileSystemStorage(
+            location=f'media/purchase_orders/invoices/{self.id}',
+            base_url=f'media/purchase_orders/invoices/{self.id}')
+        filename = f'media/purchase_orders/invoices/{invoice_file.name}'
+        if os.path.exists(filename):
+            os.remove(filename)
+
+        ext = os.path.splitext(invoice_file.name)[1]
+        if not ext.lower() in [ext]:
+            raise exceptions.ValidationError(
+                "El archivo no tiene el formato correcto."
+            )
+
+        filename = fs.save(invoice_file.name, invoice_file)
+        uploaded_file_url = fs.url(filename)
+        return f"{BASE_URL}/{uploaded_file_url}"
+
     def save(self):
         with MongoDBHandler('purchase_orders') as db:
             required_fields = ['supplier_id', 'home_production_id',
@@ -300,9 +326,12 @@ class PurchaseOrderUseCase:
                     data = self.data
                     data['folio'] = db.set_next_folio('purchase_order')
                     data['project'] = f"{home_production['front']} - OD {home_production['od']}"
-                    data['invoiced_status'] = False
+                    data['invoiced_status'] = 0
                     data['delivered_status'] = 0
                     id = db.insert(data)
+                    if data['status'] == 1:
+                        send_notification(get_message(
+                            'purchase_order_generated', f'Nueva orden de compra generada: {data['project']}'))
                     return created({'id': str(id)})
                 return bad_request('El proveedor seleccionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
@@ -514,4 +543,32 @@ class PurchaseOrderUseCase:
                     )
                     return ok('Registro de entrada de materiales guardado correctamente')
                 return bad_request('Algunos campos requeridos no han sido completados.')
+            return not_found('La orden de compra no existe.')
+
+    def upload_invoice(self):
+        with MongoDBHandler('purchase_orders') as db:
+            purchase_order = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if purchase_order:
+                serializer = InvoiceUploadSerializer(data=self.data)
+                data = dict(self.data.items())
+                if serializer.is_valid():
+                    try:
+                        db.update({'_id': ObjectId(self.id)}, {
+                            'paid': data['paid'] == 'true',
+                            'invoiced_status': 2 if data['paid'] == 'true' else 1,
+                            'invoice_pdf_file': self.__upload_file(data['pdf_file'], 'pdf'),
+                            'invoice_xml_file': self.__upload_file(data['xml_file'], 'xml'),
+                        })
+                        return ok('Los archivos de la factura se han cargado correctamente.')
+                    except Exception as e:
+                        return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
+                elif 'paid' in data:
+                    db.update({'_id': ObjectId(self.id)}, {
+                        'paid': data['paid'] == 'true',
+                        'invoiced_status': 2 if data['paid'] == 'true' else 1,
+                    })
+                    return ok('Los cambios en la factura se han guardado correctamente.')
+                else:
+                    return bad_request(serializer.errors)
             return not_found('La orden de compra no existe.')

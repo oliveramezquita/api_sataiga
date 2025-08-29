@@ -1,3 +1,6 @@
+import traceback
+import pytz
+import json
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
@@ -8,6 +11,9 @@ from api.serializers.inventory_quantity_serializer import InventoryQuantitySeria
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from datetime import datetime, timedelta
+from api.serializers.file_serializer import FileUploadSerializer
+from openpyxl import load_workbook
+from decimal import Decimal, InvalidOperation
 
 
 class InboundUseCase:
@@ -41,6 +47,7 @@ class InboundUseCase:
                 'presentation': item.get('presentation', ''),
                 'reference': item.get('reference', ''),
             }
+
             inventory = MongoDBHandler.find(
                 db, 'inventory', {'material.id': item['material_id']})
             inventory_id = None
@@ -68,6 +75,146 @@ class InboundUseCase:
                 'status': 0,
             })
 
+    def __get_home_production(self):
+        results = []
+        with MongoDBHandler('home_production') as db:
+            home_production = db.extract()
+            if home_production:
+                results = [{"_id": str(
+                    item["_id"]), "name": f"{item['front']} - {item['od']}"} for item in home_production]
+        return results
+
+    def __valid_value(self, data, idx):
+        if len(data) <= idx:
+            return None
+
+        not_valid = ['', 'None']
+        if not data[idx] or data[idx] in not_valid:
+            return None
+
+        if not isinstance(data[idx], str):
+            return str(data[idx]).strip()
+
+        return data[idx].strip()
+
+    def __get_material(self, **kwargs):
+        with MongoDBHandler('materials') as db:
+            conditions = []
+
+            sku = kwargs.get('sku')
+            if sku:
+                conditions.append(
+                    {'sku': {'$regex': f'^{sku}', '$options': 'i'}})
+
+            concept = kwargs.get('concept')
+            if concept:
+                conditions.append(
+                    {'concept': {'$regex': f'^{concept}', '$options': 'i'}})
+
+            supplier_code = kwargs.get('supplier_code')
+            if supplier_code:
+                conditions.append({'supplier_code': supplier_code})
+
+            filters = {'$or': conditions} if conditions else {}
+
+            projection = {
+                "color": 1,
+                "concept": 1,
+                "measurement": 1,
+                "supplier_id": 1,
+                "supplier_code": 1,
+                "inventory_price": 1,
+                "market_price": 1,
+                "sku": 1,
+                "presentation": 1,
+                "reference": 1,
+                "division": 1
+            }
+
+            material = db.extract(filters, projection=projection)
+
+            if material:
+                doc = material[0]
+                doc["material_id"] = str(doc.pop("_id"))
+                return doc
+            return False
+
+    def __process_workbook(self, workbook):
+        sheet = workbook.active
+
+        data = []
+        errors = []
+
+        for idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+            row_errors = []
+
+            def get_decimal(value, field_name):
+                try:
+                    if value is None or value == '':
+                        return None
+                    convert = Decimal(str(value)).quantize(Decimal('0.01'))
+                    return str(convert)
+                except (InvalidOperation, ValueError):
+                    row_errors.append(
+                        f"Fila {idx}: '{field_name}' no es un número decimal válido.")
+                    return None
+
+            sku = row[3]
+            concept = row[4]
+            supplier_code = self.__valid_value(row, 5)
+
+            if not sku or not concept:
+                row_errors.append(
+                    f"Fila {idx}: 'SKU' y 'CONCEPTO' son obligatorios.")
+
+            record = self.__get_material(
+                sku=sku,
+                concept=concept,
+                supplier_code=supplier_code
+            )
+            if not record:
+                row_errors.append(
+                    f"No existe un material registrado que coincida con el concepto: {concept}, SKU: {sku} o código de proveedor: {supplier_code}.")
+            else:
+                record['delivered'] = {
+                    'rack': self.__valid_value(row, 0),
+                    'level': self.__valid_value(row, 1),
+                    'module': self.__valid_value(row, 2),
+                    'quantity': get_decimal(row[6], "CANTIDAD"),
+                    'registration_date': datetime.now(pytz.timezone('America/Mexico_City')),
+                }
+                record['total_quantity'] = 0
+
+            if row_errors:
+                errors.append({"fila": idx, "errores": row_errors})
+            else:
+                data.append(record)
+
+        return data, errors
+
+    def __normalize_field(self, value):
+        if value == "null":
+            return None
+
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
+                return value
+
+        return value
+
+    def __expand_items(self, data):
+        expanded = []
+        for record in data:
+            base = {k: v for k, v in record.items() if k != "items"}
+
+            for item in record.get("items", []):
+                new_record = base.copy()
+                new_record["item"] = item
+                expanded.append(new_record)
+        return expanded
+
     def get(self):
         with MongoDBHandler('inbounds') as db:
             # TODO - Add filters
@@ -79,15 +226,6 @@ class InboundUseCase:
                 page,
                 InboundSerializer(page.object_list, many=True).data
             )
-
-    def __get_home_production(self):
-        results = []
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract()
-            if home_production:
-                results = [{"_id": str(
-                    item["_id"]), "name": f"{item['front']} - {item['od']}"} for item in home_production]
-        return results
 
     def get_project(self):
         results = []
@@ -154,7 +292,7 @@ class InboundUseCase:
 
         inbounds = InboundUseCase.get_by_external(self.material_id, query)
         if inbounds:
-            return ok(inbounds)
+            return ok(self.__expand_items(inbounds))
         return ok([])
 
     def delete(self):
@@ -165,6 +303,39 @@ class InboundUseCase:
                 db.delete({'_id': ObjectId(self.id)})
                 return ok('Entrada eliminada correctamente.')
             return bad_request('La entrada no existe.')
+
+    def upload(self):
+        required_fields = ['supplier_id', 'file']
+        data = dict(self.data.items())
+        if all(i in data for i in required_fields):
+            serializer = FileUploadSerializer(data=self.data)
+            if serializer.is_valid():
+                excel_file = self.data['file']
+                try:
+                    workbook = load_workbook(excel_file, data_only=True)
+                    items, errors = self.__process_workbook(workbook)
+                    with MongoDBHandler('inbounds') as db:
+                        data['folio'] = db.set_next_folio('inbound')
+                        id = db.insert({
+                            'purchase_order_id': self.__normalize_field(data['purchase_order_id']),
+                            'supplier_id': data['supplier_id'],
+                            'project': self.__normalize_field(data['project']),
+                            'items': items,
+                            'folio': data['folio'],
+                            'notes': self.__normalize_field(data['notes']),
+                            'status': 1,
+                        })
+                        self.__perform_counting(
+                            db, self.__normalize_field(data['project']), items, id)
+                    return created({
+                        "message": f"Entradas procesadas correctamente: {len(items)} insertada(s) y hubó {len(errors)} error(es).",
+                        "inserted": items,
+                        "errors": errors,
+                    })
+                except Exception as e:
+                    return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
+            return bad_request('Error al momento de cargar el arhivo Excel.')
+        return bad_request('El proveedor así como el archivo en formato Excel son requeridos.')
 
     @staticmethod
     def check_quantities(items):
@@ -193,8 +364,18 @@ class InboundUseCase:
     def get_by_external(material_id, query):
         with MongoDBHandler('inbounds') as db:
             inbounds = db.extract(query, 'updated_at', -1)
-            if inbounds:
-                result = [inbound for inbound in inbounds if any(
-                    item["material_id"] == material_id for item in inbound.get("items", []))]
-                return InboundSerializer(result, many=True).data
-            return []
+            if not inbounds:
+                return []
+
+            result = []
+            for inbound in inbounds:
+                filtered_items = [
+                    item for item in inbound.get("items", [])
+                    if item.get("material_id") == material_id
+                ]
+                if filtered_items:
+                    # Clonamos el inbound pero solo con los items filtrados
+                    inbound_copy = {**inbound, "items": filtered_items}
+                    result.append(inbound_copy)
+
+            return InboundSerializer(result, many=True).data

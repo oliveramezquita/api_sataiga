@@ -68,3 +68,11 @@ class InputRegisterView(views.APIView):
     def patch(self, request, id):
         use_case = PurchaseOrderUseCase(id=id, data=request.data)
         return use_case.input_register()
+
+
+class InvoiceView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def patch(self, request, id):
+        use_case = PurchaseOrderUseCase(id=id, data=request.data)
+        return use_case.upload_invoice()

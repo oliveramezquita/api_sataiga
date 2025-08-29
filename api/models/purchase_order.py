@@ -24,6 +24,16 @@ class PurchaseOrder(models.Model):
         (ENTREGADO_TOTAL, 'Entrega total'),
     ]
 
+    FACTURA_PENDIENTE = 0
+    FACTURA_ENTREGADA = 1
+    FACTURA_PAGADA = 2
+
+    INVOICED_CHOICES = [
+        (FACTURA_PENDIENTE, 'Pendiente'),
+        (FACTURA_ENTREGADA, 'Entregada'),
+        (FACTURA_PAGADA, 'Pagada'),
+    ]
+
     _id = models.CharField(max_length=50)
     home_production_id = models.CharField(max_length=50)
     linked_id = models.CharField(max_length=50, null=True)
@@ -52,6 +62,10 @@ class PurchaseOrder(models.Model):
     invoice_email = models.CharField(max_length=50, null=True)
     status = models.IntegerField(
         choices=STATUS_CHOICES, default=STATUS_GENERADA)
-    invoiced_status = models.BooleanField(default=False)
+    invoiced_status = models.IntegerField(
+        choices=INVOICED_CHOICES, default=FACTURA_PENDIENTE)
     delivered_status = models.IntegerField(
         choices=DELIVERED_CHOICES, default=SIN_ENTREGAR)
+    invoice_pdf_file = models.CharField(max_length=255, null=True)
+    invoice_xml_file = models.CharField(max_length=255, null=True)
+    paid = models.BooleanField(default=False)
