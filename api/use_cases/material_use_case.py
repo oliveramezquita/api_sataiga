@@ -29,6 +29,8 @@ class MaterialUseCase:
             self.q = params['q'][0] if 'q' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
             self.division = params['division'][0] if 'division' in params else None
+            self.order_by = - \
+                1 if 'orderBy' in params and params['orderBy'][0] == 'desc' else 1
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.supplier_id = kwargs.get('supplier_id', None)
@@ -225,7 +227,9 @@ class MaterialUseCase:
                 ]
             if self.supplier:
                 filters['supplier_id'] = self.supplier
-            materials = db.extract(filters)
+            if self.division:
+                filters['division'] = self.division
+            materials = db.extract(filters, 'concept', self.order_by)
             paginator = Paginator(materials, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(

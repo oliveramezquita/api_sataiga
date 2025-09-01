@@ -16,6 +16,8 @@ class SupplierUseCase:
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
             self.q = params['q'][0] if 'q' in params else None
+            self.order_by = - \
+                1 if 'orderBy' in params and params['orderBy'][0] == 'desc' else 1
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -36,7 +38,7 @@ class SupplierUseCase:
                     {'address': {'$regex': self.q, '$options': 'i'}},
                     {'email': {'$regex': self.q, '$options': 'i'}},
                 ]
-            suppliers = db.extract(filters)
+            suppliers = db.extract(filters, 'name', self.order_by)
             paginator = Paginator(suppliers, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
