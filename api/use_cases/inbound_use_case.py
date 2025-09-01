@@ -112,20 +112,25 @@ class InboundUseCase:
 
             or_conditions = []
             sku = kwargs.get('sku')
-            if sku:
-                or_conditions.append(
-                    {'sku': {'$regex': f'^{sku}', '$options': 'i'}})
-
             concept = kwargs.get('concept')
-            if concept:
+
+            if sku and concept:
+                or_conditions.append({'sku': sku})
                 or_conditions.append(
-                    {'concept': {'$regex': f'^{concept}', '$options': 'i'}})
+                    {'concept': {'$regex': concept, '$options': 'i'}})
+            elif sku:
+                or_conditions.append({'sku': sku})
+            elif concept:
+                or_conditions.append(
+                    {'concept': {'$regex': concept, '$options': 'i'}})
 
             if or_conditions:
                 and_conditions.append({'$or': or_conditions})
 
             filters = {'$and': and_conditions} if len(
                 and_conditions) > 1 else and_conditions[0]
+
+            print(filters)
 
             projection = {
                 "color": 1,
