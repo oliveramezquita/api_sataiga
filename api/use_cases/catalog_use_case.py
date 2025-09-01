@@ -13,6 +13,7 @@ class CatalogUseCase:
         if request:
             params = parse_qs(request.META['QUERY_STRING'])
             self.name = params['name'][0] if 'name' in params else None
+            self.order_by = params['orderBy'][0] if 'orderBy' in params else 'asc'
         self.data = data
         self.id = id
 
@@ -33,11 +34,44 @@ class CatalogUseCase:
             if self.name:
                 catalog = db.extract({'name': self.name})
                 if catalog:
-                    return ok(CatalogSerializer(catalog[0]).data)
+                    doc = catalog[0]
+
+                    values = doc.get("values")
+                    reverse = self.order_by == "desc"
+
+                    if isinstance(values, list):
+                        doc["values"] = sorted(values, reverse=reverse)
+
+                    elif isinstance(values, dict):
+                        sorted_dict = {}
+                        for key in sorted(values.keys(), reverse=reverse):
+                            sorted_dict[key] = sorted(
+                                values[key], reverse=reverse)
+                        doc["values"] = sorted_dict
+
+                    return ok(CatalogSerializer(doc).data)
+
                 return not_found(f'El catálogo {self.name} no existe.')
+
             catalogs = db.extract()
             if catalogs:
-                return ok(CatalogSerializer(catalogs, many=True).data)
+                result = []
+                reverse = self.order_by == "desc"
+
+                for doc in catalogs:
+                    values = doc.get("values")
+                    if isinstance(values, list):
+                        doc["values"] = sorted(values, reverse=reverse)
+                    elif isinstance(values, dict):
+                        sorted_dict = {}
+                        for key in sorted(values.keys(), reverse=reverse):
+                            sorted_dict[key] = sorted(
+                                values[key], reverse=reverse)
+                        doc["values"] = sorted_dict
+                    result.append(doc)
+
+                return ok(CatalogSerializer(result, many=True).data)
+
             return not_found('No hay catálogos dados de alta.')
 
     def get_by_id(self):

@@ -99,23 +99,33 @@ class InboundUseCase:
 
     def __get_material(self, **kwargs):
         with MongoDBHandler('materials') as db:
-            conditions = []
+            and_conditions = []
 
+            supplier_id = kwargs.get('supplier_id')
+            if not supplier_id:
+                return False
+            and_conditions.append({'supplier_id': supplier_id})
+
+            supplier_code = kwargs.get('supplier_code')
+            if supplier_code:
+                and_conditions.append({'supplier_code': supplier_code})
+
+            or_conditions = []
             sku = kwargs.get('sku')
             if sku:
-                conditions.append(
+                or_conditions.append(
                     {'sku': {'$regex': f'^{sku}', '$options': 'i'}})
 
             concept = kwargs.get('concept')
             if concept:
-                conditions.append(
+                or_conditions.append(
                     {'concept': {'$regex': f'^{concept}', '$options': 'i'}})
 
-            supplier_code = kwargs.get('supplier_code')
-            if supplier_code:
-                conditions.append({'supplier_code': supplier_code})
+            if or_conditions:
+                and_conditions.append({'$or': or_conditions})
 
-            filters = {'$or': conditions} if conditions else {}
+            filters = {'$and': and_conditions} if len(
+                and_conditions) > 1 else and_conditions[0]
 
             projection = {
                 "color": 1,
@@ -139,7 +149,7 @@ class InboundUseCase:
                 return doc
             return False
 
-    def __process_workbook(self, workbook):
+    def __process_workbook(self, workbook, supplier_id):
         sheet = workbook.active
 
         data = []
@@ -163,11 +173,12 @@ class InboundUseCase:
             concept = row[4]
             supplier_code = self.__valid_value(row, 5)
 
-            if not sku or not concept:
+            if not sku and not concept:
                 row_errors.append(
-                    f"Fila {idx}: 'SKU' y 'CONCEPTO' son obligatorios.")
+                    f"Fila {idx}: 'SKU' o 'CONCEPTO' son obligatorios.")
 
             record = self.__get_material(
+                supplier_id=supplier_id,
                 sku=sku,
                 concept=concept,
                 supplier_code=supplier_code
@@ -313,20 +324,22 @@ class InboundUseCase:
                 excel_file = self.data['file']
                 try:
                     workbook = load_workbook(excel_file, data_only=True)
-                    items, errors = self.__process_workbook(workbook)
-                    with MongoDBHandler('inbounds') as db:
-                        data['folio'] = db.set_next_folio('inbound')
-                        id = db.insert({
-                            'purchase_order_id': self.__normalize_field(data['purchase_order_id']),
-                            'supplier_id': data['supplier_id'],
-                            'project': self.__normalize_field(data['project']),
-                            'items': items,
-                            'folio': data['folio'],
-                            'notes': self.__normalize_field(data['notes']),
-                            'status': 1,
-                        })
-                        self.__perform_counting(
-                            db, self.__normalize_field(data['project']), items, id)
+                    items, errors = self.__process_workbook(
+                        workbook, data['supplier_id'])
+                    if len(items) > 0:
+                        with MongoDBHandler('inbounds') as db:
+                            data['folio'] = db.set_next_folio('inbound')
+                            id = db.insert({
+                                'purchase_order_id': self.__normalize_field(data['purchase_order_id']),
+                                'supplier_id': data['supplier_id'],
+                                'project': self.__normalize_field(data['project']),
+                                'items': items,
+                                'folio': data['folio'],
+                                'notes': self.__normalize_field(data['notes']),
+                                'status': 1,
+                            })
+                            self.__perform_counting(
+                                db, self.__normalize_field(data['project']), items, id)
                     return created({
                         "message": f"Entradas procesadas correctamente: {len(items)} insertada(s) y hubó {len(errors)} error(es).",
                         "inserted": items,
@@ -374,7 +387,6 @@ class InboundUseCase:
                     if item.get("material_id") == material_id
                 ]
                 if filtered_items:
-                    # Clonamos el inbound pero solo con los items filtrados
                     inbound_copy = {**inbound, "items": filtered_items}
                     result.append(inbound_copy)
 
