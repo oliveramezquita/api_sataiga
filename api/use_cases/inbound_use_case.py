@@ -130,8 +130,6 @@ class InboundUseCase:
             filters = {'$and': and_conditions} if len(
                 and_conditions) > 1 else and_conditions[0]
 
-            print(filters)
-
             projection = {
                 "color": 1,
                 "concept": 1,
