@@ -48,8 +48,8 @@ urlpatterns = [
          RefreshRateView.as_view(), name='refresh rate'),
     path('refresh_rates', RefreshRatesView.as_view(), name='refresh rates'),
     path('notifications', NotificationsView.as_view(), name='notifications'),
-    path('exportar-materiales', DownloadMaterialsView.as_view(),
-         name='exportar-materiales'),
+    path('export-materials', DownloadMaterialsView.as_view(),
+         name='export materials'),
     path('material-images/<str:id>',
          ImagesMaterialView.as_view(), name='material-images'),
     path('home-production', HomeProductionView.as_view(), name='home production'),
@@ -98,4 +98,6 @@ urlpatterns = [
     path('outputs/material/<str:material>',
          OutputsByMaterialView.as_view(), name='outputs by material'),
     path('output/<str:id>', OutputView.as_view(), name='output'),
+    path('export-inventory', DownloadInventoryView.as_view(),
+         name='export inventory'),
 ]

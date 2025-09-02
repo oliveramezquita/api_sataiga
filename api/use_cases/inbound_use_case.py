@@ -7,7 +7,6 @@ from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from django.core.paginator import Paginator
 from api.helpers.http_responses import ok_paginated, ok, created, bad_request, not_found
 from api.serializers.inbound_serializer import InboundSerializer
-from api.serializers.inventory_quantity_serializer import InventoryQuantitySerializer
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from datetime import datetime, timedelta
@@ -26,6 +25,7 @@ class InboundUseCase:
             self.q = params['q'][0] if 'q' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
             self.created_at = params['created_at'][0] if 'created_at' in params else None
+            self.idx = int(params['idx'][0]) if 'idx' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.project_type = kwargs.get('project_type', None)
@@ -74,6 +74,19 @@ class InboundUseCase:
                 'module': item['delivered']['module'],
                 'status': 0,
             })
+
+    def __perform_discounting(self, db, indound_id, material_id, quantity=0):
+        MongoDBHandler.remove(db, 'inventory_quantity', {
+            'inbound_id': indound_id,
+            'material_id': material_id,
+        })
+        inventory = MongoDBHandler.find(
+            db, 'inventory', {'material.id': material_id})
+        print(inventory)
+        if inventory:
+            restore_quantity = float(inventory[0]['quantity']) - quantity
+            MongoDBHandler.modify(db, 'inventory', {'_id': inventory[0]['_id']}, {
+                                  'quantity': restore_quantity})
 
     def __get_home_production(self):
         results = []
@@ -311,11 +324,20 @@ class InboundUseCase:
 
     def delete(self):
         with MongoDBHandler('inbounds') as db:
-            material = db.extract(
+            inbound = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if material:
-                db.delete({'_id': ObjectId(self.id)})
-                return ok('Entrada eliminada correctamente.')
+            if inbound:
+                item = inbound[0]['items'][self.idx]
+                self.__perform_discounting(
+                    db, self.id, item['material_id'], float(item['delivered']['quantity']))
+                if len(inbound[0]['items']) == 1:
+                    db.delete({'_id': ObjectId(self.id)})
+                    return ok('deleted')
+                modified_items = [item for i, item in enumerate(
+                    inbound[0]['items']) if i != self.idx]
+                db.update({'_id': ObjectId(self.id)},
+                          {'items': modified_items})
+                return ok('El material ha sido eliminado de la entrada y la cantidad correspondiente se ha restablecido en el inventario.')
             return bad_request('La entrada no existe.')
 
     def upload(self):
