@@ -27,7 +27,7 @@ class InboundView(views.APIView):
         return use_case.update()
 
     def delete(self, request, id):
-        use_case = InboundUseCase(id=id)
+        use_case = InboundUseCase(id=id, request=request)
         return use_case.delete()
 
 

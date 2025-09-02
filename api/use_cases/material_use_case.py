@@ -305,15 +305,6 @@ class MaterialUseCase:
     def download(self):
         with MongoDBHandler('materials') as db:
             filters = {}
-            if self.q:
-                filters['$or'] = [
-                    {'concept': {'$regex': self.q, '$options': 'i'}},
-                    {'measurement': {'$regex': self.q, '$options': 'i'}},
-                    {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                    {'sku': {'$regex': self.q, '$options': 'i'}},
-                    {'presentation': {'$regex': self.q, '$options': 'i'}},
-                    {'reference': {'$regex': self.q, '$options': 'i'}},
-                ]
             if self.supplier:
                 filters['supplier_id'] = self.supplier
             materials = db.extract(filters)
