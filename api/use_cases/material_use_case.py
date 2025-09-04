@@ -64,15 +64,22 @@ class MaterialUseCase:
         for idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
             row_errors = []
 
-            def get_decimal(value, field_name):
+            def get_decimal(value, field_name, idx=None, row_errors=None):
                 try:
-                    if value is None or value == '':
+                    if value is None or str(value).strip() == '':
                         return None
-                    convert = Decimal(str(value)).quantize(Decimal('0.01'))
+
+                    cleaned = str(value).replace(
+                        '$', '').replace(',', '').strip()
+
+                    convert = Decimal(cleaned).quantize(Decimal('0.01'))
                     return str(convert)
+
                 except (InvalidOperation, ValueError):
-                    row_errors.append(
-                        f"Fila {idx}: '{field_name}' no es un número decimal válido.")
+                    if row_errors is not None and idx is not None:
+                        row_errors.append(
+                            f"Fila {idx}: '{field_name}' no es un número decimal válido."
+                        )
                     return None
 
             division = row[0]
@@ -229,7 +236,7 @@ class MaterialUseCase:
                 filters['supplier_id'] = self.supplier
             if self.division:
                 filters['division'] = self.division
-            materials = db.extract(filters, 'concept', self.order_by)
+            materials = db.extract(filters, '_id', self.order_by)
             paginator = Paginator(materials, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
