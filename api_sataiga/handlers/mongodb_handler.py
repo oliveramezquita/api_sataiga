@@ -74,9 +74,11 @@ class MongoDBHandler:
         return result["seq"]
 
     @staticmethod
-    def find(inst, collection_name, query):
+    def find(inst, collection_name, query, order_field=None, order=1):
         collection = inst.db[collection_name]
         result = collection.find(query)
+        if order_field:
+            result = result.sort(order_field, order)
         return list(result)
 
     @staticmethod

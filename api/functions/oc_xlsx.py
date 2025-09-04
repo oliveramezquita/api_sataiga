@@ -24,8 +24,9 @@ def create_xlsx(data):
                "EMAIL", data['supplier'].get('email', '')])
     ws.append(["PROTOTIPOS:"])
     prototypes = data.get("prototypes", {})
-    ws.append(list(prototypes.keys()))
-    ws.append(list(prototypes.values()))
+    if isinstance(prototypes, dict):
+        ws.append(list(prototypes.keys()))
+        ws.append(list(prototypes.values()))
     ws.append([])
 
     header = ["CLAVE DEL PRODUCTO", "COLOR", "CANTIDAD",

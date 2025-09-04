@@ -47,7 +47,8 @@ class PurchaseOrderSuppliersView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
     def get(self, request, home_production_id):
-        use_case = PurchaseOrderUseCase(home_production_id=home_production_id)
+        use_case = PurchaseOrderUseCase(
+            home_production_id=home_production_id, request=request)
         return use_case.get_suppliers()
 
 

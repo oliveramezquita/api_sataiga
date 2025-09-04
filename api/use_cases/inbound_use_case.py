@@ -69,9 +69,9 @@ class InboundUseCase:
                 'material_id': material['id'],
                 'project': project,
                 'quantity': round(float(item['delivered']['quantity']), 2),
-                'rack': item['delivered']['rack'],
-                'level': item['delivered']['level'],
-                'module': item['delivered']['module'],
+                'rack': item['delivered']['rack'] if 'rack' in item['delivered'] else None,
+                'level': item['delivered']['level'] if 'level' in item['delivered'] else None,
+                'module': item['delivered']['module'] if 'module' in item['delivered'] else None,
                 'status': 0,
             })
 
@@ -82,7 +82,6 @@ class InboundUseCase:
         })
         inventory = MongoDBHandler.find(
             db, 'inventory', {'material.id': material_id})
-        print(inventory)
         if inventory:
             restore_quantity = float(inventory[0]['quantity']) - quantity
             MongoDBHandler.modify(db, 'inventory', {'_id': inventory[0]['_id']}, {
