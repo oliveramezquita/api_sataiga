@@ -236,7 +236,7 @@ class MaterialUseCase:
                 filters['supplier_id'] = self.supplier
             if self.division:
                 filters['division'] = self.division
-            materials = db.extract(filters, '_id', self.order_by)
+            materials = db.extract(filters, 'concept', self.order_by)
             paginator = Paginator(materials, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
