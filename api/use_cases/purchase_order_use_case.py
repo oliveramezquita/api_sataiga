@@ -24,6 +24,7 @@ from api.serializers.invoice_serializer import InvoiceUploadSerializer
 from django.core.files.storage import FileSystemStorage
 from api_sataiga.settings import BASE_URL
 from rest_framework import exceptions
+from api.serializers.supplier_serializer import SupplierSerializer
 
 
 class PurchaseOrderUseCase:
@@ -38,6 +39,7 @@ class PurchaseOrderUseCase:
             self.supplier = params['supplier'][0] if 'supplier' in params else None
             self.status = params['status'][0] if 'status' in params else None
             self.division = params['division'][0] if 'division' in params else None
+            self.type_project = params['type'][0] if 'type' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.home_production_id = kwargs.get('home_production_id', None)
@@ -52,7 +54,7 @@ class PurchaseOrderUseCase:
 
     def __check_supplier(self, db, supplier_id):
         supplier = MongoDBHandler.find(db, 'suppliers', {'_id': ObjectId(
-            supplier_id)}) if objectid_validation(supplier_id) else None
+            supplier_id)}, 'name') if objectid_validation(supplier_id) else None
         if supplier:
             return supplier[0]
         return False
@@ -185,8 +187,6 @@ class PurchaseOrderUseCase:
 
     def __prepare_data_files(self, db, purchase_order):
         data = purchase_order
-        data['created'] = ''
-        data['estimated_delivery'] = ''
         data['client'] = ''
         data['location'] = ''
         data['company'] = []
@@ -196,9 +196,9 @@ class PurchaseOrderUseCase:
 
         # DATES
         if 'created' in data and data['created']:
-            created = datetime.fromisoformat(
+            created_date = datetime.fromisoformat(
                 data['created'].replace("Z", "+00:00"))
-            data['created'] = created.strftime("%Y-%m-%d")
+            data['created'] = created_date.strftime("%Y-%m-%d")
         estimated_delivery = datetime.fromisoformat(data['estimated_delivery'].replace(
             "Z", "+00:00")) if 'estimated_delivery' in data and data['estimated_delivery'] else None
         if estimated_delivery:
@@ -322,10 +322,10 @@ class PurchaseOrderUseCase:
                 home_production = self.__check_home_production(
                     db, self.data['home_production_id'])
                 supplier = self.__check_supplier(db, self.data['supplier_id'])
-                if home_production and supplier:
+                if supplier:
                     data = self.data
+                    data['project'] = f"{home_production['front']} - OD {home_production['od']}" if data['type'] == 'OD' else 'Sin proyecto'
                     data['folio'] = db.set_next_folio('purchase_order')
-                    data['project'] = f"{home_production['front']} - OD {home_production['od']}"
                     data['invoiced_status'] = 0
                     data['delivered_status'] = 0
                     id = db.insert(data)
@@ -375,7 +375,7 @@ class PurchaseOrderUseCase:
                     db, purchase_order[0]['home_production_id'])
                 purchase_order[0]['selected_rows'] = [item['id']
                                                       for item in purchase_order[0]['items']]
-                purchase_order[0]['lots'] = hp['lots']['prototypes']
+                purchase_order[0]['lots'] = hp['lots']['prototypes'] if hp else {}
                 return ok(PurchaseOrderSerializer(purchase_order[0]).data)
             return not_found('Orden de compra no encontrada.')
 
@@ -385,10 +385,7 @@ class PurchaseOrderUseCase:
             home_production = db.extract()
             if home_production:
                 for hp in home_production:
-                    empty_lots = {
-                        'total': 0,
-                        'prototypes': {}
-                    }
+                    empty_lots = {}
                     projects.append({
                         'home_production_id': str(hp['_id']),
                         'name': f"{hp['front']} - OD {hp['od']}",
@@ -396,24 +393,36 @@ class PurchaseOrderUseCase:
                         'front': hp['front'],
                         'lots': hp['lots']['prototypes'] if 'prototypes' in hp['lots'] else empty_lots
                     })
+                projects.append({
+                    'home_production_id': None,
+                    'name': 'Sin proyecto',
+                    'od': None,
+                    'front': None,
+                    'lots': empty_lots
+                })
             return ok(projects)
 
     def get_suppliers(self):
         with MongoDBHandler('explosion') as db:
             suppliers = []
-            viewed = set()
-            materials = db.extract(
-                {'home_production_id': self.home_production_id})
-            for material in materials:
-                supplier = self.__check_supplier(db, material['supplier_id'])
-                if supplier:
-                    supplier_id = str(supplier['_id'])
-                    if supplier_id not in viewed:
-                        suppliers.append({
-                            '_id': supplier_id,
-                            'name': supplier['name']
-                        })
-                        viewed.add(supplier_id)
+            if self.type_project == 'SP':
+                suppliers = SupplierSerializer(
+                    MongoDBHandler.find(db, 'suppliers', {}, 'name'), many=True).data
+            else:
+                viewed = set()
+                materials = db.extract(
+                    {'home_production_id': self.home_production_id})
+                for material in materials:
+                    supplier = self.__check_supplier(
+                        db, material['supplier_id'])
+                    if supplier:
+                        supplier_id = str(supplier['_id'])
+                        if supplier_id not in viewed:
+                            suppliers.append({
+                                '_id': supplier_id,
+                                'name': supplier['name']
+                            })
+                            viewed.add(supplier_id)
             return ok({'suppliers_list': suppliers, 'last_consecutive': db.get_next_folio('purchase_order')})
 
     def get_materials(self):
@@ -463,9 +472,12 @@ class PurchaseOrderUseCase:
                         db, self.data['home_production_id'])
                     supplier = self.__check_supplier(
                         db, self.data['supplier_id'])
-                    if home_production and supplier:
+                    if supplier:
                         data = self.data
-                        data['project'] = f"{home_production['front']} - OD {home_production['od']}"
+                        if isinstance(home_production, dict) and data['type'] == 'OD':
+                            data['project'] = f"{home_production['front']} - OD {home_production['od']}"
+                        else:
+                            data['project'] = 'Sin proyecto'
                         db.update({'_id': ObjectId(self.id)}, data)
                         message_status = 'guardada' if data['status'] == 0 else 'generada'
                         return ok(f'Orden de compra {message_status} correctamente.')

@@ -69,3 +69,6 @@ class PurchaseOrder(models.Model):
     invoice_pdf_file = models.CharField(max_length=255, null=True)
     invoice_xml_file = models.CharField(max_length=255, null=True)
     paid = models.BooleanField(default=False)
+    type = models.CharField(max_length=2)
+    created_at = models.DateTimeField(null=True)
+    updated_at = models.DateTimeField(null=True)
