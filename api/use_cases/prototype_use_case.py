@@ -88,13 +88,12 @@ class PrototypeUseCase:
                 if self.__client_validation(db, self.data['client_id']):
                     if self.__check_prototype(db):
                         db.insert(self.data)
-                        # TODO: Create chicken like a prototype
-                        # db.insert({
-                        #     'client_id': self.data['client_id'],
-                        #     'client_name': self.data['client_name'],
-                        #     'front': self.data['front'],
-                        #     'name': f"{self.data['name']} Cocina",
-                        # })
+                        db.insert({
+                            'client_id': self.data['client_id'],
+                            'client_name': self.data['client_name'],
+                            'front': self.data['front'],
+                            'name': f"{self.data['name']} Cocina",
+                        })
                         self.__update_volumetry(db)
                         return created('Prototipo creado correctamente.')
                     return bad_request('El prototipo ya existe.')

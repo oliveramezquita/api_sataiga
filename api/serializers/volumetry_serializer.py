@@ -23,7 +23,12 @@ class VolumetrySerializer(serializers.ModelSerializer):
                 sku = ''
                 if 'sku' in material[0] and material[0]['sku']:
                     sku = material[0]['sku']
-                return {'concept': material[0]['concept'], 'measurement': material[0]['measurement'], 'sku': sku}
+                return {
+                    'concept': material[0]['concept'],
+                    'measurement': material[0]['measurement'],
+                    'sku': sku,
+                    'division': material[0]['division'],
+                }
             return None
 
     class Meta:
