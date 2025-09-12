@@ -1,4 +1,3 @@
-import re
 import traceback
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.validations import objectid_validation
@@ -18,13 +17,13 @@ class VolumetryUseCase:
             params = parse_qs(request.META['QUERY_STRING'])
             self.client_id = params['client_id'][0] if 'client_id' in params else None
             self.front = params['front'][0] if 'front' in params else None
-
+            self.prototype = params['prototype'][0] if 'prototype' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
-    def __client_validation(self, db):
+    def __client_validation(self, db, client_id):
         client = MongoDBHandler.find(db, 'clients', {'_id': ObjectId(
-            self.data['client_id']), 'type': 'VS'}) if objectid_validation(self.data['client_id']) else None
+            client_id), 'type': 'VS'}) if objectid_validation(client_id) else None
         if client:
             return client[0]
         return False
@@ -36,176 +35,226 @@ class VolumetryUseCase:
             return material
         return False
 
-    def __check_prototypes(self):
-        with MongoDBHandler('prototypes') as db:
-            prototypes = db.extract(
-                {'client_id': self.client_id, 'front': self.front})
-            if prototypes:
-                return [item["name"] for item in prototypes]
-            return False
+    def __calculate_total(self, reference):
+        return {
+            'volumetry': [item.update({'total_x': float(item['total_x'])}) or item for item in self.data['volumetry']],
+            'total': sum(float(item['total_x']) for item in self.data['volumetry']),
+            'reference': reference,
+        }
 
-    def __sanitize_data(self, data):
-        if data.get('total') == '' or data.get('total') is None:
-            data['total'] = 0
-
-        for proto in data.get('prototypes', []):
-            quantities = proto.get('quantities', {})
-            for key in ['factory', 'instalation']:
-                if quantities.get(key) == '' or quantities.get(key) is None:
-                    quantities[key] = 0
-                elif isinstance(quantities[key], str) and quantities[key].isdigit():
-                    quantities[key] = int(quantities[key])
-        return data
-
-    def __calculate_totals(self):
-        gran_total = 0
-        pattern = re.compile(r'^\d+(\.\d{1,2})?$')
-        for i, item in enumerate(self.data['volumetry']):
-            self.data['volumetry'][i] = self.__sanitize_data(item)
-            total = sum(
-                float(q) if isinstance(q, (int, float, str)) and pattern.match(
-                    str(q)) else 0
-                for prototype in item['prototypes']
-                for q in prototype['quantities'].values()
-            )
-            item['total'] = total
-            gran_total += total
-
-        self.data['gran_total'] = gran_total
-        return self.data
-
-    def __get_prototypes(self):
-        with MongoDBHandler('prototypes') as db:
-            prototypes = db.extract(
-                {'client_id': self.client_id, 'front': self.front})
-            if prototypes:
-                return sorted(set(item["name"] for item in prototypes))
-            return []
-
-    def __get_id_material_by_name(self, **kwargs):
+    def __get_id_material_by_sku(self, sku):
         with MongoDBHandler('materials') as db:
-            filters = {
-                'concept': kwargs.get('concept'),
-                'measurement': kwargs.get('measurement'),
-            }
-            if kwargs.get('sku'):
-                filters['sku'] = kwargs.get('sku')
-            material = db.extract(filters)
+            if not sku:
+                return False
+            material = db.extract({'sku': sku})
             if material:
                 return str(material[0]['_id'])
             return False
 
-    def __process_workbook(self, workbook, existing_prototypes):
-        result = []
-        warnings = []
-        error = None
-        prototypes = workbook.sheetnames
+    def __process_workbook_general(self, wb):
+        ws = wb.active
 
-        all_materials = []
-        try:
-            for sheet_name in prototypes:
-                if sheet_name not in existing_prototypes:
-                    warnings.append(
-                        f'El prototipo: {sheet_name} no se encuentra registrado con el cliente y el frente seleccionados.')
+        # Detectar áreas desde la fila 1 y 2
+        areas = []
+        col = 5  # Columna E
+        while ws.cell(row=1, column=col).value:
+            area_name = ws.cell(row=1, column=col).value
+            factory_header = ws.cell(row=2, column=col).value
+            install_header = ws.cell(row=2, column=col + 1).value
+
+            areas.append({
+                "name": area_name,
+                "factory_col": col,
+                "install_col": col + 1,
+                "factory_header": factory_header,
+                "install_header": install_header,
+            })
+
+            col += 2
+
+        results = []
+        errors = []
+
+        # Procesar filas a partir de la fila 3
+        for row in range(3, ws.max_row + 1):
+            material = ws.cell(row=row, column=1).value
+            sku = ws.cell(row=row, column=3).value
+            reference = ws.cell(row=row, column=4).value
+
+            # Validar campos obligatorios
+            if not sku:
+                errors.append({
+                    "row": row,
+                    "message": f"Error en el material: {material or 'DESCONOCIDO'}, faltan valores obligatorios (C)."
+                })
+                continue
+
+            material_id = self.__get_id_material_by_sku(sku)
+            if not material_id:
+                errors.append({
+                    "row": row,
+                    "message": f"El material: {material} con el SKU: {sku} no existe en la base de datos, verifique que el SKU sea correcto."
+                })
+                continue
+
+            volumetry_list = []
+
+            for area in areas:
+                factory_val = ws.cell(
+                    row=row, column=area["factory_col"]).value
+                install_val = ws.cell(
+                    row=row, column=area["install_col"]).value
+
+                def parse_number(val):
+                    if val is None or val == "":
+                        return None
+                    try:
+                        return round(float(val), 2)
+                    except (ValueError, TypeError):
+                        return "INVALID"
+
+                factory = parse_number(factory_val)
+                install = parse_number(install_val)
+
+                # Si alguno es inválido, registrar error
+                if factory == "INVALID" or install == "INVALID":
+                    errors.append({
+                        "row": row,
+                        "message": f"Error en el material: {material}, revisar los datos ingresados en área {area['name']}."
+                    })
                     continue
 
-            for sheet_name in existing_prototypes:
-                sheet = workbook[sheet_name]
-                for row_index in range(2, sheet.max_row + 1):
-                    material = sheet[f"A{row_index}"].value
-                    if material:
-                        material_id = self.__get_id_material_by_name(
-                            concept=material,
-                            measurement=sheet[f"B{row_index}"].value,
-                            sku=sheet[f"C{row_index}"].value,
-                        )
-                        if not material_id:
-                            warnings.append(
-                                f'El material: {material} no existe en la base de datos, verifique el nombre así como la unidad de medida y el código del proveedor.')
-                        if material_id and not any(material_id in materials.values() for materials in all_materials):
-                            all_materials.append(
-                                {'_id': material_id, 'name': material})
-
-            for material in all_materials:
-                material_data = {
-                    "material_id": material['_id'],
-                    "reference": None,
-                    "volumetry": [],
-                    "gran_total": 0
-                }
-                volumetry_by_area = {}
-
-                for prototype_name in existing_prototypes:
-                    sheet = workbook[prototype_name]
-                    for row_index in range(2, sheet.max_row + 1):
-                        if sheet[f"A{row_index}"].value == material['concept']:
-                            material_data["reference"] = sheet[f"D{row_index}"].value
-
-                            col_index = 5
-                            while True:
-                                header_cell = sheet.cell(
-                                    row=1, column=col_index).value
-                                if header_cell is None:
-                                    break
-                                parts = header_cell.split('-')
-                                if len(parts) == 2:
-                                    area = parts[0].strip()
-
-                                    if area not in volumetry_by_area:
-                                        volumetry_by_area[area] = {
-                                            "prototypes": {}}
-
-                                    if prototype_name not in volumetry_by_area[area]["prototypes"]:
-                                        volumetry_by_area[area]["prototypes"][prototype_name] = {
-                                            "quantities": {"factory": 0, "instalation": 0}}
-
-                                    value = sheet.cell(
-                                        row=row_index, column=col_index).value
-                                    quantity = float(value) if isinstance(
-                                        value, (int, float)) else 0
-
-                                    if col_index % 2:
-                                        volumetry_by_area[area]["prototypes"][prototype_name]["quantities"]["factory"] = quantity
-                                    else:
-                                        volumetry_by_area[area]["prototypes"][
-                                            prototype_name]["quantities"]["instalation"] = quantity
-                                else:
-                                    warnings.append(
-                                        f"La columna: {header_cell} no tiene el formato correcto: 'ÁREA - FÁBRICA' o 'ÁREA - INSTALACIÓN'")
-                                col_index += 1
-                            break
-
-                total_gran_material = 0
-                for area, data in volumetry_by_area.items():
-                    area_total = 0
-                    prototype_list = []
-                    for proto_name in existing_prototypes:
-                        quantities = data["prototypes"].get(
-                            proto_name, {"quantities": {"factory": 0, "instalation": 0}})
-                        factory_qty = quantities["quantities"].get(
-                            "factory", 0)
-                        instalation_qty = quantities["quantities"].get(
-                            "instalation", 0)
-                        prototype_list.append({
-                            "prototype": proto_name,
-                            "quantities": {
-                                "factory": factory_qty,
-                                "instalation": instalation_qty
-                            }
-                        })
-                        area_total += factory_qty + instalation_qty
-
-                    material_data["volumetry"].append({
-                        "area": area,
-                        "prototypes": prototype_list,
-                        "total": round(area_total, 2)
+                if factory is not None or install is not None:
+                    total_x = (factory or 0) + (install or 0)
+                    volumetry_list.append({
+                        "area": area["name"],
+                        "factory": factory,
+                        "installation": install,
+                        "total_x": round(total_x, 2)
                     })
-                    total_gran_material += area_total
-                material_data["gran_total"] = round(total_gran_material, 2)
-                result.append(material_data)
-        except Exception as e:
-            error = str(e)
-        return result, list(set(warnings)), error
+
+            # Validar que al menos una área tenga valores
+            if not volumetry_list:
+                errors.append({
+                    "row": row,
+                    "message": f"Error en el material: {material}, no se encontró ninguna área con cantidades."
+                })
+                continue
+
+            results.append({
+                'material_id': material_id,
+                'reference': reference,
+                'volumetry': volumetry_list,
+                'total': round(sum(float(vl['total_x']) for vl in volumetry_list), 2)
+            })
+
+        return results, errors
+
+    def __process_workbook_kitchen(self, wb):
+        ws = wb.active
+
+        # Detectar áreas desde la fila 1 y 2 (ahora en bloques de 3 columnas)
+        areas = []
+        col = 5  # Columna E
+        while ws.cell(row=1, column=col).value:
+            area_name = ws.cell(row=1, column=col).value
+            factory_header = ws.cell(row=2, column=col).value
+            install_header = ws.cell(row=2, column=col + 1).value
+            delivery_header = ws.cell(row=2, column=col + 2).value
+
+            areas.append({
+                "name": area_name,
+                "factory_col": col,
+                "install_col": col + 1,
+                "delivery_col": col + 2,
+                "factory_header": factory_header,
+                "install_header": install_header,
+                "delivery_header": delivery_header,
+            })
+
+            col += 3
+
+        results = []
+        errors = []
+
+        # Procesar filas a partir de la fila 3
+        for row in range(3, ws.max_row + 1):
+            material = ws.cell(row=row, column=1).value
+            sku = ws.cell(row=row, column=3).value
+            reference = ws.cell(row=row, column=4).value
+
+            # Validar campos obligatorios
+            if not sku:
+                errors.append({
+                    "row": row,
+                    "message": f"Error en el material: {material or 'DESCONOCIDO'}, faltan valores obligatorios (C)."
+                })
+                continue
+
+            material_id = self.__get_id_material_by_sku(sku)
+            if not material_id:
+                errors.append({
+                    "row": row,
+                    "message": f"El material: {material} con el SKU: {sku} no existe en la base de datos, verifique que el SKU sea correcto."
+                })
+                continue
+
+            volumetry_list = []
+
+            for area in areas:
+                factory_val = ws.cell(
+                    row=row, column=area["factory_col"]).value
+                install_val = ws.cell(
+                    row=row, column=area["install_col"]).value
+                delivery_val = ws.cell(
+                    row=row, column=area["delivery_col"]).value
+
+                def parse_number(val):
+                    if val is None or val == "":
+                        return None
+                    try:
+                        return round(float(val), 2)
+                    except (ValueError, TypeError):
+                        return "INVALID"
+
+                factory = parse_number(factory_val)
+                install = parse_number(install_val)
+                delivery = parse_number(delivery_val)
+
+                # Si alguno es inválido, registrar error
+                if factory == "INVALID" or install == "INVALID" or delivery == "INVALID":
+                    errors.append({
+                        "row": row,
+                        "message": f"Error en el material: {material}, revisar los datos ingresados en área {area['name']}."
+                    })
+                    continue
+
+                if factory is not None or install is not None or delivery is not None:
+                    total_x = (factory or 0) + (install or 0) + (delivery or 0)
+                    volumetry_list.append({
+                        "area": area["name"],
+                        "factory": factory,
+                        "installation": install,
+                        "delivery": delivery,
+                        "total_x": round(total_x, 2)
+                    })
+
+            # Validar que al menos una área tenga valores
+            if not volumetry_list:
+                errors.append({
+                    "row": row,
+                    "message": f"Error en el material: {material}, no se encontró ninguna área con cantidades."
+                })
+                continue
+
+            results.append({
+                'material_id': material_id,
+                'reference': reference,
+                'volumetry': volumetry_list,
+                'total': round(sum(float(vl['total_x']) for vl in volumetry_list), 2)
+            })
+
+        return results, errors
 
     def __process_data(self, volumetry_data):
         updated = 0
@@ -213,24 +262,25 @@ class VolumetryUseCase:
         with MongoDBHandler('volumetries') as db:
             for item in volumetry_data:
                 is_exist = db.extract(
-                    {'client_id': self.client_id, 'front': self.front, 'material_id': item['material_id']})
-                material = self.__material_validation(db)
-                if self.__client_validation(db) and material:
+                    {'client_id': self.client_id, 'front': self.front, 'prototype': self.prototype, 'material_id': item['material_id']})
+                if self.__client_validation(db, self.client_id):
                     if is_exist:
                         db.update({
                             'client_id': self.client_id,
                             'front': self.front,
+                            'prototype': self.prototype,
                             'material_id': item['material_id']},
                             {
                                 'volumetry': item['volumetry'],
-                                'gran_total': item['gran_total'],
+                                'total': item['total'],
+                                'reference': item['reference']
                         })
                         updated += 1
                     else:
                         db.insert({
                             'client_id': self.client_id,
                             'front': self.front,
-                            'supplier_id': material[0]['supplier_id'],
+                            'prototype': self.prototype,
                             **item
                         })
                         inserted += 1
@@ -239,44 +289,67 @@ class VolumetryUseCase:
     def __extract(self):
         with MongoDBHandler('volumetries') as db:
             return db.extract(
-                {'client_id': self.client_id, 'front': self.front})
+                {'client_id': self.client_id, 'front': self.front, 'prototype': self.prototype})
 
     def save(self):
         with MongoDBHandler('volumetries') as db:
-            required_fields = ['client_id',
-                               'front', 'material_id', 'volumetry']
+            required_fields = ['client_id', 'front',
+                               'prototype', 'material_id', 'volumetry']
+            reference = self.data['reference'] if 'reference' in self.data else None
             if all(i in self.data for i in required_fields):
                 material = self.__material_validation(db)
-                if self.__client_validation(db) and material:
+                if self.__client_validation(db, self.data['client_id']) and material:
                     is_exist = db.extract(
-                        {'client_id': self.data['client_id'], 'front': self.data['front'], 'material_id': self.data['material_id']})
+                        {
+                            'client_id': self.data['client_id'],
+                            'front': self.data['front'],
+                            'prototype': self.data['prototype'],
+                            'material_id': self.data['material_id']
+                        })
                     if is_exist:
                         db.update({
                             'client_id': self.data['client_id'],
                             'front': self.data['front'],
+                            'prototype': self.data['prototype'],
                             'material_id': self.data['material_id']},
-                            self.__calculate_totals())
+                            self.__calculate_total(reference)
+                        )
                         message = f'El material: {material[0]['concept']} ha sido actualizado correctamente en la volumetría.'
                     else:
                         db.insert({
-                            'supplier_id': material[0]['supplier_id'],
-                            **self.__calculate_totals()})
+                            'client_id': self.data['client_id'],
+                            'front': self.data['front'],
+                            'prototype': self.data['prototype'],
+                            'material_id': self.data['material_id'],
+                            **self.__calculate_total(reference),
+                        })
                         message = f'El material: {material[0]['concept']} ha sido añadido correctamente en la volumetría.'
-                    volumetries = db.extract({
-                        'client_id': self.data['client_id'],
-                        'front': self.data['front']})
-                    quantify.delay(self.data['client_id'], self.data['front'])
-                    return ok({'data': VolumetrySerializer(volumetries, many=True).data, 'message': message})
+                    volumetry = db.extract(
+                        {
+                            'client_id': self.data['client_id'],
+                            'front': self.data['front'],
+                            'prototype': self.data['prototype'],
+                        })
+                    quantify.delay(
+                        self.data['client_id'],
+                        self.data['front'],
+                        self.data['prototype'],
+                        VolumetrySerializer(volumetry, many=True).data)
+                    return ok({'data': VolumetrySerializer(volumetry, many=True).data, 'message': message})
                 return bad_request('Error al momento de procesar la información: el cliente o el material no existen.')
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
-        if self.client_id and self.front:
-            volumetry = self.__extract()
-            return ok({
-                'volumetry': VolumetrySerializer(volumetry, many=True).data,
-                'prototypes': self.__get_prototypes(),
-            })
+        if self.client_id and self.front and self.prototype:
+            with MongoDBHandler('volumetries') as db:
+                volumetry = db.extract({
+                    'client_id': self.client_id,
+                    'front': self.front,
+                    'prototype': self.prototype,
+                })
+                return ok({
+                    'volumetry': VolumetrySerializer(volumetry, many=True).data,
+                })
         return not_found('No existe volumería con lo datos asignados.')
 
     def delete(self):
@@ -289,31 +362,48 @@ class VolumetryUseCase:
             return bad_request('El área en la volumetría no existe.')
 
     def upload(self):
-        prototypes = self.__check_prototypes()
-        if not prototypes:
-            return bad_request('No existen prototipos para el cliente y el frente seleccionados.')
-
         serializer = FileUploadSerializer(data=self.data)
-        if serializer.is_valid():
-            excel_file = self.request.FILES['file']
-            try:
-                workbook = load_workbook(excel_file, data_only=True)
-                volumetry_data, warnings, error = self.__process_workbook(
-                    workbook, prototypes)
-                num_inserted, num_updated = self.__process_data(volumetry_data)
+        if not serializer.is_valid():
+            return bad_request(serializer.errors)
 
-                volumetry = []
-                if num_inserted > 0 or num_updated > 0:
-                    volumetry = VolumetrySerializer(
-                        self.__extract(), many=True).data
+        excel_file = self.request.FILES['file']
 
-                return ok({
-                    'num_inserted': num_inserted,
-                    'num_updated': num_updated,
-                    'warnings': warnings,
-                    'error': error,
-                    'volumetry': volumetry,
-                })
-            except Exception as e:
-                return bad_request(f'Error: {str(e)}, "Trace": {traceback.format_exc()}')
-        return bad_request(serializer.errors)
+        try:
+            workbook = load_workbook(excel_file, data_only=True)
+
+            # Selección de función según el prototipo
+            if self.prototype.strip().endswith("Cocina"):
+                volumetry_data, errors = self.__process_workbook_kitchen(
+                    workbook)
+            else:
+                volumetry_data, errors = self.__process_workbook_general(
+                    workbook)
+
+            # Procesar datos
+            num_inserted, num_updated = self.__process_data(volumetry_data)
+
+            volumetry = []
+            if num_inserted > 0 or num_updated > 0:
+                volumetry = VolumetrySerializer(
+                    self.__extract(), many=True
+                ).data
+                # Llamada asíncrona a Celery
+                quantify.delay(
+                    self.client_id,
+                    self.front,
+                    self.prototype,
+                    volumetry
+                )
+
+            return ok({
+                'num_inserted': num_inserted,
+                'num_updated': num_updated,
+                'errors': errors,
+                'volumetry': volumetry,
+            })
+
+        except Exception as e:
+            return bad_request({
+                'error': str(e),
+                'trace': traceback.format_exc()
+            })
