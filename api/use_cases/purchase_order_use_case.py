@@ -381,25 +381,23 @@ class PurchaseOrderUseCase:
 
     def get_projects(self):
         with MongoDBHandler('home_production') as db:
-            projects = []
+            projects = [{
+                'home_production_id': None,
+                'name': 'Sin proyecto',
+                'od': None,
+                'front': None,
+                'lots': {}
+            }]
             home_production = db.extract()
             if home_production:
                 for hp in home_production:
-                    empty_lots = {}
                     projects.append({
                         'home_production_id': str(hp['_id']),
                         'name': f"{hp['front']} - OD {hp['od']}",
                         'od': hp['od'],
                         'front': hp['front'],
-                        'lots': hp['lots']['prototypes'] if 'prototypes' in hp['lots'] else empty_lots
+                        'lots': hp['lots']['prototypes'] if 'prototypes' in hp['lots'] else {}
                     })
-                projects.append({
-                    'home_production_id': None,
-                    'name': 'Sin proyecto',
-                    'od': None,
-                    'front': None,
-                    'lots': empty_lots
-                })
             return ok(projects)
 
     def get_suppliers(self):
