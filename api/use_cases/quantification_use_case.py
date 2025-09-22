@@ -40,14 +40,40 @@ class QuantificationUseCase:
                 quantification[self.data['area']]) if i not in deleted]
         return quantification
 
+    def __get_material_info(self, db, data):
+        for area, materials in data['quantification'].items():
+            for i, material in enumerate(materials):
+                ms = MongoDBHandler.find(
+                    db, 'materials', {'_id': ObjectId(
+                        material['material_id'])},
+                    projection={
+                        "color": 1,
+                        "concept": 1,
+                        "measurement": 1,
+                        "supplier_id": 1,
+                        "supplier_code": 1,
+                        "inventory_price": 1,
+                        "market_price": 1,
+                        "sku": 1,
+                        "presentation": 1,
+                        "reference": 1,
+                        "division": 1
+                    })
+                data['quantification'][area][i]['material'] = (
+                    {k: v for k, v in ms[0].items() if k != '_id'} if len(
+                        ms) > 0 else None
+                )
+        return data
+
     def __get_material_availability(self, data):
         for area, materials in data['quantification'].items():
             for i, material in enumerate(materials):
                 data['quantification'][area][i]['total_output'] = 0
                 data['quantification'][area][i]['availability'] = InventoryUseCase.get_material_availability(
                     material['id'])
-                if 'COCINA' in data['quantification'][area][i]:
-                    data['quantification'][area][i]['TOTAL'] = data['quantification'][area][i]['COCINA']
+
+                # if 'COCINA' in data['quantification'][area][i]:
+                #     data['quantification'][area][i]['TOTAL'] = data['quantification'][area][i]['COCINA']
         for key, items in list(data['quantification'].items()):
             data['quantification'][key] = [
                 item for item in items if item.get("availability")]
@@ -64,7 +90,7 @@ class QuantificationUseCase:
             if quantification:
                 q = self.__get_material_availability(
                     quantification[0]) if self.availability else quantification[0]
-                return ok(QuantificationSerializer(q).data)
+                return ok(QuantificationSerializer(self.__get_material_info(db, q)).data)
             return not_found("No se encontró la cuantificación para los datos proporcionados.")
 
     def filters(self):

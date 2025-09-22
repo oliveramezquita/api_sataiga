@@ -1,3 +1,4 @@
+import re
 import traceback
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.validations import objectid_validation
@@ -333,7 +334,7 @@ class VolumetryUseCase:
                     quantify.delay(
                         self.data['client_id'],
                         self.data['front'],
-                        self.data['prototype'],
+                        re.sub(r"\s*Cocina$", "", self.data['prototype']),
                         VolumetrySerializer(volumetry, many=True).data)
                     return ok({'data': VolumetrySerializer(volumetry, many=True).data, 'message': message})
                 return bad_request('Error al momento de procesar la información: el cliente o el material no existen.')
@@ -391,7 +392,7 @@ class VolumetryUseCase:
                 quantify.delay(
                     self.client_id,
                     self.front,
-                    self.prototype,
+                    re.sub(r"\s*Cocina$", "", self.prototype),
                     volumetry
                 )
 

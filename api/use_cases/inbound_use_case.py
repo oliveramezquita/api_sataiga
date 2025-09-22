@@ -111,36 +111,45 @@ class InboundUseCase:
 
     def __get_material(self, **kwargs):
         with MongoDBHandler('materials') as db:
-            and_conditions = []
-
-            supplier_id = kwargs.get('supplier_id')
-            if not supplier_id:
-                return False
-            and_conditions.append({'supplier_id': supplier_id})
-
-            supplier_code = kwargs.get('supplier_code')
-            if supplier_code:
-                and_conditions.append({'supplier_code': supplier_code})
-
-            or_conditions = []
+            supplier_id = kwargs.get('supplier_id', None)
             sku = kwargs.get('sku')
-            concept = kwargs.get('concept')
 
-            if sku and concept:
-                or_conditions.append({'sku': sku})
-                or_conditions.append(
-                    {'concept': {'$regex': concept, '$options': 'i'}})
-            elif sku:
-                or_conditions.append({'sku': sku})
-            elif concept:
-                or_conditions.append(
-                    {'concept': {'$regex': concept, '$options': 'i'}})
+            if not supplier_id and not sku:
+                return False
+            filters = {
+                'supplier_id': supplier_id,
+                'sku': sku,
+            }
+            # and_conditions = []
 
-            if or_conditions:
-                and_conditions.append({'$or': or_conditions})
+            # supplier_id = kwargs.get('supplier_id')
+            # if not supplier_id:
+            #     return False
+            # and_conditions.append({'supplier_id': supplier_id})
 
-            filters = {'$and': and_conditions} if len(
-                and_conditions) > 1 else and_conditions[0]
+            # supplier_code = kwargs.get('supplier_code')
+            # if supplier_code:
+            #     and_conditions.append({'supplier_code': supplier_code})
+
+            # or_conditions = []
+            # sku = kwargs.get('sku')
+            # concept = kwargs.get('concept')
+
+            # if sku and concept:
+            #     or_conditions.append({'sku': sku})
+            #     or_conditions.append(
+            #         {'concept': {'$regex': concept, '$options': 'i'}})
+            # elif sku:
+            #     or_conditions.append({'sku': sku})
+            # elif concept:
+            #     or_conditions.append(
+            #         {'concept': {'$regex': concept, '$options': 'i'}})
+
+            # if or_conditions:
+            #     and_conditions.append({'$or': or_conditions})
+
+            # filters = {'$and': and_conditions} if len(
+            #     and_conditions) > 1 else and_conditions[0]
 
             projection = {
                 "color": 1,
