@@ -38,3 +38,4 @@ class Material(models.Model):
         max_digits=10, decimal_places=2, null=True)
     automation = models.BooleanField(default=False)
     images = models.JSONField(null=True)
+    qr = models.CharField(max_length=255, null=True)

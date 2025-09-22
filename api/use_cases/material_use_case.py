@@ -1,5 +1,6 @@
 import os
 import traceback
+import qrcode
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
@@ -142,6 +143,9 @@ class MaterialUseCase:
                                 material[0])
                             item['concept'] = concept
                             item['sku'] = sku
+                        if 'qr' not in material[0] or not material[0].get('qr'):
+                            item['qr'] = self.__create_qr_image(
+                                str(material[0]['_id']))
                         db.update({'_id': ObjectId(material[0]['_id'])}, item)
                         updated.append(
                             item['concept'] if 'concept' in item else material[0]['concept'])
@@ -149,7 +153,10 @@ class MaterialUseCase:
                         concept, sku = generate_concept_and_sku(item)
                         item['concept'] = concept
                         item['sku'] = sku
-                        db.insert(item)
+                        material_id = db.insert(item)
+                        db.update(
+                            {'_id': ObjectId(material_id)},
+                            {'qr': self.__create_qr_image(str(material_id))})
                         inserted.append(item['concept'])
                 return inserted, updated
             raise exceptions.NotFound('El proveedor seleccionado no existe.')
@@ -207,6 +214,32 @@ class MaterialUseCase:
         wb.save(response)
         return response
 
+    def __create_qr_image(self, material_id):
+        # Construir la URL
+        url = f"{settings.ADMIN_URL}apps/materials/view/{material_id}?input=true"
+
+        # Ruta donde se guardará la imagen
+        qr_dir = os.path.join(settings.MEDIA_ROOT, "materials/qr")
+        os.makedirs(qr_dir, exist_ok=True)  # Crea la carpeta si no existe
+
+        qr_path = os.path.join(qr_dir, f"{material_id}.jpg")
+
+        # Crear el QR code
+        qr = qrcode.QRCode(
+            version=1,  # controla el tamaño de la matriz
+            error_correction=qrcode.constants.ERROR_CORRECT_H,  # alta tolerancia de error
+            box_size=10,  # tamaño de cada "cuadro"
+            border=4,  # borde alrededor
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+
+        # Generar imagen
+        img = qr.make_image(fill_color="black", back_color="white")
+        img.save(qr_path)
+
+        return f"{settings.BASE_URL}/media/materials/qr/{material_id}.jpg"
+
     def save(self):
         with MongoDBHandler('materials') as db:
             required_fields = ['division', 'name',
@@ -216,6 +249,9 @@ class MaterialUseCase:
                     if 'automation' not in self.data:
                         self.data['automation'] = False
                     material_id = db.insert(self.data)
+                    db.update(
+                        {'_id': ObjectId(material_id)},
+                        {'qr': self.__create_qr_image(str(material_id))})
                     return created({'id': str(material_id)})
                 return bad_request('El proveedor selecionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
@@ -271,9 +307,12 @@ class MaterialUseCase:
         with MongoDBHandler('materials') as db:
             material = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if material:
+            if len(material) > 0:
                 if 'supplier_id' in self.data and not self.__check_supplier(db):
                     return bad_request('El proveedor selecionado no existe.')
+                if 'qr' not in material[0] or not material[0].get('qr'):
+                    self.data['qr'] = self.__create_qr_image(
+                        str(material[0]['_id']))
                 updated = db.update({'_id': ObjectId(self.id)}, self.data)
                 return ok(MaterialSerializer(updated[0]).data)
             return bad_request('El material no existe.')

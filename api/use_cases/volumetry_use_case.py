@@ -334,7 +334,7 @@ class VolumetryUseCase:
                     quantify.delay(
                         self.data['client_id'],
                         self.data['front'],
-                        re.sub(r"\s*Cocina$", "", self.data['prototype']),
+                        self.data['prototype'],
                         VolumetrySerializer(volumetry, many=True).data)
                     return ok({'data': VolumetrySerializer(volumetry, many=True).data, 'message': message})
                 return bad_request('Error al momento de procesar la información: el cliente o el material no existen.')
@@ -392,7 +392,7 @@ class VolumetryUseCase:
                 quantify.delay(
                     self.client_id,
                     self.front,
-                    re.sub(r"\s*Cocina$", "", self.prototype),
+                    self.prototype,
                     volumetry
                 )
 

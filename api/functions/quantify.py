@@ -1,3 +1,4 @@
+import re
 from copy import deepcopy
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from celery import shared_task
@@ -13,6 +14,7 @@ def convert_to_float(valor):
 @shared_task
 def quantify(client_id, front, prototype, volumetry):
     with MongoDBHandler('quantification') as db:
+        real_prototype = re.sub(r"\s*Cocina$", "", prototype)
         equipments = {'Campana', 'Estufa', 'Horno', 'Parrilla',
                       'Hielera', 'Microondas', 'Campana + Parrilla'}
         carpentry = {'Acabado', 'Herraje',
@@ -21,11 +23,11 @@ def quantify(client_id, front, prototype, volumetry):
         quantification = db.extract({
             'client_id': client_id,
             'front': front,
-            'prototype': prototype
+            'prototype': real_prototype
         })
 
         result = {
-            "prototype": prototype,
+            "prototype": real_prototype,
             "front": front,
             "client_id": client_id,
             "quantification": {
@@ -40,6 +42,8 @@ def quantify(client_id, front, prototype, volumetry):
         }
 
         is_cocina = prototype.strip().endswith("Cocina")
+
+        print(is_cocina)
 
         def add_entry(category, base_info, data_dict, total):
             """Helper to build result entries"""
@@ -107,6 +111,8 @@ def quantify(client_id, front, prototype, volumetry):
                               material_info, prod, total_prod)
                     add_entry("INSTALACIÓN SIN COCINA",
                               material_info, inst, total_inst)
+
+        print(result)
 
         if quantification:
             db.update(
