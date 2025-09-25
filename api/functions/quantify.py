@@ -26,32 +26,45 @@ def quantify(client_id, front, prototype, volumetry):
             'prototype': real_prototype
         })
 
+        if quantification and isinstance(quantification[0], dict):
+            quant_data = quantification[0].get("quantification", {})
+        else:
+            quant_data = {}
+
         result = {
             "prototype": real_prototype,
             "front": front,
             "client_id": client_id,
             "quantification": {
-                "PRODUCCIÓN SOLO COCINA": [],
-                "PRODUCCIÓN SIN COCINA": [],
-                "INSTALACIÓN SOLO COCINA": [],
-                "INSTALACIÓN SIN COCINA": [],
-                "ENTREGAS COCINA": [],
-                "CARPINTERÍA": [],
-                "EQUIPOS": [],
+                "PRODUCCIÓN SOLO COCINA": quant_data.get("PRODUCCIÓN SOLO COCINA", []),
+                "PRODUCCIÓN SIN COCINA": quant_data.get("PRODUCCIÓN SIN COCINA", []),
+                "INSTALACIÓN SOLO COCINA": quant_data.get("INSTALACIÓN SOLO COCINA", []),
+                "INSTALACIÓN SIN COCINA": quant_data.get("INSTALACIÓN SIN COCINA", []),
+                "ENTREGAS COCINA": quant_data.get("ENTREGAS COCINA", []),
+                "CARPINTERÍA": quant_data.get("CARPINTERÍA", []),
+                "EQUIPOS": quant_data.get("EQUIPOS", []),
             }
         }
 
         is_cocina = prototype.strip().endswith("Cocina")
 
-        print(is_cocina)
-
         def add_entry(category, base_info, data_dict, total):
-            """Helper to build result entries"""
             if total > 0 and data_dict:
                 data = deepcopy(base_info)
                 data.update(data_dict)
                 data["TOTAL"] = total
-                result["quantification"][category].append(data)
+
+                existing = next(
+                    (entry for entry in result["quantification"][category]
+                     if entry["material_id"] == data["material_id"]),
+                    None
+                )
+
+                if existing:
+                    existing.clear()
+                    existing.update(data)
+                else:
+                    result["quantification"][category].append(data)
 
         for item in volumetry:
             material_info = {"material_id": item['material_id']}
@@ -116,7 +129,11 @@ def quantify(client_id, front, prototype, volumetry):
 
         if quantification:
             db.update(
-                {'client_id': client_id, 'front': front, 'prototype': prototype},
+                {
+                    'client_id': client_id,
+                    'front': front,
+                    'prototype': real_prototype
+                },
                 {'quantification': result["quantification"]}
             )
         else:
