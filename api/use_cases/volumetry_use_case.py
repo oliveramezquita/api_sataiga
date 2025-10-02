@@ -322,6 +322,7 @@ class VolumetryUseCase:
                             'front': self.data['front'],
                             'prototype': self.data['prototype'],
                             'material_id': self.data['material_id'],
+                            'supplier_id': material[0]['supplier_id'],
                             **self.__calculate_total(reference),
                         })
                         message = f'El material: {material[0]['concept']} ha sido añadido correctamente en la volumetría.'
