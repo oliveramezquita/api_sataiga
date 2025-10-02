@@ -100,4 +100,8 @@ urlpatterns = [
     path('output/<str:id>', OutputView.as_view(), name='output'),
     path('export-inventory', DownloadInventoryView.as_view(),
          name='export inventory'),
+    path('special_projects/clients', ClientListView.as_view(),
+         name='Special Projects client list'),
+    path('special_projects/client/<str:client_id>', SpecialProjectsView.as_view(),
+         name='Special Projects'),
 ]

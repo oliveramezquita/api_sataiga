@@ -34,6 +34,7 @@ def backup_mongodb():
         collection = db[collection_name]
         data = list(collection.find({}))
 
+        # TODO: Revisar el serialize porque al momento de resturar los ObjectId se pierden
         def serialize(obj):
             if hasattr(obj, "isoformat"):
                 return obj.isoformat()

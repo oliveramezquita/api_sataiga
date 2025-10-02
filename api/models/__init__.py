@@ -22,3 +22,4 @@ from .inbound import Inbound
 from .company import Company
 from .inventory_quantity import InventoryQuantity
 from .output import Output
+from .special_project import SpecialProject
