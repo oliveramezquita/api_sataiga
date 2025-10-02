@@ -23,3 +23,4 @@ from .inventory import InventoryView, InventoryItemView, InventoryMaterialView, 
 from .inbound import InboundsView, ProjectsListView, InboundView, InboundsByMaterialView, InboundsByFileView
 from .company import CompaniesView, CompanyByIdView
 from .output import OutputsView, OutputView, OutputsByMaterialView
+from .special_project import SpecialProjectsView, ClientListView
