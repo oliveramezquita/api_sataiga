@@ -31,6 +31,23 @@ class InboundUseCase:
         self.project_type = kwargs.get('project_type', None)
         self.material_id = kwargs.get('material', None)
 
+    def __to_float(self, val, default=0.0):
+        try:
+            if val is None:
+                return default
+            if isinstance(val, (int, float)):
+                return float(val)
+            if isinstance(val, str):
+                s = val.strip()
+                if not s:
+                    return default
+                # Opcional: quitar separadores de miles
+                s = s.replace(',', '')
+                return float(s)
+        except (TypeError, ValueError):
+            return default
+        return default
+
     def __perform_counting(self, db, project, items, inbound_id):
         for item in items:
             material = {
@@ -48,30 +65,40 @@ class InboundUseCase:
                 'reference': item.get('reference', ''),
             }
 
+            delivered = item.get('delivered') or {}
+            delivered_qty = self.__to_float(delivered.get('quantity'), 0.0)
+
             inventory = MongoDBHandler.find(
                 db, 'inventory', {'material.id': item['material_id']})
             inventory_id = None
+
             if inventory and len(inventory) > 0:
                 inventory_id = str(inventory[0]['_id'])
-                quantity = float(inventory[0]['quantity']) + \
-                    float(item['delivered']['quantity'])
-                MongoDBHandler.modify(db, 'inventory', {'_id': inventory[0]['_id']}, {
-                    'quantity': round(float(quantity), 2)
-                })
-            if not inventory_id:
+                current_qty = self.__to_float(
+                    inventory[0].get('quantity'), 0.0)
+                new_qty = round(current_qty + delivered_qty, 2)
+                MongoDBHandler.modify(
+                    db, 'inventory',
+                    {'_id': inventory[0]['_id']},
+                    {'quantity': new_qty}
+                    # Nota: idealmente usar $inc si tu handler lo soporta para concurrencia
+                )
+            else:
+                # Crear inventario nuevo con cantidad numérica segura
                 inventory_id = MongoDBHandler.record(db, 'inventory', {
                     'material': material,
-                    'quantity': item['delivered']['quantity'],
+                    'quantity': round(delivered_qty, 2),
                 })
+
             MongoDBHandler.record(db, 'inventory_quantity', {
                 'inventory_id': str(inventory_id),
                 'inbound_id': str(inbound_id),
                 'material_id': material['id'],
                 'project': project,
-                'quantity': round(float(item['delivered']['quantity']), 2),
-                'rack': item['delivered']['rack'] if 'rack' in item['delivered'] else None,
-                'level': item['delivered']['level'] if 'level' in item['delivered'] else None,
-                'module': item['delivered']['module'] if 'module' in item['delivered'] else None,
+                'quantity': round(delivered_qty, 2),
+                'rack': delivered.get('rack'),
+                'level': delivered.get('level'),
+                'module': delivered.get('module'),
                 'status': 0,
             })
 

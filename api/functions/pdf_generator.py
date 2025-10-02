@@ -84,6 +84,7 @@ class PDFGenerator:
         font_name = kwargs.get('font_name', 'Arial')
         font_size = kwargs.get('font_size', 8)
         font_color = kwargs.get('font_color', colors.black)
+        leading = kwargs.get('leading', font_size)
 
         if isinstance(font_color, str):
             font_color = getattr(colors, font_color.lower(), colors.black)
@@ -94,6 +95,7 @@ class PDFGenerator:
         text_obj.setTextOrigin(x, y)
         text_obj.setFont(font_name, font_size)
         text_obj.setFillColor(font_color)
+        text_obj.setLeading(leading)
 
         for line in lines:
             text_obj.textLine(line)
@@ -165,7 +167,7 @@ class PDFGenerator:
         font_size = kwargs.get('font_size', 8)
 
         headers = [
-            "Clave del Producto", "Color", "Cantidad", "Descripción",
+            "Clave del Producto", "SKU", "Color", "Cantidad", "Descripción",
             "Unidad", "P. Unitario", "Total"
         ]
         all_rows = [headers] + data
@@ -173,7 +175,7 @@ class PDFGenerator:
         # Estilos por columna
         paragraph_styles = []
         for i in range(len(headers)):
-            alignment = 'CENTER' if i < 5 else 'RIGHT'
+            alignment = 'CENTER' if i < 6 else 'RIGHT'
             paragraph_styles.append(ParagraphStyle(
                 name=f"Col{i}",
                 fontName=font_name,

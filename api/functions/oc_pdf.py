@@ -33,10 +33,12 @@ def generate_pdf(data):
             supplier_data.append([label, supplier[key].upper()])
     pdf_generator.add_table(29, 162, supplier_data, [50, 170], font_size=7)
     _, remaining_y = pdf_generator.add_materials_table(
-        29, data['materials'], [70, 94, 50, 170, 50, 60, 60], font_size=7.5)
+        29, data['materials'], [70, 74, 70, 45, 130, 45, 60, 60], font_size=7.5)
     remaining_y = pdf_generator.ensure_space(remaining_y, 35)
     pdf_generator.add_wrap_text(
         101, remaining_y, 300, ["OBSERVACIONES:"], font_color='gray')
+    pdf_generator.add_wrap_text(
+        103, remaining_y + 10, 312, [data['notes']], leading=12)
     pdf_generator.add_table(463, remaining_y, [["Subtotal:"], ["(-) % Descuento"], ["(+) IVA 16%:"]], [
                             59], font_size=7.5, background_color='#f5f5f5', background_cols=[0])
     pdf_generator.add_table(522, remaining_y, data['subtotal'], [
