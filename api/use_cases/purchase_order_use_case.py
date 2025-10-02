@@ -249,6 +249,7 @@ class PurchaseOrderUseCase:
         for item in data['items']:
             data['materials'].append([
                 item.get('supplier_code', ''),
+                item.get('sku', ''),
                 item.get('color', ''),
                 item.get('total_quantity', 0),
                 item.get('concept', ''),
@@ -508,6 +509,7 @@ class PurchaseOrderUseCase:
                         'payment_form': data.get('payment_form', ''),
                         'cfdi': data.get('cfdi', ''),
                         'invoice_email': data.get('invoice_email', ''),
+                        'notes': data.get('subject', '')
                     })
                     self.data['pdf_file'] = f"{settings.BASE_URL}/{pdf}"
                 db.update({'_id': ObjectId(self.id)}, self.data)
