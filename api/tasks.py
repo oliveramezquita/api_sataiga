@@ -1,7 +1,7 @@
-import json
 import os
 import shutil
 import zipfile
+from bson import json_util
 from celery import shared_task
 from pymongo import MongoClient
 from datetime import datetime
@@ -26,25 +26,16 @@ def backup_mongodb():
     temp_dir = os.path.join(backup_dir, f"temp_{timestamp}")
     os.makedirs(temp_dir, exist_ok=True)
 
-    # Guardar lista de colecciones antes de cerrar conexión
     collections = db.list_collection_names()
 
-    # Crear archivos JSON individuales
     for collection_name in collections:
         collection = db[collection_name]
         data = list(collection.find({}))
 
-        # TODO: Revisar el serialize porque al momento de resturar los ObjectId se pierden
-        def serialize(obj):
-            if hasattr(obj, "isoformat"):
-                return obj.isoformat()
-            return str(obj)
-
         file_path = os.path.join(temp_dir, f"{collection_name}.json")
         with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, default=serialize, ensure_ascii=False, indent=2)
+            f.write(json_util.dumps(data, indent=2, ensure_ascii=False))
 
-    # Crear archivo ZIP con todos los JSON
     zip_filename = os.path.join(backup_dir, f"backup_{timestamp}.zip")
     with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zipf:
         for root, _, files in os.walk(temp_dir):
@@ -53,10 +44,7 @@ def backup_mongodb():
                 arcname = os.path.relpath(file_path, temp_dir)
                 zipf.write(file_path, arcname)
 
-    # Eliminar carpeta temporal
     shutil.rmtree(temp_dir)
-
-    # Ahora sí, cerrar cliente
     client.close()
 
     return f"Respaldo creado: {zip_filename} con {len(collections)} colecciones."
