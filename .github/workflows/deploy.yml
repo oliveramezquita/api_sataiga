@@ -30,7 +30,12 @@ jobs:
                 username: ${{ secrets.SSH_USER }}
                 password: ${{ secrets.SSH_PASSWORD }}
                 script: |
-                  cd api_sataiga
+                  cd /home/admin/api_sataiga
                   git pull
-                  sudo systemctl restart gunicorn
+                  source venv/bin/activate
+                  python manage.py migrate --noinput
+                  python manage.py collectstatic --noinput
+                  
+                  sudo systemctl restart celery_beat
                   sudo systemctl restart celery_worker
+                  sudo systemctl restart gunicorn
