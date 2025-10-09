@@ -95,7 +95,7 @@ class AuthUseCase:
                             'subject': 'Restauración de Contraseña del Sistema Bellarti',
                             'full_name': user[0]['name'] + f' {user[0]['lastname']}' if user[0]['lastname'] else '',
                             'email': user[0]['email'],
-                            'link_href': f'{settings.ADMIN_URL}/reset-password?rt={hash_request}',
+                            'link_href': f'{settings.ADMIN_URL}reset-password?rt={hash_request}',
                             'link_label': 'RESTAURAR CONTRASEÑA'
                         },
                     )
