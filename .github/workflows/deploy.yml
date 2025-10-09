@@ -34,4 +34,3 @@ jobs:
                   git pull
                   sudo systemctl restart gunicorn
                   sudo systemctl restart celery_worker
-                  sudo systemctl restart celery_beat
