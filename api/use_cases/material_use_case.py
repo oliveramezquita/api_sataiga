@@ -30,6 +30,7 @@ class MaterialUseCase:
             self.q = params['q'][0] if 'q' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
             self.division = params['division'][0] if 'division' in params else None
+            self.group = params['group'][0] if 'group' in params else None
             self.order_by = - \
                 1 if 'orderBy' in params and params['orderBy'][0] == 'desc' else 1
         self.data = kwargs.get('data', None)
@@ -240,6 +241,57 @@ class MaterialUseCase:
 
         return f"{settings.BASE_URL}/media/materials/qr/{material_id}.jpg"
 
+    def __build_material_filters(self, supplier_override: str = None, division_list: list[str] = None):
+        """
+        Construye el filtro MongoDB para materiales, considerando búsqueda,
+        proveedor, división, y grupo (EQUIPMENT_GROUP / MATERIALS_GROUP).
+        """
+        filters = {}
+
+        # 🔹 Búsqueda libre
+        if self.q:
+            filters['$or'] = [
+                {'concept': {'$regex': self.q, '$options': 'i'}},
+                {'measurement': {'$regex': self.q, '$options': 'i'}},
+                {'supplier_code': {'$regex': self.q, '$options': 'i'}},
+                {'sku': {'$regex': self.q, '$options': 'i'}},
+                {'presentation': {'$regex': self.q, '$options': 'i'}},
+                {'reference': {'$regex': self.q, '$options': 'i'}},
+            ]
+
+        # 🔹 Filtro de proveedor (prioriza el override si se pasa explícito)
+        supplier_id = supplier_override or self.supplier
+        if supplier_id:
+            filters['supplier_id'] = supplier_id
+
+        # 🔹 Si viene una lista de divisiones explícita
+        if division_list:
+            filters['division'] = {'$in': division_list}
+            return filters  # ← No aplicar filtros por grupo
+
+        # 🔹 Filtro directo de división (tiene prioridad)
+        if self.division:
+            filters['division'] = self.division
+            return filters  # ← También evita aplicar group
+
+        # 🔹 Filtro por grupo (solo si no hay división)
+        if getattr(self, "group", None):
+            group_name = self.group.upper()
+
+            # Consultar catálogo dinámico desde MongoDB
+            with MongoDBHandler('catalogs') as cat_db:
+                catalog = cat_db.db['catalogs'].find_one(
+                    {'name': 'Equipos y/o accesorios'})
+                equipment_divisions = catalog.get(
+                    'values', []) if catalog else []
+
+            if group_name == "EQUIPMENT_GROUP":
+                filters['division'] = {'$in': equipment_divisions}
+            elif group_name == "MATERIALS_GROUP":
+                filters['division'] = {'$nin': equipment_divisions}
+
+        return filters
+
     def save(self):
         with MongoDBHandler('materials') as db:
             required_fields = ['division', 'name',
@@ -258,27 +310,16 @@ class MaterialUseCase:
 
     def get(self):
         with MongoDBHandler('materials') as db:
-            filters = {}
-            if self.q:
-                filters['$or'] = [
-                    {'concept': {'$regex': self.q, '$options': 'i'}},
-                    {'measurement': {'$regex': self.q, '$options': 'i'}},
-                    {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                    {'sku': {'$regex': self.q, '$options': 'i'}},
-                    {'presentation': {'$regex': self.q, '$options': 'i'}},
-                    {'reference': {'$regex': self.q, '$options': 'i'}},
-                ]
-            if self.supplier:
-                filters['supplier_id'] = self.supplier
-            if self.division:
-                filters['division'] = self.division
+            filters = self.__build_material_filters()
             materials = db.extract(filters, 'concept', self.order_by)
+
             paginator = Paginator(materials, per_page=self.page_size)
             page = paginator.get_page(self.page)
+
             return ok_paginated(
                 paginator,
                 page,
-                MaterialSerializer(page.object_list, many=True).data
+                MaterialSerializer(page.object_list, many=True).data,
             )
 
     def get_by_id(self):
@@ -291,17 +332,19 @@ class MaterialUseCase:
 
     def get_by_supplier(self):
         with MongoDBHandler('materials') as db:
-            filter_query = {
-                "supplier_id": self.supplier_id
-            }
-
+            # Convertir divisiones separadas por coma a lista
+            division_list = None
             if self.division and len(self.division) > 0:
-                filter_query["division"] = {"$in": self.division.split(',')}
+                division_list = self.division.split(',')
+
+            # Reutilizamos la misma lógica de construcción de filtros
+            filter_query = self.__build_material_filters(
+                supplier_override=self.supplier_id,
+                division_list=division_list
+            )
 
             materials = db.extract(filter_query)
-            if materials:
-                return ok(MaterialSerializer(materials, many=True).data)
-            return ok([])
+            return ok(MaterialSerializer(materials, many=True).data if materials else [])
 
     def update(self):
         with MongoDBHandler('materials') as db:
@@ -350,10 +393,18 @@ class MaterialUseCase:
 
     def download(self):
         with MongoDBHandler('materials') as db:
-            filters = {}
-            if self.supplier:
-                filters['supplier_id'] = self.supplier
-            materials = db.extract(filters)
+            # Convertir divisiones separadas por coma a lista
+            division_list = None
+            if self.division and len(self.division) > 0:
+                division_list = self.division.split(',')
+
+            # Reutilizamos la misma lógica de construcción de filtros
+            filter_query = self.__build_material_filters(
+                supplier_override=self.supplier_id,
+                division_list=division_list
+            )
+
+            materials = db.extract(filter_query)
             return self.__export_materials(materials)
 
     def upload_image(self):

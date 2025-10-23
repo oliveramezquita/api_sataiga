@@ -40,10 +40,23 @@ class MongoDBHandler:
             result = result.sort(order_field, order)
         return list(result)
 
-    def update(self, query, update_data):
+    def update(self, query, update_data, upsert=False):
         collection = self.db[self.collection_name]
-        update_data['updated_at'] = datetime.now()
-        _ = collection.update_one(query, {'$set': update_data})
+
+        # 🕒 siempre actualiza la fecha
+        if any(k.startswith('$') for k in update_data.keys()):
+            if '$set' in update_data:
+                update_data['$set']['updated_at'] = datetime.now()
+            else:
+                update_data['$set'] = {'updated_at': datetime.now()}
+            ops = update_data
+        else:
+            update_data['updated_at'] = datetime.now()
+            ops = {'$set': update_data}
+
+        # ✅ Aquí se pasa upsert explícitamente
+        collection.update_one(query, ops, upsert=upsert)
+
         result = collection.find(query)
         return list(result)
 

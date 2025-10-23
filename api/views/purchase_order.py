@@ -35,7 +35,7 @@ class PurchaseOrderView(views.APIView):
         return use_case.delete()
 
 
-class ProjectsView(views.APIView):
+class VSProjectsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
     def get(self, request):
