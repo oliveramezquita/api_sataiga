@@ -60,6 +60,7 @@ class UserUseCase:
                 self.__validate_params(db)
                 try:
                     db.create_unique_index('email')
+                    self.data['email'] = self.data['email'].lower()
                     self.data['status'] = 0
                     self.data['permissions'] = self.__assign_permissions(db)
                     self.data['permissions']['AccountSettings'] = ['read']
