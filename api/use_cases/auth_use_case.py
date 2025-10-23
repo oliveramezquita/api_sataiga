@@ -53,7 +53,8 @@ class AuthUseCase:
         with MongoDBHandler('users') as db:
             required_fields = ['email', 'password']
             if all(i in self.data for i in required_fields):
-                user = db.extract({'email': self.data['email'], 'status': 1})
+                user = db.extract(
+                    {'email': self.data['email'].lower(), 'status': 1})
                 if user:
                     if verify_password(self.data['password'], user[0]['password']):
                         user_ability_rules = self.__user_ability_rules(
@@ -75,7 +76,7 @@ class AuthUseCase:
         with MongoDBHandler('password_request') as db:
             if 'email' in self.data and email_validation(self.data['email']):
                 user = MongoDBHandler.find(
-                    db, 'users', {'email': self.data['email']})
+                    db, 'users', {'email': self.data['email'].lower()})
                 if user:
                     user_id = str(user[0]['_id'])
                     password_request = db.extract(
