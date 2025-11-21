@@ -51,12 +51,12 @@ class ExplosionUseCase:
         return default
 
     def __total_from_prototypes(self, prototypes: list[dict]) -> float:
-        """Suma factory + instalation de todos los prototypes."""
+        """Suma factory + installation de todos los prototypes."""
         total = 0.0
         for p in prototypes:
             q = p.get('quantities', {})
             total += self.__to_float(q.get('factory')) + \
-                self.__to_float(q.get('instalation'))
+                self.__to_float(q.get('installation'))
         return round(total, 2)
 
     def __remove_prototype(self, area: dict, prototype: str):
@@ -89,26 +89,26 @@ class ExplosionUseCase:
 
         def scaled(v):
             f = round(self.__to_float(v.get('factory')) * multiplier, 2)
-            ins = round(self.__to_float(v.get('instalation')) * multiplier, 2)
+            ins = round(self.__to_float(v.get('installation')) * multiplier, 2)
             return f, ins
 
         # ---- Caso SIN documento previo de explosion ----
         if not explosion_docs:
             amounts = []
             for v in item['volumetry']:
-                factory, instalation = scaled(v)
-                if factory > 0 or instalation > 0:
+                factory, installation = scaled(v)
+                if factory > 0 or installation > 0:
                     prototypes = [{
                         'prototype': item['prototype'],
                         'quantities': {
                             'factory': factory,
-                            'instalation': instalation,
+                            'installation': installation,
                         }
                     }]
                     amounts.append({
                         'area': v['area'],
                         'prototypes': prototypes,
-                        # factory + instalation
+                        # factory + installation
                         'total': self.__total_from_prototypes(prototypes),
                     })
             return amounts
@@ -117,7 +117,7 @@ class ExplosionUseCase:
         areas = explosion_docs[0]['explosion']
 
         for v in item['volumetry']:
-            factory, instalation = scaled(v)
+            factory, installation = scaled(v)
             exp = next((d for d in areas if d.get("area") == v['area']), None)
 
             if exp:
@@ -125,16 +125,16 @@ class ExplosionUseCase:
                 exp = self.__remove_prototype(exp, item['prototype'])
 
                 # 2) Agregarlo si hay valores
-                if factory > 0 or instalation > 0:
+                if factory > 0 or installation > 0:
                     exp['prototypes'].append({
                         'prototype': item['prototype'],
                         'quantities': {
                             'factory': factory,
-                            'instalation': instalation,
+                            'installation': installation,
                         }
                     })
 
-                # 3) Recalcular total como factory + instalation
+                # 3) Recalcular total como factory + installation
                 exp['total'] = self.__total_from_prototypes(exp['prototypes'])
 
                 # 4) Persistir en la lista de áreas
@@ -142,12 +142,12 @@ class ExplosionUseCase:
 
             else:
                 # No existía el área: crearla si aporta valores
-                if factory > 0 or instalation > 0:
+                if factory > 0 or installation > 0:
                     prototypes = [{
                         'prototype': item['prototype'],
                         'quantities': {
                             'factory': factory,
-                            'instalation': instalation,
+                            'installation': installation,
                         }
                     }]
                     areas.append({

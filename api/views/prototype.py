@@ -18,6 +18,10 @@ class PrototypeView(views.APIView):
 class PrototypeByIdView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
+    def get(self, request, id):
+        use_case = PrototypeUseCase(id=id)
+        return use_case.get_by_id()
+
     def patch(self, request, id):
         use_case = PrototypeUseCase(data=request.data, id=id)
         return use_case.update()
@@ -25,19 +29,3 @@ class PrototypeByIdView(views.APIView):
     def delete(self, request, id):
         use_case = PrototypeUseCase(id=id)
         return use_case.delete()
-
-
-class PrototypeByClientView(views.APIView):
-    authentication_classes = [BellartiAuthenticationMiddleware]
-
-    def get(self, request, client_id):
-        use_case = PrototypeUseCase(client_id=client_id)
-        return use_case.get_by_client()
-
-
-class PrototypesByDataView(views.APIView):
-    authentication_classes = [BellartiAuthenticationMiddleware]
-
-    def get(self, request, client_id, front):
-        use_case = PrototypeUseCase(client_id=client_id, front=front)
-        return use_case.get_prototype_by_data()

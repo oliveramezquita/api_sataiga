@@ -39,3 +39,4 @@ class Material(models.Model):
     automation = models.BooleanField(default=False)
     images = models.JSONField(null=True)
     qr = models.CharField(max_length=255, null=True)
+    its_trending = models.BooleanField(default=False)

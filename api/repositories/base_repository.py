@@ -1,5 +1,5 @@
 from bson import ObjectId
-from decimal import Decimal
+from typing import Optional, Dict, Any
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.validations import objectid_validation
 
@@ -22,12 +22,15 @@ class BaseRepository:
         with self.db_handler as db:
             return db.extract(query=query, order_field=order_field, order=order, projection=projection)
 
-    def find_by_id(self, _id: str):
+    def find_by_id(self, _id: str, filters: dict = None) -> Optional[Dict[str, Any]]:
         """Obtiene un documento por su ObjectId."""
+        query = {'_id': ObjectId(_id)}
         if not objectid_validation(_id):
             return None
+        if filters and isinstance(filters, dict):
+            query.update(filters)
         with self.db_handler as db:
-            result = db.extract({'_id': ObjectId(_id)})
+            result = db.extract(query)
             return result[0] if result else None
 
     def insert(self, data: dict):

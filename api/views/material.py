@@ -3,7 +3,7 @@ from api.use_cases.material_use_case import MaterialUseCase
 from api.middlewares import BellartiAuthenticationMiddleware
 
 
-class MatrialView(views.APIView):
+class MaterialsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
     def post(self, request):
@@ -33,14 +33,6 @@ class MaterialByIdView(views.APIView):
     def delete(self, request, id):
         use_case = MaterialUseCase(id=id)
         return use_case.delete()
-
-
-class MaterialBySupplierView(views.APIView):
-    authentication_classes = [BellartiAuthenticationMiddleware]
-
-    def get(self, request, supplier_id):
-        use_case = MaterialUseCase(request=request, supplier_id=supplier_id)
-        return use_case.get_by_supplier()
 
 
 class DownloadMaterialsView(views.APIView):

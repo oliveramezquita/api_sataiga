@@ -28,6 +28,7 @@ class VolumetrySerializer(serializers.ModelSerializer):
                     'measurement': material[0]['measurement'],
                     'sku': sku,
                     'division': material[0]['division'],
+                    'its_trending': material[0]['its_trending'] if 'its_trending' in material[0] else False
                 }
             return None
 

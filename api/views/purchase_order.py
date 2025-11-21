@@ -39,28 +39,34 @@ class VSProjectsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
     def get(self, request):
-        use_case = PurchaseOrderUseCase()
+        use_case = PurchaseOrderUseCase(request=request)
         return use_case.get_projects()
 
 
 class PurchaseOrderSuppliersView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
-    def get(self, request, home_production_id):
-        use_case = PurchaseOrderUseCase(
-            home_production_id=home_production_id, request=request)
+    def get(self, request):
+        use_case = PurchaseOrderUseCase(request=request)
         return use_case.get_suppliers()
 
 
 class PurchaseOrderMaterialsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
-    def get(self, request, home_production_id, supplier_id):
+    def get(self, request, supplier_id):
         use_case = PurchaseOrderUseCase(
             request=request,
-            home_production_id=home_production_id,
             supplier_id=supplier_id)
         return use_case.get_materials()
+
+
+class PurchaseOrderLastConsecutiveView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def get(self, request):
+        use_case = PurchaseOrderUseCase()
+        return use_case.get_last_consecutive()
 
 
 class InputRegisterView(views.APIView):

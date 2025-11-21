@@ -66,7 +66,7 @@ class ProjectUseCase:
     def get_clients(self):
         """Obtiene lista de clientes tipo PE con búsqueda opcional."""
         try:
-            clients = self.service.get_clients(self.q)
+            clients = self.service.get_clients()
             serialized = ProjectDataSerializer(clients, many=True).data
             return ok(serialized)
         except Exception as e:

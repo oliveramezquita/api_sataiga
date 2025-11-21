@@ -83,10 +83,10 @@ def quantify(client_id, front, prototype, volumetry):
                 total_carp = 0
                 for v in item["volumetry"]:
                     factory = convert_to_float(v.get("factory", 0))
-                    instalation = convert_to_float(v.get("instalation", 0))
+                    installation = convert_to_float(v.get("installation", 0))
                     delivery = convert_to_float(v.get("delivery", 0))
 
-                    carp_data[v["area"]] = factory + instalation + delivery
+                    carp_data[v["area"]] = factory + installation + delivery
                     total_carp += carp_data[v["area"]]
 
                 add_entry("CARPINTERÍA", material_info, carp_data, total_carp)
@@ -97,19 +97,19 @@ def quantify(client_id, front, prototype, volumetry):
 
                 for v in item["volumetry"]:
                     factory = convert_to_float(v.get("factory", 0))
-                    instalation = convert_to_float(v.get("instalation", 0))
+                    installation = convert_to_float(v.get("installation", 0))
                     delivery = convert_to_float(v.get("delivery", 0))
 
                     if is_cocina:
                         prod[v["area"]] = factory
-                        inst[v["area"]] = instalation
+                        inst[v["area"]] = installation
                         dlvy[v["area"]] = delivery
                     else:
                         prod[v["area"]] = factory
-                        inst[v["area"]] = instalation
+                        inst[v["area"]] = installation
 
                     total_prod += factory
-                    total_inst += instalation
+                    total_inst += installation
                     total_dlvy += delivery
 
                 if is_cocina:
@@ -124,8 +124,6 @@ def quantify(client_id, front, prototype, volumetry):
                               material_info, prod, total_prod)
                     add_entry("INSTALACIÓN SIN COCINA",
                               material_info, inst, total_inst)
-
-        print(result)
 
         if quantification:
             db.update(
