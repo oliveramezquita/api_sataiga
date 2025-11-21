@@ -44,11 +44,9 @@ class BaseRepository:
         Acepta directamente operadores ($set, $push, $inc, etc.)
         o documentos simples. NO agrega $set automáticamente.
         """
-        print(f"_id: {_id}")
         if not objectid_validation(_id):
             return None
 
-        print(f"update_data: {update_data}")
         with self.db_handler as db:
             return db.update({'_id': ObjectId(_id)}, update_data, upsert=upsert)
 

@@ -21,7 +21,6 @@ class ContactSerializer(serializers.ModelSerializer):
                 }
         except Exception as e:
             # Logging opcional para debug
-            print(f"[get_client_name] Error al obtener cliente: {e}")
             return {'name': '', 'type': None}
 
     class Meta:

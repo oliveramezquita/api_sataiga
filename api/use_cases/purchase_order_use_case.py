@@ -40,7 +40,7 @@ class PurchaseOrderUseCase:
             self.status = params['status'][0] if 'status' in params else None
             self.division = params['division'][0] if 'division' in params else None
             self.type_project = params['type'][0] if 'type' in params else None
-            self.project_id = kwargs.get('project_id', None)
+            self.project_id = params['project_id'][0] if 'project_id' in params else None
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.supplier_id = kwargs.get('supplier_id', None)
@@ -99,7 +99,7 @@ class PurchaseOrderUseCase:
         results = sorted(set(results), key=lambda x: float(x))
 
         if not results:
-            return None
+            return 1
         elif len(results) == 1:
             return results[0]
         else:
@@ -121,15 +121,13 @@ class PurchaseOrderUseCase:
                     'registration_date': None
                 },
             }
-        else:
-            # TODO: Por el momento sólo se tomará el primer valor de la presentación hasta saber como se manejará el precios
-            total_quantity = math.ceil(total / presentation[0])
-            return {
-                'quantity': presentation[0],
-                'total_quantity': total_quantity,
-                'modified': 1,
-                'total': round(float(total_quantity)*float(price), 2)
-            }
+        total_quantity = math.ceil(total / presentation[0])
+        return {
+            'quantity': presentation[0],
+            'total_quantity': total_quantity,
+            'modified': 1,
+            'total': round(float(total_quantity)*float(price), 2)
+        }
 
     def __process_material_quantities(self, item, material):
         if ('presentation' in material and material['presentation']) and ('automation' in material and material['automation']):

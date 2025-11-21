@@ -3,7 +3,7 @@ from api.use_cases.material_use_case import MaterialUseCase
 from api.middlewares import BellartiAuthenticationMiddleware
 
 
-class MatrialView(views.APIView):
+class MaterialsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
     def post(self, request):

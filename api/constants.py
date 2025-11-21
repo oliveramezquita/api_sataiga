@@ -43,4 +43,5 @@ FIXED_PRESENTATIONS = {
     "TRAMO": 1,
     "BOBINA": 1,
     "PZS": 1,
+    "PZA": 1,
 }
