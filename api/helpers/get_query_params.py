@@ -6,22 +6,21 @@ def get_query_params(request):
     """
     Extrae TODOS los parámetros de query de un request de forma robusta.
     - Devuelve dict plano con valores ya convertidos (int, bool, str)
-    - Incluye page, page_size y q con defaults
-    - Si un valor no existe, devuelve None en lugar de lanzar error
+    - Incluye page, page_size, q, sort_by y order_by (asc=>1, desc=>-1)
     """
     if not request:
-        return {"page": 1, "page_size": DEFAULT_PAGE_SIZE, "q": None}
+        return {"page": 1, "page_size": DEFAULT_PAGE_SIZE, "q": None, "sort_by": None, "order_by": 1}
 
     try:
         # Soporte DRF o WSGI nativo
-        query_params = getattr(request, "query_params", None) or \
-            parse_qs(request.META.get("QUERY_STRING", ""))
+        query_params = getattr(request, "query_params", None) or parse_qs(
+            request.META.get("QUERY_STRING", ""))
 
         params = {}
 
         def convert_value(value):
-            """Convierte strings a bool/int/str automáticamente."""
-            if not value:
+            """Convierte strings a bool/int/float/str automáticamente."""
+            if value is None:
                 return None
             if isinstance(value, list):
                 value = value[0]
@@ -47,8 +46,21 @@ def get_query_params(request):
         params.setdefault("page_size", params.pop(
             "itemsPerPage", DEFAULT_PAGE_SIZE))
         params.setdefault("q", None)
+        params.setdefault("sort_by", params.pop("sortBy", None))
+
+        # --- Normaliza order_by ---
+        raw_order = params.pop("orderBy", None)
+
+        if raw_order is None:
+            order_value = 1  # default ascendente
+        elif str(raw_order).lower() == "desc":
+            order_value = -1
+        else:  # incluye 'asc' o cualquier otro valor inválido
+            order_value = 1
+
+        params["order_by"] = order_value
 
         return params
 
     except Exception:
-        return {"page": 1, "page_size": DEFAULT_PAGE_SIZE, "q": None}
+        return {"page": 1, "page_size": DEFAULT_PAGE_SIZE, "q": None, "sort_by": None, "order_by": 1}

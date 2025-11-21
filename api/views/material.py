@@ -35,14 +35,6 @@ class MaterialByIdView(views.APIView):
         return use_case.delete()
 
 
-class MaterialBySupplierView(views.APIView):
-    authentication_classes = [BellartiAuthenticationMiddleware]
-
-    def get(self, request, supplier_id):
-        use_case = MaterialUseCase(request=request, supplier_id=supplier_id)
-        return use_case.get_by_supplier()
-
-
 class DownloadMaterialsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 

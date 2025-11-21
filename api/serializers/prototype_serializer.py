@@ -5,9 +5,16 @@ from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 
 
 class PrototypeSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField(
+        "get_id"
+    )
+
     client = serializers.SerializerMethodField(
         "get_client"
     )
+
+    def get_id(self, data):
+        return str(data['_id'])
 
     def get_client(self, data):
         with MongoDBHandler('clients') as db:

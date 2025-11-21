@@ -1,57 +1,66 @@
-from api_sataiga.handlers.mongodb_handler import MongoDBHandler
-from api.helpers.http_responses import created, bad_request, ok, not_found
-from api.serializers.contact_serializer import ContactSerializer
-from bson import ObjectId
-from api.helpers.validations import objectid_validation
+from api.decorators.service_method import service_method
+from api.services.contact_service import ContactService
 
 
 class ContactUseCase:
+    """Orquesta peticiones HTTP para el módulo de Contactos."""
+
     def __init__(self, request=None, **kwargs):
-        self.client_id = kwargs.get('client_id', None)
-        self.data = kwargs.get('data', None)
-        self.id = kwargs.get('id', None)
+        self.client_id = kwargs.get("client_id", None)
+        self.data = kwargs.get("data")
+        self.id = kwargs.get("id")
+        self.service = ContactService()
 
-    def __client_validation(self, db):
-        client = MongoDBHandler.find(db, 'clients', {'_id': ObjectId(
-            self.client_id)}) if objectid_validation(self.client_id) else None
-        if client:
-            return client[0]
-        return False
-
+    # ----------------------------------------------------------
+    # CREAR CONTACTO
+    # ----------------------------------------------------------
+    @service_method(success_status="created")
     def save(self):
-        with MongoDBHandler('contacts') as db:
-            if self.__client_validation(db):
-                if 'name' in self.data:
-                    db.insert({
-                        'client_id': self.client_id,
-                        **self.data})
-                    return created('Contacto creado correctamente.')
-                return bad_request('Algunos campos requeridos no han sido completados.')
-            return bad_request('Error al momento de procesar la información: el cliente no existen.')
+        """
+        Crea un nuevo contacto para un cliente.
+        """
+        self.service.create(self.client_id, self.data)
+        return f"Contacto: {self.data['name']} creado exitosamente."
 
+    # ----------------------------------------------------------
+    # LISTAR CONTACTOS POR CLIENTE
+    # ----------------------------------------------------------
+    @service_method()
     def get(self):
-        with MongoDBHandler('contacts') as db:
-            if self.__client_validation(db):
-                contacts = db.extract({'client_id': self.client_id})
-                if contacts:
-                    return ok(ContactSerializer(contacts, many=True).data)
-                return ok([])
-            return bad_request('Error al momento de procesar la información: el cliente no existen.')
+        """
+        Devuelve todos los contactos de un cliente.
+        Si no se pasa client_id, devuelve todos los contactos.
+        """
+        return self.service.get(self.client_id)
 
+    # ----------------------------------------------------------
+    # OBTENER CONTACTO POR ID
+    # ----------------------------------------------------------
+    @service_method()
+    def get_by_id(self):
+        """
+        Devuelve un contacto por su ID.
+        """
+        return self.service.get_by_id(self.id)
+
+    # ----------------------------------------------------------
+    # ACTUALIZAR CONTACTO
+    # ----------------------------------------------------------
+    @service_method()
     def update(self):
-        with MongoDBHandler('contacts') as db:
-            contact = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if contact:
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('Contacto actualizado correctamente.')
-            return not_found('El contacto no existe.')
+        """
+        Actualiza un contacto existente.
+        """
+        self.service.update(self.id, self.data)
+        return "Contacto actualizado correctamente."
 
+    # ----------------------------------------------------------
+    # ELIMINAR CONTACTO
+    # ----------------------------------------------------------
+    @service_method()
     def delete(self):
-        with MongoDBHandler('contacts') as db:
-            contact = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if contact:
-                db.delete({'_id': ObjectId(self.id)})
-                return ok('Contacto eliminado correctamente.')
-            return not_found('El Contacto no existe.')
+        """
+        Elimina un contacto existente.
+        """
+        self.service.delete(self.id)
+        return "Contacto eliminado correctamente."

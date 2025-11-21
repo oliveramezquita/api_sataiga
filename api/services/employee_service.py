@@ -1,39 +1,102 @@
+from typing import Optional, Dict, Any
 from api.repositories.employee_repository import EmployeeRepository
+from api.serializers.employee_serializer import EmployeeSerializer
+from api.services.base_service import BaseService
 
 
-class EmployeeService:
+class EmployeeService(BaseService):
     """Lógica de negocio pura para Empleados y Colaboradores."""
+
+    CACHE_PREFIX = "employees"
 
     def __init__(self):
         self.employee_repo = EmployeeRepository()
 
-    def _validate_fields(self, data: dict, required_fields: list[str]):
-        missing = [f for f in required_fields if not data.get(f)]
-        if missing:
-            raise ValueError(
-                f'Campos requeridos faltantes: {", ".join(missing)}')
+    # ----------------------------------------------------------
+    # CREAR EMPLEADO
+    # ----------------------------------------------------------
+    def create(self, data: Dict[str, Any]) -> Dict[str, str]:
+        """
+        Crea un nuevo empleado o colaborador.
+        Valida campos requeridos y asigna estado activo por defecto.
+        Invalida la caché global de empleados.
+        """
+        # Validar campos requeridos (heredado del BaseService)
+        self._validate_fields(data, ["name", "number", "activity"])
 
-    def create(self, data: dict) -> None:
-        self._validate_fields(data, ['name', 'number', 'activity'])
-        _ = self.employee_repo.insert({**data, 'status': True})
+        # Insertar con status=True
+        data_with_status = {**data, "status": True}
 
-    def get_all(self, query: dict):
-        return self.employee_repo.find_all(query=query, order_field='created_at', order=-1)
+        inserted_id = self._create(
+            repo=self.employee_repo,
+            data=data_with_status,
+            required_fields=["name", "number", "activity"],
+            cache_prefix=self.CACHE_PREFIX,
+        )
 
+        return {"id": str(inserted_id)}
+
+    # ----------------------------------------------------------
+    # OBTENER EMPLEADOS PAGINADOS (CON CACHE)
+    # ----------------------------------------------------------
+    def get_paginated(self, status: Optional[str], q: Optional[str], page: int, page_size: int):
+        """
+        Devuelve los empleados filtrados por estado o búsqueda (q),
+        con paginación y cache de resultados.
+        """
+        filters: Dict[str, Any] = {}
+        if status is not None:
+            filters["status"] = status
+        if q:
+            filters["$or"] = [
+                {"number": {"$regex": q, "$options": "i"}},
+                {"name": {"$regex": q, "$options": "i"}},
+                {"activity": {"$regex": q, "$options": "i"}},
+            ]
+
+        items = self._get_all_cached(
+            self.employee_repo, filters, prefix=self.CACHE_PREFIX)
+        return self._paginate(items, page, page_size, serializer=EmployeeSerializer)
+
+    # ----------------------------------------------------------
+    # OBTENER POR ID
+    # ----------------------------------------------------------
     def get_by_id(self, employee_id: str):
-        employee = self.employee_repo.find_by_id(employee_id)
-        if not employee:
-            raise LookupError('El empleado/colaborador no existe.')
-        return employee
+        """
+        Obtiene un empleado por su ID, usando el método genérico del BaseService.
+        Lanza LookupError si no existe.
+        """
+        return self._get_by_id(self.employee_repo, employee_id, serializer=EmployeeSerializer)
 
-    def update(self, employee_id: str, data: dict):
-        employee = self.employee_repo.find_by_id(employee_id)
-        if not employee:
-            raise LookupError('El empleado/colaborador no existe.')
-        self.employee_repo.update(employee_id, data)
+    # ----------------------------------------------------------
+    # ACTUALIZAR EMPLEADO
+    # ----------------------------------------------------------
+    def update(self, employee_id: str, data: Dict[str, Any]) -> str:
+        """
+        Actualiza la información de un empleado existente.
+        Lanza LookupError si no existe.
+        Invalida la caché global de empleados.
+        """
+        self._update(
+            repo=self.employee_repo,
+            _id=employee_id,
+            data=data,
+            cache_prefix=self.CACHE_PREFIX,
+        )
+        return "El empleado/colaborador ha sido actualizado correctamente."
 
-    def delete(self, employee_id: str):
-        employee = self.employee_repo.find_by_id(employee_id)
-        if not employee:
-            raise LookupError('El empleado/colaborador no existe.')
-        self.employee_repo.delete(employee_id)
+    # ----------------------------------------------------------
+    # ELIMINAR EMPLEADO
+    # ----------------------------------------------------------
+    def delete(self, employee_id: str) -> str:
+        """
+        Elimina un empleado existente.
+        Lanza LookupError si no existe.
+        Invalida la caché global de empleados.
+        """
+        self._delete(
+            repo=self.employee_repo,
+            _id=employee_id,
+            cache_prefix=self.CACHE_PREFIX,
+        )
+        return "Empleado/colaborador eliminado correctamente."

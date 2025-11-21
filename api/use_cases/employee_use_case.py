@@ -1,7 +1,6 @@
-from django.core.paginator import Paginator
 from api.helpers.http_responses import created, ok, ok_paginated, not_found, bad_request
-from api.serializers.employee_serializer import EmployeeSerializer
 from api.services.employee_service import EmployeeService
+from api.utils.pagination_utils import DummyPaginator, DummyPage
 from api.helpers.get_query_params import get_query_params
 
 
@@ -20,7 +19,7 @@ class EmployeeUseCase:
 
     def save(self):
         try:
-            _ = self.service.create(self.data)
+            self.service.create(self.data)
             return created(f'Empleado/Colaborador: {self.data['name']} creado exitosamente.')
         except ValueError as e:
             return bad_request(str(e))
@@ -30,20 +29,19 @@ class EmployeeUseCase:
             return bad_request(f'Error inesperado: {e}')
 
     def get(self):
-        filters = {}
-        if self.status is not None:
-            filters['status'] = self.status
-        if self.q:
-            filters['$or'] = [
-                {'number': {'$regex': self.q, '$options': 'i'}},
-                {'name': {'$regex': self.q, '$options': 'i'}},
-                {'activity': {'$regex': self.q, '$options': 'i'}},
-            ]
-        employees = self.service.get_all(filters)
-        paginator = Paginator(employees, per_page=self.page_size)
-        page = paginator.get_page(self.page)
-        serialized = EmployeeSerializer(page.object_list, many=True).data
-        return ok_paginated(paginator, page, serialized)
+        """Método especial con paginación manual."""
+        try:
+            result = self.service.get_paginated(
+                self.status, self.q, self.page, self.page_size
+            )
+
+            dummy_paginator = DummyPaginator(
+                result["count"], result["total_pages"])
+            dummy_page = DummyPage(
+                result["current_page"], dummy_paginator, result["results"])
+            return ok_paginated(dummy_paginator, dummy_page, result["results"])
+        except Exception as e:
+            return bad_request(f"Error al obtener los clientes: {e}")
 
     def update(self):
         try:

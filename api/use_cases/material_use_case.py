@@ -1,13 +1,10 @@
 import os
 import traceback
 import qrcode
-from urllib.parse import parse_qs
-from api.constants import DEFAULT_PAGE_SIZE
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import created, bad_request, ok, ok_paginated, not_found
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
-from django.core.paginator import Paginator
 from api.serializers.material_serializer import MaterialSerializer
 from api.serializers.file_serializer import FileUploadSerializer
 from openpyxl import load_workbook, Workbook
@@ -17,25 +14,27 @@ from django.http import HttpResponse
 from PIL import Image
 from django.conf import settings
 from api.functions.concept_n_sku import generate_concept_and_sku
+from api.services.material_service import MaterialService
+from api.services.catalog_service import CatalogService
+from api.utils.pagination_utils import DummyPaginator, DummyPage
+from api.helpers.get_query_params import get_query_params
 
 
 class MaterialUseCase:
     def __init__(self, request=None, **kwargs):
-        if request:
-            self.request = request
-            params = parse_qs(request.META['QUERY_STRING'])
-            self.page = params['page'][0] if 'page' in params else 1
-            self.page_size = params['itemsPerPage'][0] \
-                if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
-            self.q = params['q'][0] if 'q' in params else None
-            self.supplier = params['supplier'][0] if 'supplier' in params else None
-            self.division = params['division'][0] if 'division' in params else None
-            self.group = params['group'][0] if 'group' in params else None
-            self.order_by = - \
-                1 if 'orderBy' in params and params['orderBy'][0] == 'desc' else 1
+        params = get_query_params(request)
+        self.q = params["q"]
+        self.page = params["page"]
+        self.page_size = params["page_size"]
+        self.sort_by = params["sort_by"]
+        self.order_by = params["order_by"]
+        self.supplier_id = params.get('supplier_id', None)
+        self.division = params.get('division', None)
+        self.group = params.get('group', None)
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
-        self.supplier_id = kwargs.get('supplier_id', None)
+        self.service = MaterialService()
+        self.catalog_service = CatalogService()
 
     def __check_supplier(self, db):
         supplier = MongoDBHandler.find(db, 'suppliers', {'_id': ObjectId(
@@ -241,7 +240,7 @@ class MaterialUseCase:
 
         return f"{settings.BASE_URL}/media/materials/qr/{material_id}.jpg"
 
-    def __build_material_filters(self, supplier_override: str = None, division_list: list[str] = None):
+    def __build_material_filters(self, division_list: list[str] = None):
         """
         Construye el filtro MongoDB para materiales, considerando búsqueda,
         proveedor, división, y grupo (EQUIPMENT_GROUP / MATERIALS_GROUP).
@@ -260,9 +259,8 @@ class MaterialUseCase:
             ]
 
         # 🔹 Filtro de proveedor (prioriza el override si se pasa explícito)
-        supplier_id = supplier_override or self.supplier
-        if supplier_id:
-            filters['supplier_id'] = supplier_id
+        if self.supplier_id:
+            filters['supplier_id'] = self.supplier_id
 
         # 🔹 Si viene una lista de divisiones explícita
         if division_list:
@@ -279,11 +277,9 @@ class MaterialUseCase:
             group_name = self.group.upper()
 
             # Consultar catálogo dinámico desde MongoDB
-            with MongoDBHandler('catalogs') as cat_db:
-                catalog = cat_db.db['catalogs'].find_one(
-                    {'name': 'Equipos y/o accesorios'})
-                equipment_divisions = catalog.get(
-                    'values', []) if catalog else []
+            catalog = self.catalog_service.get_by_name(
+                'Equipos y/o accesorios')
+            equipment_divisions = catalog.get('values', []) if catalog else []
 
             if group_name == "EQUIPMENT_GROUP":
                 filters['division'] = {'$in': equipment_divisions}
@@ -309,18 +305,26 @@ class MaterialUseCase:
             return bad_request('Algunos campos requeridos no han sido completados.')
 
     def get(self):
-        with MongoDBHandler('materials') as db:
-            filters = self.__build_material_filters()
-            materials = db.extract(filters, 'concept', self.order_by)
+        try:
+            division_list = None
+            if self.division and len(self.division) > 0:
+                division_list = self.division.split(',')
 
-            paginator = Paginator(materials, per_page=self.page_size)
-            page = paginator.get_page(self.page)
-
-            return ok_paginated(
-                paginator,
-                page,
-                MaterialSerializer(page.object_list, many=True).data,
+            filters = self.__build_material_filters(division_list)
+            result = self.service.get_paginated(
+                filters, self.page, self.page_size, self.sort_by, self.order_by
             )
+
+            dummy_paginator = DummyPaginator(
+                result["count"], result["total_pages"])
+            dummy_page = DummyPage(
+                result["current_page"], dummy_paginator, result["results"]
+            )
+
+            return ok_paginated(dummy_paginator, dummy_page, result["results"])
+
+        except Exception as e:
+            return bad_request(f"Error al obtener prototipos: {e}")
 
     def get_by_id(self):
         with MongoDBHandler('materials') as db:
@@ -329,22 +333,6 @@ class MaterialUseCase:
             if material:
                 return ok(MaterialSerializer(material[0]).data)
             return not_found('El material no existe.')
-
-    def get_by_supplier(self):
-        with MongoDBHandler('materials') as db:
-            # Convertir divisiones separadas por coma a lista
-            division_list = None
-            if self.division and len(self.division) > 0:
-                division_list = self.division.split(',')
-
-            # Reutilizamos la misma lógica de construcción de filtros
-            filter_query = self.__build_material_filters(
-                supplier_override=self.supplier_id,
-                division_list=division_list
-            )
-
-            materials = db.extract(filter_query)
-            return ok(MaterialSerializer(materials, many=True).data if materials else [])
 
     def update(self):
         with MongoDBHandler('materials') as db:
@@ -400,10 +388,7 @@ class MaterialUseCase:
 
             # Reutilizamos la misma lógica de construcción de filtros
             filter_query = self.__build_material_filters(
-                supplier_override=self.supplier_id,
-                division_list=division_list
-            )
-
+                division_list=division_list)
             materials = db.extract(filter_query)
             return self.__export_materials(materials)
 

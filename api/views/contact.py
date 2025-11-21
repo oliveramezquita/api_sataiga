@@ -6,6 +6,14 @@ from api.middlewares import BellartiAuthenticationMiddleware
 class ContactsView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
+    def get(self, request):
+        use_case = ContactUseCase()
+        return use_case.get()
+
+
+class ContactsByClientView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
     def post(self, request, client_id):
         use_case = ContactUseCase(client_id=client_id, data=request.data)
         return use_case.save()

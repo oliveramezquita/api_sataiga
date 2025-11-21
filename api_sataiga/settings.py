@@ -225,5 +225,15 @@ CELERY_ENABLE_UTC = False
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
 
-
-# TODO: CONFIGURAR REDIS PARA QUE LAS CONSULTAS SEAN MÁS RAPIDAS
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
+        },
+        "KEY_PREFIX": "bellarti_api",
+        "TIMEOUT": 60 * 10,
+    }
+}

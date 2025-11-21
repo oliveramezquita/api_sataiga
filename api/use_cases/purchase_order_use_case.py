@@ -40,9 +40,9 @@ class PurchaseOrderUseCase:
             self.status = params['status'][0] if 'status' in params else None
             self.division = params['division'][0] if 'division' in params else None
             self.type_project = params['type'][0] if 'type' in params else None
+            self.project_id = kwargs.get('project_id', None)
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
-        self.home_production_id = kwargs.get('home_production_id', None)
         self.supplier_id = kwargs.get('supplier_id', None)
 
     def __check_home_production(self, db, home_production_id):
@@ -272,7 +272,7 @@ class PurchaseOrderUseCase:
 
     def __check_materials(self, db, materials):
         purchase_orders = MongoDBHandler.find(db, 'purchase_orders', {
-                                              'home_production_id': self.home_production_id, 'supplier_id': self.supplier_id, 'status': {'$in': [1, 2]}})
+                                              'home_production_id': self.project_id, 'supplier_id': self.supplier_id, 'status': {'$in': [1, 2]}})
         if purchase_orders:
             total_quantity_sum = defaultdict(float)
 
@@ -342,6 +342,8 @@ class PurchaseOrderUseCase:
             filters = {}
             if self.supplier:
                 filters['supplier_id'] = self.supplier
+            if self.type_project:
+                filters['type'] = self.type_project
             if self.status:
                 filters['status'] = int(
                     self.status) if self.status.isdigit() else self.status
@@ -381,25 +383,22 @@ class PurchaseOrderUseCase:
             return not_found('Orden de compra no encontrada.')
 
     def get_projects(self):
-        with MongoDBHandler('home_production') as db:
-            projects = [{
-                'home_production_id': None,
-                'name': 'Sin proyecto',
-                'od': None,
-                'front': None,
-                'lots': {}
-            }]
-            home_production = db.extract()
-            if home_production:
-                for hp in home_production:
-                    projects.append({
-                        'home_production_id': str(hp['_id']),
-                        'name': f"{hp['front']} - OD {hp['od']}",
-                        'od': hp['od'],
-                        'front': hp['front'],
-                        'lots': hp['lots']['prototypes'] if 'prototypes' in hp['lots'] else {}
-                    })
-            return ok(projects)
+        leaked_projects = []
+        if self.type_project == 'VS':
+            with MongoDBHandler('home_production') as db:
+                projects = db.extract()
+                if projects:
+                    for project in projects:
+                        leaked_projects.append({
+                            'home_production_id': str(project['_id']),
+                            'name': f"{project['front']} - OD {project['od']}",
+                            'od': project['od'],
+                            'front': project['front'],
+                            'lots': project['lots']['prototypes'] if 'prototypes' in project['lots'] else {}
+                        })
+        # TODO: Logica para proyectos especiales
+        # if self.type_project == 'PE':
+        return ok(leaked_projects)
 
     def get_suppliers(self):
         with MongoDBHandler('explosion') as db:
@@ -410,7 +409,7 @@ class PurchaseOrderUseCase:
             else:
                 viewed = set()
                 materials = db.extract(
-                    {'home_production_id': self.home_production_id})
+                    {'home_production_id': self.project_id})
                 for material in materials:
                     supplier = self.__check_supplier(
                         db, material['supplier_id'])
@@ -424,12 +423,16 @@ class PurchaseOrderUseCase:
                             viewed.add(supplier_id)
             return ok({'suppliers_list': suppliers, 'last_consecutive': db.get_next_folio('purchase_order')})
 
+    def get_last_consecutive(self):
+        with MongoDBHandler('purchase_orders') as db:
+            return ok(db.get_next_folio('purchase_order'))
+
     def get_materials(self):
         with MongoDBHandler('explosion') as db:
             data = []
             costs = {}
             items = db.extract(
-                {'home_production_id': self.home_production_id, 'supplier_id': self.supplier_id})
+                {'home_production_id': self.project_id, 'supplier_id': self.supplier_id})
             for i, item in enumerate(items):
                 material = self.__process_material(db, item)
                 if item and material:
