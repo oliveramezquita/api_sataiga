@@ -28,7 +28,7 @@ class TemplateService(BaseService):
         self._validate_fields(data, ["name"])
 
         # Validar cliente si viene definido
-        if "client_id" in data:
+        if "client_id" in data and data["client_id"]:
             client = self.client_repo.find_by_id(
                 data["client_id"], {"type": "PE"})
             if not client:
