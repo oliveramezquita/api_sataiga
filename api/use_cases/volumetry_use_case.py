@@ -36,11 +36,10 @@ class VolumetryUseCase:
             return material
         return False
 
-    def __calculate_total(self, tendencies):
+    def __calculate_total(self):
         return {
             'volumetry': [item.update({'total_x': float(item['total_x'])}) or item for item in self.data['volumetry']],
             'total': sum(float(item['total_x']) for item in self.data['volumetry']),
-            'tendencies': tendencies,
         }
 
     def __get_id_material_by_sku(self, sku):
@@ -296,7 +295,6 @@ class VolumetryUseCase:
         with MongoDBHandler('volumetries') as db:
             required_fields = ['client_id', 'front',
                                'prototype', 'material_id', 'volumetry']
-            tendencies = self.data['tendencies'] if 'tendencies' in self.data else None
             if all(i in self.data for i in required_fields):
                 material = self.__material_validation(db)
                 if self.__client_validation(db, self.data['client_id']) and material:
@@ -313,7 +311,7 @@ class VolumetryUseCase:
                             'front': self.data['front'],
                             'prototype': self.data['prototype'],
                             'material_id': self.data['material_id']},
-                            self.__calculate_total(tendencies)
+                            self.__calculate_total()
                         )
                         message = f'El material: {material[0]['concept']} ha sido actualizado correctamente en la volumetría.'
                     else:
@@ -323,7 +321,7 @@ class VolumetryUseCase:
                             'prototype': self.data['prototype'],
                             'material_id': self.data['material_id'],
                             'supplier_id': material[0]['supplier_id'],
-                            **self.__calculate_total(tendencies),
+                            **self.__calculate_total(),
                         })
                         message = f'El material: {material[0]['concept']} ha sido añadido correctamente en la volumetría.'
                     volumetry = db.extract(
@@ -374,12 +372,11 @@ class VolumetryUseCase:
             workbook = load_workbook(excel_file, data_only=True)
 
             # Selección de función según el prototipo
-            if self.prototype.strip().endswith("Cocina"):
-                volumetry_data, errors = self.__process_workbook_kitchen(
-                    workbook)
-            else:
-                volumetry_data, errors = self.__process_workbook_general(
-                    workbook)
+            # if self.prototype.strip().endswith("Cocina"):
+            #     volumetry_data, errors = self.__process_workbook_kitchen(
+            #         workbook)
+            # else:
+            volumetry_data, errors = self.__process_workbook_general(workbook)
 
             # Procesar datos
             num_inserted, num_updated = self.__process_data(volumetry_data)

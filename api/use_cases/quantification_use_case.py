@@ -81,6 +81,19 @@ class QuantificationUseCase:
                 del data['quantification'][key]
         return data
 
+    def __delete_material(self, quantification: dict) -> dict:
+        area = self.data.get("area")
+        material_id = self.data.get("material_id")
+
+        if not area or not material_id or area not in quantification:
+            return quantification
+
+        quantification[area] = [
+            item for item in quantification[area]
+            if item.get("material_id") != material_id
+        ]
+        return quantification
+
     def get(self):
         with MongoDBHandler('quantification') as db:
             quantification = db.extract({
@@ -107,25 +120,33 @@ class QuantificationUseCase:
     def update(self):
         with MongoDBHandler('quantification') as db:
             required_fields = ['area', 'materials']
-            if self.action == 'assign_color':
-                required_fields.append('color')
-            elif self.action == 'change_area':
-                required_fields.append('destination')
-            else:
-                return not_found('La actualización de la cuantificación no se encuentra.')
+
+            match self.action:
+                case 'assign_color':
+                    required_fields.append('color')
+                case 'change_area':
+                    required_fields.append('destination')
+                case 'detele_material':
+                    required_fields = ['area', 'material_id']
+                case _:
+                    return not_found('La actualización de la cuantificación no se encuentra.')
 
             if all(i in self.data for i in required_fields):
                 quantification = db.extract(
                     {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
                 if quantification:
-                    if self.action == 'assign_color':
-                        quantification[0]['quantification'] = self.__assign_color(
-                            quantification[0]['quantification'])
-                    elif self.action == 'change_area':
-                        quantification[0]['quantification'] = self.__change_area(
-                            quantification[0]['quantification'])
+                    match self.action:
+                        case 'assign_color':
+                            quantification[0]['quantification'] = self.__assign_color(
+                                quantification[0]['quantification'])
+                        case 'change_area':
+                            quantification[0]['quantification'] = self.__change_area(
+                                quantification[0]['quantification'])
+                        case 'detele_material':
+                            quantification[0]['quantification'] = self.__delete_material(
+                                quantification[0]['quantification'])
                     db.update({'_id': ObjectId(self.id)}, {
                         'quantification': quantification[0]['quantification']})
-                    return ok(QuantificationSerializer(quantification[0]).data)
+                    return ok(QuantificationSerializer(self.__get_material_info(db, quantification[0])).data)
                 return not_found('No se encontro la cuantificación.')
             return bad_request('Algunos campos requeridos no han sido completados.')

@@ -9,7 +9,7 @@ class ContactSerializer(serializers.ModelSerializer):
         "get_client"
     )
 
-    def get_client(self, data) -> str:
+    def get_client(self, data) -> dict:
         if not ObjectId.is_valid(data['client_id']):
             return {'name': '', 'type': None}
         try:
@@ -19,7 +19,7 @@ class ContactSerializer(serializers.ModelSerializer):
                     'name': client[0].get("name", ""),
                     'type': client[0].get("type", None),
                 }
-        except Exception as e:
+        except Exception:
             # Logging opcional para debug
             return {'name': '', 'type': None}
 

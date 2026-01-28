@@ -31,6 +31,8 @@ class MaterialUseCase:
         self.supplier_id = params.get('supplier_id', None)
         self.division = params.get('division', None)
         self.group = params.get('group', None)
+        self.trend_type = params.get('trend_type', None)
+        self.trend_value = params.get('trend_value', None)
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.service = MaterialService()
@@ -249,13 +251,14 @@ class MaterialUseCase:
 
         # 🔹 Búsqueda libre
         if self.q:
+            q = str(self.q)
             filters['$or'] = [
-                {'concept': {'$regex': self.q, '$options': 'i'}},
-                {'measurement': {'$regex': self.q, '$options': 'i'}},
-                {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                {'sku': {'$regex': self.q, '$options': 'i'}},
-                {'presentation': {'$regex': self.q, '$options': 'i'}},
-                {'reference': {'$regex': self.q, '$options': 'i'}},
+                {'concept': {'$regex': q, '$options': 'i'}},
+                {'measurement': {'$regex': q, '$options': 'i'}},
+                {'supplier_code': {'$regex': q, '$options': 'i'}},
+                {'sku': {'$regex': q, '$options': 'i'}},
+                {'presentation': {'$regex': q, '$options': 'i'}},
+                {'reference': {'$regex': q, '$options': 'i'}},
             ]
 
         # 🔹 Filtro de proveedor (prioriza el override si se pasa explícito)
@@ -271,6 +274,12 @@ class MaterialUseCase:
         if self.division:
             filters['division'] = self.division
             return filters  # ← También evita aplicar group
+
+        if self.trend_type and self.trend_value:
+            filters['trend.type'] = self.trend_type
+            filters['trend.value'] = {
+                '$in': ['Todas', 'Todos', self.trend_value]
+            }
 
         # 🔹 Filtro por grupo (solo si no hay división)
         if getattr(self, "group", None):
@@ -449,3 +458,25 @@ class MaterialUseCase:
                     return bad_request('No existen imágenes en el material seleccionado y/o las imágenes seleccionadas para eliminar.')
                 return bad_request('El material no existe.')
             return bad_request('Falta el índice de la imagen para poder eliminarla.')
+
+    def download_format(self):
+        try:
+            if not self.data or "filename" not in self.data:
+                return bad_request("El nombre del formato es requerido.")
+
+            material_ids = self.data.get("material_ids") or []
+
+            content, filename = self.service.export_format(
+                self.data["filename"],
+                material_ids,
+            )
+
+            response = HttpResponse(
+                content,
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+            response["Content-Disposition"] = f'attachment; filename="{filename}"'
+            return response
+
+        except Exception as e:
+            return bad_request(f"Error al generar el formato: {e}")

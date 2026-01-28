@@ -9,5 +9,4 @@ class Volumetry(models.Model):
     front = models.CharField(max_length=100)
     prototype = models.CharField(max_length=100)
     volumetry = models.JSONField(null=True)
-    tendencies = models.JSONField(null=True)
     total = models.FloatField(default=0)

@@ -30,6 +30,8 @@ urlpatterns = [
     path('catalog/<str:id>', CatalogByIdView.as_view(), name='catalog'),
     path('materials', MaterialsView.as_view(), name='materials'),
     path('material/<str:id>', MaterialByIdView.as_view(), name='material'),
+    path('materials/download_format', DownloadFormatView.as_view(),
+         name='decargar formato materials'),
     path('volumetries', VolumetryView.as_view(), name='volumetries'),
     path('volumetry/<str:id>', VolumetryByIdView.as_view(), name='volumetry'),
     path('upload_volumetry', VolumetryUploadView.as_view(), name="upload volumetry"),
@@ -122,4 +124,8 @@ urlpatterns = [
          TemplateItemsView.as_view(), name='template items'),
     path('template/<str:id>/indirect_costs',
          TemplateIndirectCostsView.as_view(), name='template indirect costs'),
+    path('trends', TrendsView.as_view(), name='trends'),
+    path('trend/<str:id>', TrendByIdView.as_view(), name='trend'),
+    path('trend/elements/<str:id>',
+         TrendElemetsView.as_view(), name='trend elements'),
 ]

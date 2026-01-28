@@ -17,7 +17,6 @@ class PrototypeService(BaseService):
     Lógica de negocio para la colección 'prototypes'.
     - Usa cache por filtros.
     - Aplica paginación heredada del BaseService.
-    - Valida porcentajes de 'tendencies'.
     - Valida cliente y duplicados antes de crear.
     """
 
@@ -66,24 +65,10 @@ class PrototypeService(BaseService):
             CatalogService.external_update(
                 "Prototipos", {client_name: data["name"]})
 
-        # 🔹 Ajustar nombre antes de guardar
-        payload = {
-            **data,
-            "name": f"{data['name']} Cocina",
-        }
-
         # 🔹 Insertar usando método genérico
         self._create(
             repo=self.prototype_repo,
             data=data,
-            required_fields=required_fields,
-            cache_prefix=self.CACHE_PREFIX,
-        )
-
-        # 🔹 Insertar usando método genérico (Cocina)
-        self._create(
-            repo=self.prototype_repo,
-            data=payload,
             required_fields=required_fields,
             cache_prefix=self.CACHE_PREFIX,
         )
@@ -132,9 +117,6 @@ class PrototypeService(BaseService):
         if not prototype:
             raise LookupError("El prototipo no existe.")
 
-        if "tendencies" in data and data["tendencies"] is not None:
-            self._validate_tendencies(data["tendencies"])
-
         self._update(
             repo=self.prototype_repo,
             _id=prototype_id,
@@ -142,31 +124,9 @@ class PrototypeService(BaseService):
             cache_prefix=self.CACHE_PREFIX,
         )
 
-    def delete(self, prototype_id: str) -> str:
+    def delete(self, prototype_id: str):
         self._delete(
             repo=self.prototype_repo,
             _id=prototype_id,
             cache_prefix=self.CACHE_PREFIX,
         )
-
-    # ----------------------------------------------------------
-    # VALIDACIÓN DE TENDENCIAS
-    # ----------------------------------------------------------
-    def _validate_tendencies(self, tendencies: list[Dict[str, Any]]):
-        if not isinstance(tendencies, list):
-            raise TendencyValidationError(
-                "El campo 'tendencias' debe ser una lista.")
-
-        try:
-            total_percentage = sum(
-                Decimal(str(t.get("percentage", 0))) for t in tendencies
-            )
-        except (TypeError, ValueError, ArithmeticError):
-            raise TendencyValidationError(
-                "Todos los campos 'porcentaje' deben ser numéricos."
-            )
-
-        if abs(total_percentage - 100) > Decimal("0.01"):
-            raise TendencyValidationError(
-                f"La suma de porcentajes debe ser 100. Actualmente es {total_percentage:.2f}."
-            )

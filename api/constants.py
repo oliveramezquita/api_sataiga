@@ -45,3 +45,8 @@ FIXED_PRESENTATIONS = {
     "PZS": 1,
     "PZA": 1,
 }
+
+TRENDS_FIELD_BY_TYPE = {
+    "melamines": "melamines",
+    "granites": "granites",
+}
