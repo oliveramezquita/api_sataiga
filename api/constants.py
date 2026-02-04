@@ -50,3 +50,18 @@ TRENDS_FIELD_BY_TYPE = {
     "melamines": "melamines",
     "granites": "granites",
 }
+
+EQUIPMENTS = {'Campana', 'Estufa', 'Horno', 'Parrilla',
+              'Hielera', 'Microondas', 'Campana + Parrilla'}
+
+CARPENTRY = {'Acabado', 'Herraje', 'Maderas', 'Resurtido', 'Tornillería'}
+
+CATS = [
+    "PRODUCCIÓN SOLO COCINA",
+    "PRODUCCIÓN SIN COCINA",
+    "INSTALACIÓN SOLO COCINA",
+    "INSTALACIÓN SIN COCINA",
+    "ENTREGAS COCINA",
+    "CARPINTERÍA",
+    "EQUIPOS",
+]

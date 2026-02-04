@@ -76,19 +76,24 @@ class BaseService:
         repo: Any,
         _id: str,
         cache_prefix: Optional[str] = None,
-    ) -> None:
+        existing: Optional[dict] = None,
+    ) -> dict:
         """
         Elimina un documento genéricamente.
-        Lanza LookupError si el documento no existe.
+        - Si no existe, lanza LookupError.
+        - Retorna el documento existente (útil para disparar procesos post-delete).
         """
-        existing = repo.find_by_id(_id)
-        if not existing:
-            raise LookupError("El registro no existe.")
+        if existing is None:
+            existing = repo.find_by_id(_id)
+            if not existing:
+                raise LookupError("El registro no existe.")
 
         repo.delete(_id)
 
         if cache_prefix:
             invalidate_cache(cache_prefix)
+
+        return existing
 
     # ----------------------------------------------------------
     # LECTURAS Y CACHE

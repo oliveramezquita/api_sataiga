@@ -1,7 +1,6 @@
 from api.helpers.get_query_params import get_query_params
 from api.decorators.service_method import service_method
 from api.services.volumetry_service import VolumetryService
-# from api.functions.quantify import quantify
 
 
 class VolumetryUseCase:
@@ -23,7 +22,6 @@ class VolumetryUseCase:
             'prototype': self.data.get('prototype'),
             'volumetry': self.data.get('volumetry')
         })
-        # TODO: Añadir el proceso para crear la cuantificación quantify.delay
 
         return "La volumetría ha sido cargada correctamente."
 
@@ -37,7 +35,6 @@ class VolumetryUseCase:
 
     @service_method()
     def upload(self):
-        # TODO: Añadir el proceso para crear la cuantificación quantify.delay
         return self.service.upload(
             self.client_id,
             self.front,
@@ -47,6 +44,5 @@ class VolumetryUseCase:
 
     @service_method()
     def delete(self):
-        # TODO: Añadir el proceso para crear la cuantificación quantify.delay
         self.service.delete(self.id)
         return "El material de la volumetría ha sido eliminado correctamente."

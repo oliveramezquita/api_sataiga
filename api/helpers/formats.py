@@ -1,5 +1,6 @@
 import re
 import math
+import unicodedata
 from bson import ObjectId
 from datetime import datetime
 from typing import Any
@@ -12,7 +13,7 @@ def clean_text(text):
 
 def to_float(value: Any, default: float = 0.0, *, min_value: float = None) -> float:
     try:
-        n = float(value)
+        n = round(float(value), 2)
         if not math.isfinite(n):
             return default
         if min_value is not None and n < min_value:
@@ -89,3 +90,11 @@ def normalize_num(v: float):
     v = round(float(v), 2)
     # si es entero, regresarlo como int para que se vea como tus ejemplos
     return int(v) if abs(v - round(v)) < 1e-9 else v
+
+
+def normalize_strict(s: str) -> str:
+    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode()
+    s = s.casefold()
+    s = re.sub(r'\s+', ' ', s).strip()
+    s = re.sub(r'\s*\+\s*', ' + ', s)  # normaliza espacios alrededor de +
+    return s

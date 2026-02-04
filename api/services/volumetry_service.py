@@ -10,6 +10,7 @@ from api.repositories.client_repository import ClientRepository
 from api.repositories.volumetry_repository import VolumetryRepository
 from api.repositories.material_repository import MaterialRepository
 from api.serializers.file_serializer import FileUploadSerializer
+from api.functions.quantify import quantify
 
 
 class VolumetryService(BaseService):
@@ -267,6 +268,7 @@ class VolumetryService(BaseService):
         # Si tienes caché por prefijo y quieres invalidar todo lo de ese cliente/front/prototype,
         # aquí podrías limpiar caché. Depende de cómo lo maneje BaseService.
         invalidate_cache(self.CACHE_PREFIX)
+        quantify.delay(client_id, front, prototype)
         return True
 
     def upload(self, client_id: str, front: str, prototype: str, data, request_file):
@@ -301,7 +303,7 @@ class VolumetryService(BaseService):
 
         summary = self._process_data(
             client_id, front, prototype, volumetry_data)
-
+        quantify.delay(client_id, front, prototype)
         return summary
 
     def get(
@@ -354,8 +356,20 @@ class VolumetryService(BaseService):
         return [mongo_to_json(v) for v in volumetries]
 
     def delete(self, volumetry_id: str):
-        self._delete(
+        existing = self._delete(
             repo=self.volumetry_repo,
             _id=volumetry_id,
             cache_prefix=self.CACHE_PREFIX,
         )
+
+        client_id = existing.get("client_id")
+        front = existing.get("front")
+        prototype = existing.get("prototype")
+
+        if not (client_id and front and prototype):
+            return True
+
+        if client_id and front and prototype:
+            quantify.delay(client_id, front, prototype)
+
+        return True
