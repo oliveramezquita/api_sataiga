@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from openpyxl.utils.exceptions import InvalidFileException
 from api.helpers.formats import to_float, mongo_to_json, to_number, normalize_num
 from api.services.base_service import BaseService
+from api.utils.cache_utils import invalidate_cache
 from api.repositories.client_repository import ClientRepository
 from api.repositories.volumetry_repository import VolumetryRepository
 from api.repositories.material_repository import MaterialRepository
@@ -192,6 +193,7 @@ class VolumetryService(BaseService):
             else:
                 num_updated += 1
 
+        invalidate_cache(self.CACHE_PREFIX)
         return {
             "num_inserted": num_inserted,
             "num_updated": num_updated,
@@ -264,6 +266,7 @@ class VolumetryService(BaseService):
 
         # Si tienes caché por prefijo y quieres invalidar todo lo de ese cliente/front/prototype,
         # aquí podrías limpiar caché. Depende de cómo lo maneje BaseService.
+        invalidate_cache(self.CACHE_PREFIX)
         return True
 
     def upload(self, client_id: str, front: str, prototype: str, data, request_file):
@@ -349,3 +352,10 @@ class VolumetryService(BaseService):
             v["presentation"] = m.get("presentation")
 
         return [mongo_to_json(v) for v in volumetries]
+
+    def delete(self, volumetry_id: str):
+        self._delete(
+            repo=self.volumetry_repo,
+            _id=volumetry_id,
+            cache_prefix=self.CACHE_PREFIX,
+        )

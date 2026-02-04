@@ -44,3 +44,9 @@ class VolumetryUseCase:
             self.prototype,
             self.data,
             self.request.FILES['file'])
+
+    @service_method()
+    def delete(self):
+        # TODO: Añadir el proceso para crear la cuantificación quantify.delay
+        self.service.delete(self.id)
+        return "El material de la volumetría ha sido eliminado correctamente."

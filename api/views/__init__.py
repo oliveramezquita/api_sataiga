@@ -8,7 +8,7 @@ from .supplier import SupplierView, SupplierByIdView
 from .prototype import PrototypeView, PrototypeByIdView
 from .catalog import CatalogView, CatalogByIdView
 from .material import MaterialsView, MaterialByIdView, DownloadMaterialsView, ImagesMaterialView, DownloadFormatView
-from .volumetry import VolumetryView, VolumetryUploadView
+from .volumetry import VolumetryView, VolumetryByIdView, VolumetryUploadView
 from .tax_data import TaxDataSupplierView, TaxDataClientView
 from .bank_data import BankDataView
 from .refresh_rate import RefreshRateView, RefreshRatesView

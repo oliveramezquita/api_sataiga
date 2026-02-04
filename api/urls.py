@@ -33,6 +33,7 @@ urlpatterns = [
     path('materials/download_format', DownloadFormatView.as_view(),
          name='decargar formato materials'),
     path('volumetries', VolumetryView.as_view(), name='volumetries'),
+    path('volumetry/<str:id>', VolumetryByIdView.as_view(), name='volumetry'),
     path('upload_volumetry', VolumetryUploadView.as_view(), name="upload volumetry"),
     path('tax_data/supplier/<str:supplier_id>',
          TaxDataSupplierView.as_view(), name='tax data supplier'),
