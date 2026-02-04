@@ -1,5 +1,4 @@
 from bson import ObjectId
-from typing import Optional, Dict, Any
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.validations import objectid_validation
 
@@ -22,15 +21,19 @@ class BaseRepository:
         with self.db_handler as db:
             return db.extract(query=query, order_field=order_field, order=order, projection=projection)
 
-    def find_by_id(self, _id: str, filters: dict = None) -> Optional[Dict[str, Any]]:
-        """Obtiene un documento por su ObjectId."""
-        query = {'_id': ObjectId(_id)}
+    def find_by_id(self, _id: str, filters: dict = None):
         if not objectid_validation(_id):
             return None
+        query = {'_id': ObjectId(_id)}
         if filters and isinstance(filters, dict):
             query.update(filters)
         with self.db_handler as db:
             result = db.extract(query)
+            return result[0] if result else None
+
+    def find_one(self, query=None, projection=None):
+        with self.db_handler as db:
+            result = db.extract(query=query, projection=projection)
             return result[0] if result else None
 
     def insert(self, data: dict):
@@ -56,3 +59,13 @@ class BaseRepository:
             return 0
         with self.db_handler as db:
             return db.delete({'_id': ObjectId(_id)})
+
+    def update_one(self, query: dict, update_data: dict, upsert: bool = False):
+        if not isinstance(query, dict) or not query:
+            raise ValueError("query debe ser un dict no vacío.")
+        with self.db_handler as db:
+            return db.update(query, update_data, upsert=upsert)
+
+    def upsert_one(self, query: dict, set_data: dict):
+        # Siempre $set para evitar reemplazos accidentales
+        return self.update_one(query, {"$set": set_data}, upsert=True)

@@ -31,8 +31,6 @@ class MaterialUseCase:
         self.supplier_id = params.get('supplier_id', None)
         self.division = params.get('division', None)
         self.group = params.get('group', None)
-        self.trend_type = params.get('trend_type', None)
-        self.trend_value = params.get('trend_value', None)
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.service = MaterialService()
@@ -275,12 +273,6 @@ class MaterialUseCase:
             filters['division'] = self.division
             return filters  # ← También evita aplicar group
 
-        if self.trend_type and self.trend_value:
-            filters['trend.type'] = self.trend_type
-            filters['trend.value'] = {
-                '$in': ['Todas', 'Todos', self.trend_value]
-            }
-
         # 🔹 Filtro por grupo (solo si no hay división)
         if getattr(self, "group", None):
             group_name = self.group.upper()
@@ -296,6 +288,21 @@ class MaterialUseCase:
                 filters['division'] = {'$nin': equipment_divisions}
 
         return filters
+
+    @staticmethod
+    def normalize_material_ids(material_ids):
+        if not material_ids:
+            return []
+
+        if isinstance(material_ids[0], str):
+            return material_ids
+
+        if isinstance(material_ids[0], dict):
+            return [m["id"] for m in material_ids if "id" in m]
+
+        raise ValueError(
+            "material_ids debe ser una lista de strings o de objetos con id"
+        )
 
     def save(self):
         with MongoDBHandler('materials') as db:
@@ -464,7 +471,8 @@ class MaterialUseCase:
             if not self.data or "filename" not in self.data:
                 return bad_request("El nombre del formato es requerido.")
 
-            material_ids = self.data.get("material_ids") or []
+            material_ids = self.normalize_material_ids(
+                self.data.get("material_ids"))
 
             content, filename = self.service.export_format(
                 self.data["filename"],
@@ -476,7 +484,12 @@ class MaterialUseCase:
                 content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
             response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
             return response
 
         except Exception as e:
-            return bad_request(f"Error al generar el formato: {e}")
+            print("ENTERED EXCEPT:", repr(e))
+            print(traceback.format_exc())
+            resp = bad_request(f"Error al generar el formato: {e}")
+            print("RESP:", type(resp), resp)
+            return resp

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.serializers.fields import SafeDecimalField, SafeTrendField
+from api.serializers.fields import SafeDecimalField
 from api.models import Material
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from bson import ObjectId
@@ -18,7 +18,6 @@ class MaterialSerializer(serializers.ModelSerializer):
         max_digits=10, decimal_places=2, required=False, allow_null=True)
     price_difference = SafeDecimalField(
         max_digits=10, decimal_places=2, required=False, allow_null=True)
-    trend = SafeTrendField()
 
     id = serializers.SerializerMethodField(
         "get_id"
@@ -34,6 +33,10 @@ class MaterialSerializer(serializers.ModelSerializer):
 
     group = serializers.SerializerMethodField(
         "get_group"
+    )
+
+    json = serializers.SerializerMethodField(
+        "get_json"
     )
 
     def get_id(self, data):
@@ -60,6 +63,17 @@ class MaterialSerializer(serializers.ModelSerializer):
                 if data['division'] in equipment[0]['values']:
                     return 'EQUIPMENT_GROUP'
             return 'MATERIALS_GROUP'
+
+    def get_json(self, data):
+        return {
+            'id': str(data['_id']),
+            'sku': data['sku'],
+            'supplier_id': data['supplier_id'],
+            'concept': data['concept'],
+            'division': data['division'],
+            'measurement': data['measurement'],
+            'presentation': data.get('presentation')
+        }
 
     class Meta:
         model = Material

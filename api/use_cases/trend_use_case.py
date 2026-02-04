@@ -10,10 +10,10 @@ class TrendUseCase:
 
     def __init__(self, request=None, **kwargs):
         params = get_query_params(request)
-        self.client_id = params.get("client_id", None)
-        self.front = params.get('front', None)
-        self.data = kwargs.get("data", None)
-        self.id = kwargs.get("id", None)
+        self.client_id = params.get("client_id")
+        self.front = params.get('front')
+        self.data = kwargs.get("data")
+        self.id = kwargs.get("id")
         self.service = TrendService()
 
     @service_method(success_status="created")

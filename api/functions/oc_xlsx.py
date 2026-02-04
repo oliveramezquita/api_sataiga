@@ -1,4 +1,4 @@
-from api.helpers.format_str import clean_text
+from api.helpers.formats import clean_text
 from openpyxl import Workbook
 
 

@@ -12,3 +12,20 @@ def objectid_validation(object_id):
     if isinstance(object_id, str) and len(object_id) == 24:
         return True
     return False
+
+
+def parse_bool(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.lower() in ("true", "1", "yes")
+    return False
+
+
+def float_validation(value, default=None):
+    try:
+        if value is None or value == "":
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default

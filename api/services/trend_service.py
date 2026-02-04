@@ -1,9 +1,11 @@
+import math
 from typing import Optional, Dict, Any, Mapping, List
 from api.services.base_service import BaseService
 from api.repositories.client_repository import ClientRepository
 from api.repositories.trend_repository import TrendRepository
 from api.serializers.trend_serializer import TrendSerializer
 from api.constants import TRENDS_FIELD_BY_TYPE
+from api.helpers.validations import parse_bool, float_validation
 
 
 class TrendService(BaseService):
@@ -57,40 +59,86 @@ class TrendService(BaseService):
             raise ValueError(
                 "items debe ser una lista con al menos un elemento.")
 
+        # TODO(security): evaluar límite máximo de items para evitar abuso del endpoint (DoS lógico)
+        # TODO (update): Validar el frente (data["front"])
+
         # Validar cliente
         client = self.client_repo.find_by_id(client_id, {"type": "VS"})
         if not client:
             raise LookupError(
                 "El cliente seleccionado no existe o no es válido.")
 
-        # TODO: Validar el frente (data["front"])
+        def parse_positive_float(value: Any, field: str, idx: int) -> float:
+            try:
+                n = float(value)
+            except (TypeError, ValueError):
+                raise ValueError(f"items[{idx}].{field} debe ser numérico.")
+            if not math.isfinite(n):
+                raise ValueError(
+                    f"items[{idx}].{field} debe ser un número finito.")
+            if n <= 0:
+                raise ValueError(
+                    f"items[{idx}].{field} debe ser mayor a cero.")
+            return n
 
-        # Validar cada item
         cleaned_items: List[Dict[str, Any]] = []
+        total_percent = 0.0
+
         for idx, item in enumerate(raw_items):
             if not isinstance(item, Mapping):
                 raise ValueError(f"items[{idx}] debe ser un objeto.")
 
-            self._validate_fields(item, ["id", "name", "percentage"])
+            # id no es relevante para el sistema, solo exigimos name y percentage
+            self._validate_fields(item, ["name", "percentage"])
 
             item_id = item.get("id")
             name = item.get("name")
-            percentage = item.get("percentage")
 
-            if name is None or (isinstance(name, str) and not name.strip()):
+            if not isinstance(name, str) or not name.strip():
                 raise ValueError(f"items[{idx}].name no puede ser null/vacío.")
+            name = name.strip()
 
-            try:
-                percentage_num = float(percentage)
-            except (TypeError, ValueError):
-                raise ValueError(f"items[{idx}].percentage debe ser numérico.")
+            bicolor = parse_bool(item.get("bicolor"))
 
-            if percentage_num <= 0:
+            percentage = parse_positive_float(
+                item.get("percentage"), "percentage", idx)
+
+            # Evitar falsos > 100 por precisión float (tolerancia pequeña)
+            total_percent += percentage
+            if total_percent > 100.0 + 1e-9:
                 raise ValueError(
-                    f"items[{idx}].percentage debe ser mayor a cero.")
+                    f"items[{idx}] el total del porcentaje no debe ser mayor a 100%.")
 
-            cleaned_items.append(
-                {"id": item_id, "name": name, "percentage": percentage_num})
+            color_a = None
+            color_b = None
+
+            # Solo si es bicolor: validar A/B y su suma
+            if bicolor is True:
+                color_a = float_validation(item.get("color_a"), None)
+                color_b = float_validation(item.get("color_b"), None)
+
+                # Requeridos en bicolor
+                if color_a is None or color_b is None:
+                    raise ValueError(
+                        f"items[{idx}] color_a y color_b son requeridos cuando bicolor es true.")
+
+                # Validar numéricos, finitos y > 0 (usa la misma lógica)
+                color_a = parse_positive_float(color_a, "color_a", idx)
+                color_b = parse_positive_float(color_b, "color_b", idx)
+
+                if (color_a + color_b) > 100.0 + 1e-9:
+                    raise ValueError(
+                        f"items[{idx}] la suma de los porcentajes bicolor no puede ser mayor a 100%."
+                    )
+
+            cleaned_items.append({
+                "id": item_id,
+                "name": name,
+                "percentage": percentage,
+                "bicolor": bicolor,
+                "color_a": color_a,
+                "color_b": color_b,
+            })
 
         field_name = TRENDS_FIELD_BY_TYPE[item_type]
 

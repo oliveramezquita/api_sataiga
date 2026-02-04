@@ -43,7 +43,8 @@ class MaterialService(BaseService):
         filename: str,
         material_ids: List[str] | None = None,
     ) -> Tuple[bytes, str]:
-        material_ids = material_ids or []
+        if material_ids and not all(isinstance(x, str) for x in material_ids):
+            raise TypeError("material_ids debe ser una lista de strings")
 
         # Seguridad: solo permitir nombres de archivo, no rutas
         if PurePath(filename).name != filename:
