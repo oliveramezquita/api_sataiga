@@ -1,13 +1,15 @@
 import traceback
+from bson import ObjectId
+from collections import Counter
+from openpyxl import load_workbook
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import bad_request, ok, not_found
 from api.serializers.lot_serializer import LotSerializer
-from bson import ObjectId
+from api.decorators.service_method import service_method
 from api.helpers.validations import objectid_validation
-from collections import Counter
 from api.use_cases.explosion_use_case import ExplosionUseCase
-from openpyxl import load_workbook
 from api.serializers.file_serializer import FileUploadSerializer
+from api.services.lot_service import LotService
 
 
 class LotUseCase:
@@ -17,6 +19,7 @@ class LotUseCase:
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
         self.home_production_id = kwargs.get('home_production_id', None)
+        self.service = LotService()
 
     def __update_hp_lots(self, db, home_production_id):
         lots = db.extract({'home_production_id': home_production_id})
@@ -94,76 +97,9 @@ class LotUseCase:
                 valid_entries.append(entry)
         return valid_entries, errors
 
-    def __split_and_process_lots(self, data_list):
-        insertions = []
-        updates = []
-
-        for item in data_list:
-            if "_id" in item:
-                updates.append(item)
-            else:
-                insertions.append(item)
-
-        return insertions, updates
-
+    @service_method()
     def save(self):
-        with MongoDBHandler('lots') as db:
-            errors = []
-            lots = []
-            if 'lots' in self.data and len(self.data['lots']) > 0:
-                insertions, updates = self.__split_and_process_lots(
-                    self.data['lots'])
-                if len(updates) > 0:
-                    for lot in updates:
-                        _id = ObjectId(lot['_id'])
-                        lot.pop('_id', None)
-                        db.update({'_id': _id}, {**lot})
-                required_fields = ['prototype', 'block', 'lot', 'laid']
-                if len(insertions) > 0:
-                    for lot in insertions:
-                        if all(i in lot for i in required_fields):
-                            db.insert({
-                                'home_production_id': self.home_production_id,
-                                **lot,
-                                'percentage': 0,
-                                'progress': {
-                                    'cocina': {
-                                        'stages': [],
-                                        'percentage': 0.0,
-                                    },
-                                    'closet': {
-                                        'stages': [],
-                                        'percentage': 0.0,
-                                    },
-                                    'puertas': {
-                                        'stages': [],
-                                        'percentage': 0.0,
-                                    },
-                                    'mdeb': {
-                                        'stages': [],
-                                        'percentage': 0.0,
-                                    },
-                                    'waldras': {
-                                        'stages': [],
-                                        'percentage': 0.0,
-                                    },
-                                    'instalacion': {
-                                        'stages': [],
-                                        'percentage': 0.0,
-                                    },
-                                },
-                            })
-                        else:
-                            errors.append(lot)
-                self.__update_hp_lots(db, self.home_production_id)
-                self.__update_explosion(self.home_production_id)
-                lots = db.extract(
-                    {'home_production_id': self.home_production_id})
-                return ok({
-                    'success': LotSerializer(lots, many=True).data,
-                    'errors': errors,
-                })
-            return bad_request('No existen lotes o el id de la OD en los campos añadidos.')
+        return self.service.create(self.home_production_id, self.data)
 
     def get(self):
         with MongoDBHandler('lots') as db:

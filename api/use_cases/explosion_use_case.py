@@ -1,13 +1,20 @@
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
-from api.helpers.http_responses import not_found, ok
-from api.serializers.explosion_serializer import ExplosionSerializer
+from api.functions.assignments import assignments
+from api.services.explosion_service import ExplosionService
+from api.decorators.service_method import service_method
+from api.helpers.get_query_params import get_query_params
 
 
 class ExplosionUseCase:
     def __init__(self, request=None, **kwargs):
-        self.home_production_id = kwargs.get('home_production_id', None)
+        params = get_query_params(request)
+        self.supplier_id = params.get('supplier_id')
+        self.status = params.get('status')
+        self.home_production_id = kwargs.get('home_production_id')
+        self.data = kwargs.get('data', {})
+        self.service = ExplosionService()
 
     def __get_home_production(self, db):
         home_production = MongoDBHandler.find(db, 'home_production', {'_id': ObjectId(
@@ -230,10 +237,12 @@ class ExplosionUseCase:
                         home_production_id=self.home_production_id,
                     )
 
+    @service_method()
     def get(self):
-        with MongoDBHandler('explosion') as db:
-            explosion = db.extract(
-                {'home_production_id': self.home_production_id})
-            if explosion:
-                return ok(ExplosionSerializer(explosion, many=True).data)
-            return not_found('No exite explosión de materiales para la OD seleccionada.')
+        return self.service.get(self.home_production_id, self.supplier_id, self.status)
+
+    @service_method()
+    def assign(self):
+        self.service.assign(self.data.get('exp_data'))
+        assignments.delay(self.data.get('trend_data'),
+                          self.data.get('exp_data'))

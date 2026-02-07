@@ -53,7 +53,7 @@ urlpatterns = [
          name='home-production-by-id'),
     path('lots/<str:home_production_id>', LotsView.as_view(), name='lots'),
     path('lot/<str:id>', LotView.as_view(), name="lot"),
-    path('lots/<str:home_production_id>', LotsView.as_view(), name='lots'),
+    path('explosion', ExplosionView.as_view(), name='explosion'),
     path('explosion/<str:home_production_id>',
          ExplosionView.as_view(), name='explosion'),
     path('quantification', QuantificationView.as_view(), name='quantification'),
