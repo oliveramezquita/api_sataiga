@@ -35,8 +35,34 @@ class ExplosionService(BaseService):
         )
         return ExplosionSerializer(explosion, many=True).data
 
-    def _delete_existing_assignment(self, hp_id: str, assigned_to: Dict[str, Any], trend_id: str) -> None:
-        if not hp_id or not trend_id or not isinstance(assigned_to, dict):
+    def _delete_existing_assignment(self, hp_id: str, prev: Dict[str, Any], trend: Dict[str, Any]) -> None:
+        if not hp_id or not isinstance(prev, dict) or not isinstance(trend, dict):
+            return
+
+        supplier_prev = prev.get("supplier_id")
+        material_prev = prev.get("material_id")
+        trend_type = trend.get("type")
+        trend_id = trend.get("id")
+
+        if not supplier_prev or not material_prev or not trend_type or not trend_id:
+            return
+
+        trend_exp = self.exp_repo.find_one({
+            "supplier_id": supplier_prev,
+            "home_production_id": hp_id,
+            "material_id": material_prev,
+        })
+
+        # ✅ Tipo seguro para el type checker y para runtime
+        if not isinstance(trend_exp, dict):
+            return
+
+        assigned_to_root = trend_exp.get("assigned_to")
+        if not isinstance(assigned_to_root, dict):
+            return
+
+        assigned_to = assigned_to_root.get(trend_type)
+        if not isinstance(assigned_to, dict):
             return
 
         entry = assigned_to.get(trend_id)
@@ -45,8 +71,6 @@ class ExplosionService(BaseService):
 
         supplier_id = entry.get("supplier_id")
         material_id = entry.get("material_id")
-
-        # Si falta algo, no hacemos nada
         if not supplier_id or not material_id:
             return
 
@@ -55,7 +79,8 @@ class ExplosionService(BaseService):
             "home_production_id": hp_id,
             "material_id": material_id,
         })
-        if not exp:
+
+        if not isinstance(exp, dict):
             return
 
         self._delete(
@@ -118,7 +143,7 @@ class ExplosionService(BaseService):
                     assigned_to[trend_type] = prev_assigned[trend_type]
 
         self._delete_existing_assignment(
-            data["home_production_id"], assigned_to[trend_type], trend_id)
+            data["home_production_id"], prev, trend)
 
         assigned_to[trend_type][trend_id] = {
             "supplier_id": data["supplier_id"],
