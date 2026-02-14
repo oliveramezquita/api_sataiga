@@ -65,3 +65,5 @@ CATS = [
     "CARPINTERÍA",
     "EQUIPOS",
 ]
+
+ALLOWED_LAID = {"DERECHO", "IZQUIERDO"}

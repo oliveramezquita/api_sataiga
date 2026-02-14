@@ -98,3 +98,10 @@ def normalize_strict(s: str) -> str:
     s = re.sub(r'\s+', ' ', s).strip()
     s = re.sub(r'\s*\+\s*', ' + ', s)  # normaliza espacios alrededor de +
     return s
+
+
+def norm(s: Any) -> str:
+    # Normaliza para comparación: strip, uppercase y colapsa espacios
+    if s is None:
+        return ""
+    return " ".join(str(s).strip().upper().split())
