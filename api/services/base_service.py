@@ -95,6 +95,16 @@ class BaseService:
 
         return existing
 
+    def _delete_by_query(
+        self,
+        repo: Any,
+        query: dict,
+    ) -> None:
+        """
+        Elimina un documento usando un filtro/query personalizado.
+        """
+        repo.delete_by_query(query)
+
     # ----------------------------------------------------------
     # LECTURAS Y CACHE
     # ----------------------------------------------------------

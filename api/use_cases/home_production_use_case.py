@@ -51,28 +51,14 @@ class HomeProdcutionUseCase:
         except Exception as e:
             return bad_request(f"Error al obtener OD's: {e}")
 
+    @service_method()
     def get_by_id(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if home_production:
-                return ok(HomeProductionSerializer(home_production[0]).data)
-            return not_found('La OD no existe.')
+        return self.service.get_by_id(self.id)
 
+    @service_method()
     def update(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if home_production:
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('OD actualizada correctamente.')
-            return not_found('La OD noexiste.')
+        return self.service.update(self.id, self.data)
 
+    @service_method()
     def delete(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if home_production:
-                db.delete({'_id': ObjectId(self.id)})
-                return ok('OD eliminada correctamente.')
-            return not_found('La OD noexiste.')
+        return self.service.delete(self.id)

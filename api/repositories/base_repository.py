@@ -60,6 +60,18 @@ class BaseRepository:
         with self.db_handler as db:
             return db.delete({'_id': ObjectId(_id)})
 
+    def delete_by_query(self, query: dict):
+        """
+        Elimina documentos usando un filtro/query personalizado.
+        Ejemplo:
+            repo.delete_by_query({"status": "inactive"})
+        """
+        if not isinstance(query, dict) or not query:
+            raise ValueError("query debe ser un dict no vacío.")
+
+        with self.db_handler as db:
+            return db.delete(query)
+
     def update_one(self, query: dict, update_data: dict, upsert: bool = False):
         if not isinstance(query, dict) or not query:
             raise ValueError("query debe ser un dict no vacío.")

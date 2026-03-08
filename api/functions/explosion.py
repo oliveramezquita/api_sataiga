@@ -1,4 +1,3 @@
-import logging
 from typing import Any, Dict, List
 from decimal import Decimal, ROUND_HALF_UP
 from copy import deepcopy
@@ -27,19 +26,21 @@ def total_from_prototypes(prototypes: List[Dict[str, Any]]) -> float:
     return r2(total)
 
 
-def remove_prototype(area: Dict[str, Any], prototype: str) -> Dict[str, Any]:
-    area["prototypes"] = [p for p in (
-        area.get("prototypes") or []) if p.get("prototype") != prototype]
-    area["total"] = total_from_prototypes(area["prototypes"])
+def upsert_prototype(area: Dict[str, Any], prototype: str, quantities: Dict[str, Any]) -> Dict[str, Any]:
+    prototypes = area.setdefault("prototypes", [])
+
+    for item in prototypes:
+        if item.get("prototype") == prototype:
+            item["quantities"] = quantities
+            area["total"] = total_from_prototypes(prototypes)
+            return area
+
+    prototypes.append({
+        "prototype": prototype,
+        "quantities": quantities,
+    })
+    area["total"] = total_from_prototypes(prototypes)
     return area
-
-
-def update_by_area(exp: List[Dict[str, Any]], area_name: str, new_entry: Dict[str, Any]) -> List[Dict[str, Any]]:
-    for i, d in enumerate(exp or []):
-        if d.get("area") == area_name:
-            exp[i] = new_entry
-            return exp
-    return exp
 
 
 def create_amounts(item: Dict[str, Any], hp: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -60,11 +61,11 @@ def create_amounts(item: Dict[str, Any], hp: Dict[str, Any]) -> List[Dict[str, A
             continue
 
         factory = r2(to_float(v.get("factory", 0),
-                              0.0, min_value=0.0) * multiplier)
+                     0.0, min_value=0.0) * multiplier)
         installation = r2(to_float(v.get("installation", 0),
-                                   0.0, min_value=0.0) * multiplier)
+                          0.0, min_value=0.0) * multiplier)
         delivery = r2(to_float(v.get("delivery", 0),
-                               0.0, min_value=0.0) * multiplier)
+                      0.0, min_value=0.0) * multiplier)
         total = r2(factory + installation + delivery)
 
         if total > 0:
@@ -83,6 +84,56 @@ def create_amounts(item: Dict[str, Any], hp: Dict[str, Any]) -> List[Dict[str, A
             })
 
     return areas_out
+
+
+def get_area_data(data: List[Dict[str, Any]], area_name: str) -> Dict[str, Any]:
+    for item in data:
+        if item.get("area") == area_name:
+            return {
+                "area": area_name,
+                "prototypes": item.get("prototypes", []),
+                "total": item.get("total", 0)
+            }
+    return {
+        "area": area_name,
+        "prototypes": [],
+        "total": 0
+    }
+
+
+def update_amounts(current_exp: Dict[str, Any], item: Dict[str, Any], hp: Dict[str, Any]) -> List[Dict[str, Any]]:
+    exp = current_exp.get('explosion', [])
+    areas = {e["area"]: e for e in exp}
+    lots_prototypes = (hp.get("lots") or {}).get("prototypes") or {}
+    prototype = item.get("prototype")
+
+    if not prototype or prototype not in lots_prototypes:
+        return exp
+
+    multiplier = to_float(lots_prototypes.get(
+        prototype, 0), 0.0, min_value=0.0)
+
+    for v in (item.get("volumetry") or []):
+        factory = r2(to_float(v.get("factory", 0),
+                     0.0, min_value=0.0) * multiplier)
+        installation = r2(to_float(v.get("installation", 0),
+                          0.0, min_value=0.0) * multiplier)
+        delivery = r2(to_float(v.get("delivery", 0),
+                      0.0, min_value=0.0) * multiplier)
+        total = r2(factory + installation + delivery)
+        if total > 0:
+            area = v.get("area")
+            if not area:
+                continue
+
+            result = get_area_data(exp, area)
+            result = upsert_prototype(result, prototype, {
+                "factory": factory,
+                "installation": installation,
+                "delivery": delivery,
+            })
+            areas[result["area"]] = result
+    return list(areas.values())
 
 
 def merge_explosion(current_explosion: list, volumetry: list) -> list:
@@ -170,17 +221,33 @@ def explosion(self, home_production_id: str, prev_lots: int):
 
     if len(current_explosion) == 0:
         for v in volumetry:
-            amounts = create_amounts(v, hp)
-            gran_total = r2(sum(to_float(a.get("total", 0))
-                            for a in (amounts or [])))
-            exp_repo.insert({
+            material_id = v.get("material_id")
+            supplier_id = v.get("supplier_id")
+            current_exp = exp_repo.find_one({
                 "home_production_id": home_production_id,
-                "material_id": v.get("material_id"),
-                "supplier_id": v.get("supplier_id"),
-                "explosion": amounts,
-                "gran_total": gran_total,
-                "status": 0,
+                "material_id": material_id,
+                "supplier_id": supplier_id,
             })
+            if current_exp:
+                amounts = update_amounts(current_exp, v, hp)
+                gran_total = r2(sum(to_float(a.get("total", 0))
+                                    for a in (amounts or [])))
+                exp_repo.update(str(current_exp.get('_id')), {
+                    "explosion": amounts,
+                    "gran_total": gran_total,
+                })
+            else:
+                amounts = create_amounts(v, hp)
+                gran_total = r2(sum(to_float(a.get("total", 0))
+                                for a in (amounts or [])))
+                exp_repo.insert({
+                    "home_production_id": home_production_id,
+                    "material_id": material_id,
+                    "supplier_id": supplier_id,
+                    "explosion": amounts,
+                    "gran_total": gran_total,
+                    "status": 0,
+                })
         invalidate_cache('explosion')
         return True
 
@@ -188,17 +255,31 @@ def explosion(self, home_production_id: str, prev_lots: int):
     for e in merged:
         volumetry = e.get('volumetry')
         if volumetry:
-            amounts = create_amounts(e, hp)
-            gran_total = r2(sum(to_float(a.get("total", 0))
-                            for a in (amounts or [])))
-            exp_repo.insert({
+            current_exp = exp_repo.find_one({
                 "home_production_id": home_production_id,
                 "material_id": e.get("material_id"),
                 "supplier_id": e.get("supplier_id"),
-                "explosion": amounts,
-                "gran_total": gran_total,
-                "status": 0,
             })
+            if current_exp:
+                amounts = update_amounts(current_exp, e, hp)
+                gran_total = r2(sum(to_float(a.get("total", 0))
+                                    for a in (amounts or [])))
+                exp_repo.update(str(current_exp.get('_id')), {
+                    "explosion": amounts,
+                    "gran_total": gran_total,
+                })
+            else:
+                amounts = create_amounts(e, hp)
+                gran_total = r2(sum(to_float(a.get("total", 0))
+                                for a in (amounts or [])))
+                exp_repo.insert({
+                    "home_production_id": home_production_id,
+                    "material_id": e.get("material_id"),
+                    "supplier_id": e.get("supplier_id"),
+                    "explosion": amounts,
+                    "gran_total": gran_total,
+                    "status": 0,
+                })
         else:
             new_exp = scale_explosion(
                 e, prev_lots, int(current_lots.get('total', 0)))

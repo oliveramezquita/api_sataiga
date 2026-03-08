@@ -30,6 +30,7 @@ class LotUseCase:
     def update(self):
         return self.service.update(self.home_production_id, self.data)
 
+    @service_method()
     def delete(self):
         return self.service.delete(self.id)
 
