@@ -35,7 +35,7 @@ class PurchaseOrder(models.Model):
     ]
 
     _id = models.CharField(max_length=50)
-    home_production_id = models.CharField(max_length=50)
+    home_production_id = models.CharField(max_length=50, null=True)
     linked_id = models.CharField(max_length=50, null=True)
     company_id = models.CharField(max_length=50, null=True)
     project = models.CharField(max_length=50)

@@ -105,3 +105,7 @@ def norm(s: Any) -> str:
     if s is None:
         return ""
     return " ".join(str(s).strip().upper().split())
+
+
+def to_bool(value):
+    return str(value).strip().lower() in ("true", "1", "yes")

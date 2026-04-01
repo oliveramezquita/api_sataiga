@@ -32,7 +32,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*',]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://api.bellarti.art',
+    'https://api.bellarti.com.mx',
 ]
 
 # Application definition
@@ -70,7 +70,7 @@ if DEBUG:
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
-    'https://bellarti.art',
+    'https://sistema.bellarti.com.mx',
 ]
 
 ROOT_URLCONF = 'api_sataiga.urls'

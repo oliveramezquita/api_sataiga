@@ -5,12 +5,11 @@ import traceback
 import os
 from collections import defaultdict
 from urllib.parse import parse_qs
-from api.constants import DEFAULT_PAGE_SIZE
+from api.constants import DEFAULT_PAGE_SIZE, SUPPLIER_ID_TREND, FIXED_PRESENTATIONS
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from api.helpers.http_responses import created, bad_request, ok_paginated, ok, not_found
-from api.constants import FIXED_PRESENTATIONS
 from django.core.paginator import Paginator
 from api.serializers.purchase_order_serializer import PurchaseOrderSerializer
 from datetime import datetime
@@ -50,7 +49,7 @@ class PurchaseOrderUseCase:
             home_production_id)}) if objectid_validation(home_production_id) else None
         if home_production:
             return home_production[0]
-        return False
+        return None
 
     def __check_supplier(self, db, supplier_id):
         supplier = MongoDBHandler.find(db, 'suppliers', {'_id': ObjectId(
@@ -315,11 +314,12 @@ class PurchaseOrderUseCase:
 
     def save(self):
         with MongoDBHandler('purchase_orders') as db:
-            required_fields = ['supplier_id', 'home_production_id',
-                               'request_by', 'created', 'items', 'subtotal', 'iva', 'total']
+            home_production_id = self.data.get('home_production_id')
+            required_fields = ['supplier_id', 'request_by',
+                               'created', 'items', 'subtotal', 'iva', 'total']
             if all(i in self.data for i in required_fields):
                 home_production = self.__check_home_production(
-                    db, self.data['home_production_id'])
+                    db, home_production_id)
                 supplier = self.__check_supplier(db, self.data['supplier_id'])
                 if supplier:
                     data = self.data
@@ -372,8 +372,9 @@ class PurchaseOrderUseCase:
             purchase_order = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
-                hp = self.__check_home_production(
-                    db, purchase_order[0]['home_production_id'])
+                home_production_id = purchase_order[0].get(
+                    'home_production_id')
+                hp = self.__check_home_production(db, home_production_id)
                 purchase_order[0]['selected_rows'] = [item['id']
                                                       for item in purchase_order[0]['items']]
                 purchase_order[0]['lots'] = hp['lots']['prototypes'] if hp else {}
@@ -403,11 +404,12 @@ class PurchaseOrderUseCase:
             suppliers = []
             if self.type_project == 'SP':
                 suppliers = SupplierSerializer(
-                    MongoDBHandler.find(db, 'suppliers', {}, 'name'), many=True).data
+                    MongoDBHandler.find(db, 'suppliers', {'supplier_id': {'$ne': SUPPLIER_ID_TREND}}, 'name'), many=True).data
             else:
                 viewed = set()
-                materials = db.extract(
-                    {'home_production_id': self.project_id})
+                materials = db.extract({
+                    'home_production_id': self.project_id,
+                    'supplier_id': {'$ne': SUPPLIER_ID_TREND}})
                 for material in materials:
                     supplier = self.__check_supplier(
                         db, material['supplier_id'])
