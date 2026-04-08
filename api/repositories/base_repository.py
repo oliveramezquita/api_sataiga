@@ -36,6 +36,18 @@ class BaseRepository:
             result = db.extract(query=query, projection=projection)
             return result[0] if result else None
 
+    def find_by_ids(self, ids: list[str], filters: dict = None, projection=None):
+        valid_ids = [ObjectId(_id) for _id in ids if objectid_validation(_id)]
+        if not valid_ids:
+            return []
+
+        query = {'_id': {'$in': valid_ids}}
+        if filters and isinstance(filters, dict):
+            query.update(filters)
+
+        with self.db_handler as db:
+            return db.extract(query=query, projection=projection)
+
     def insert(self, data: dict):
         """Inserta un nuevo documento."""
         with self.db_handler as db:

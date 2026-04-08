@@ -78,8 +78,8 @@ urlpatterns = [
          VSProjectsView.as_view(), name='projects'),
     path('purchase_orders/input_register/<str:id>',
          InputRegisterView.as_view(), name='input register'),
-    path('purchase_orders/invoice/<str:id>',
-         InvoiceView.as_view(), name='upload invoice'),
+    #     path('purchase_orders/invoice/<str:id>',
+    #          InvoiceView.as_view(), name='upload invoice'),
     path('inventory', InventoryView.as_view(), name='inventory'),
     path('inventory_item/<str:id>',
          InventoryItemView.as_view(), name='inventory item'),
@@ -128,4 +128,6 @@ urlpatterns = [
     path('trend/<str:id>', TrendByIdView.as_view(), name='trend'),
     path('trend/elements/<str:id>',
          TrendElemetsView.as_view(), name='trend elements'),
+    path('invoices', InvoicesView.as_view(), name='invoices'),
+    path('invoice/<str:id>', InvoiceView.as_view(), name='invoice'),
 ]

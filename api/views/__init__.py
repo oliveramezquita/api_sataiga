@@ -28,3 +28,4 @@ from .concept import ConceptsView, ConceptByIdView, ConceptItemsView, ConceptTem
 from .employee import EmployeesView, EmployeeByIdView
 from .template import TemplatesView, TemplateByIdView, TemplateItemsView, TemplateIndirectCostsView
 from .trend import TrendsView, TrendByIdView, TrendElemetsView
+from .invoice import InvoicesView, InvoiceView

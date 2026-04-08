@@ -140,7 +140,7 @@ class PurchaseOrderUseCase:
             'quantity': None,
             'total_quantity': item['gran_total'],
             'modified': 0,
-            'total': round(float(item['gran_total'])*float(material['inventory_price']), 2),
+            'total': round(float(item['gran_total'])*float(material.get('inventory_price', 0)), 2),
             'delivered': {
                 'rack': None,
                 'level': None,
