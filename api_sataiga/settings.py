@@ -70,6 +70,7 @@ if DEBUG:
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'http://160.153.176.228:8080',
     'https://sistema.bellarti.com.mx',
 ]
 

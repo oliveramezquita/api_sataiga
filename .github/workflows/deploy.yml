@@ -1,39 +1,40 @@
 name: Bellarti API
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-            
-            - name: Set up Python
-              uses: actions/setup-python@v4
-              with:
-                python-version: '3.12'
-            
-            - name: Install dependencies
-              run: |
-                python -m pip install --upgrade pip
-                pip install -r requirements.txt
-            
-            - name: Deploy to server
-              uses: appleboy/ssh-action@master
-              with:
-                host: ${{ secrets.SSH_HOST }}
-                username: ${{ secrets.SSH_USER }}
-                password: ${{ secrets.SSH_PASSWORD }}
-                script: |
-                  cd /home/admin/api_sataiga
-                  git pull
-                  source venv/bin/activate
-                  python manage.py migrate --noinput
-                  python manage.py collectstatic --noinput
-                  
-                  sudo systemctl restart celery_beat
-                  sudo systemctl restart celery_worker
-                  sudo systemctl restart gunicorn
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            set -e
+
+            cd /home/deploy/bellarti_api
+
+            echo "🔄 Pull latest code..."
+            git pull
+
+            echo "🐳 Rebuilding containers..."
+            docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+            echo "📦 Running migrations..."
+            docker exec bellarti_api python manage.py migrate --noinput
+
+            echo "📁 Collecting static..."
+            docker exec bellarti_api python manage.py collectstatic --noinput
+
+            echo "⏳ Waiting for API to be ready..."
+            sleep 5
+
+            echo "🩺 Health check..."
+            curl -f http://127.0.0.1:8000/health/ || exit 1
+
+            echo "✅ Deploy successful"
