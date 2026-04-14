@@ -45,3 +45,27 @@ FIXED_PRESENTATIONS = {
     "PZS": 1,
     "PZA": 1,
 }
+
+TRENDS_FIELD_BY_TYPE = {
+    "melamines": "melamines",
+    "granites": "granites",
+}
+
+EQUIPMENTS = {'Campana', 'Estufa', 'Horno', 'Parrilla',
+              'Hielera', 'Microondas', 'Campana + Parrilla'}
+
+CARPENTRY = {'Acabado', 'Herraje', 'Maderas', 'Resurtido', 'Tornillería'}
+
+CATS = [
+    "PRODUCCIÓN SOLO COCINA",
+    "PRODUCCIÓN SIN COCINA",
+    "INSTALACIÓN SOLO COCINA",
+    "INSTALACIÓN SIN COCINA",
+    "ENTREGAS COCINA",
+    "CARPINTERÍA",
+    "EQUIPOS",
+]
+
+ALLOWED_LAID = {"DERECHO", "IZQUIERDO"}
+
+SUPPLIER_ID_TREND = '6982d28833f8fc75b7f10988'

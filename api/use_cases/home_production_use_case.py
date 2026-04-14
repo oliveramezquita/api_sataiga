@@ -1,77 +1,64 @@
-from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from bson import ObjectId
+from api.helpers.get_query_params import get_query_params
+from api_sataiga.handlers.mongodb_handler import MongoDBHandler
+from api.decorators.service_method import service_method
 from api.helpers.validations import objectid_validation
-from api.helpers.http_responses import created, bad_request, ok_paginated, ok, not_found
-from django.core.paginator import Paginator
+from api.helpers.http_responses import ok_paginated, ok, not_found, bad_request
 from api.serializers.home_production_serializer import HomeProductionSerializer
-from urllib.parse import parse_qs
-from api.constants import DEFAULT_PAGE_SIZE
+from api.services.home_production_service import HomeProductionService
+from api.utils.pagination_utils import DummyPaginator, DummyPage
 
 
 class HomeProdcutionUseCase:
     def __init__(self, request=None, **kwargs):
-        if request:
-            params = parse_qs(request.META['QUERY_STRING'])
-            self.page = params['page'][0] if 'page' in params else 1
-            self.page_size = params['itemsPerPage'][0] \
-                if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
+        params = get_query_params(request)
+        self.q = params["q"]
+        self.page = params["page"]
+        self.page_size = params["page_size"]
+        self.sort_by = params["sort_by"]
+        self.order_by = params["order_by"]
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
+        self.service = HomeProductionService()
 
-    def __client_validation(self, db, client_id):
-        client = MongoDBHandler.find(db, 'clients', {'_id': ObjectId(
-            client_id), 'type': 'VS'}) if objectid_validation(client_id) else None
-        if client:
-            return client[0]
-        return False
-
+    @service_method(success_status="created")
     def save(self):
-        with MongoDBHandler('home_production') as db:
-            required_fields = ['client_id', 'front', 'od']
-            if all(i in self.data for i in required_fields):
-                if self.__client_validation(db, self.data['client_id']):
-                    db.insert({
-                        **self.data,
-                        'lots': {},
-                        'progress': 0,
-                        'status': 0})
-                    return created('OD creada correctamente.')
-                return bad_request('El cliente seleccionado no existe.')
-            return bad_request('Algunos campos requeridos no han sido completados.')
+        """Crea una nueva OD."""
+        self.service.create(self.data)
+        return 'OD creada correctamente.'
 
     def get(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract()
-            paginator = Paginator(home_production, per_page=self.page_size)
-            page = paginator.get_page(self.page)
-            return ok_paginated(
-                paginator,
-                page,
-                HomeProductionSerializer(page.object_list, many=True).data
+        try:
+            filters = {}
+            if self.q:
+                q = str(self.q)
+                filters['$or'] = [
+                    {'front': {'$regex': q, '$options': 'i'}},
+                    {'od': {'$regex': q, '$options': 'i'}},
+                ]
+
+            result = self.service.get_paginated(
+                filters, self.page, self.page_size, self.sort_by, self.order_by
             )
 
+            dummy_paginator = DummyPaginator(
+                result["count"], result["total_pages"])
+            dummy_page = DummyPage(
+                result["current_page"], dummy_paginator, result["results"]
+            )
+
+            return ok_paginated(dummy_paginator, dummy_page, result["results"])
+        except Exception as e:
+            return bad_request(f"Error al obtener OD's: {e}")
+
+    @service_method()
     def get_by_id(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if home_production:
-                return ok(HomeProductionSerializer(home_production[0]).data)
-            return not_found('La OD no existe.')
+        return self.service.get_by_id(self.id)
 
+    @service_method()
     def update(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if home_production:
-                db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok('OD actualizada correctamente.')
-            return not_found('La OD noexiste.')
+        return self.service.update(self.id, self.data)
 
+    @service_method()
     def delete(self):
-        with MongoDBHandler('home_production') as db:
-            home_production = db.extract(
-                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if home_production:
-                db.delete({'_id': ObjectId(self.id)})
-                return ok('OD eliminada correctamente.')
-            return not_found('La OD noexiste.')
+        return self.service.delete(self.id)

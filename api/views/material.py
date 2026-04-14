@@ -53,3 +53,11 @@ class ImagesMaterialView(views.APIView):
     def delete(self, request, id):
         use_case = MaterialUseCase(data=request.data, id=id)
         return use_case.delete_image()
+
+
+class DownloadFormatView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def post(self, request):
+        use_case = MaterialUseCase(request=request, data=request.data)
+        return use_case.download_format()

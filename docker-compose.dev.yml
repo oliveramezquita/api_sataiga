@@ -1,0 +1,26 @@
+services:
+  api:
+    build: .
+    container_name: bellarti_api
+    command: daphne -b 0.0.0.0 -p 8000 api_sataiga.asgi:application
+    volumes:
+      - .:/app
+    env_file:
+      - .env.dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - mongodb
+
+  celery_worker:
+    build: .
+    container_name: bellarti_celery
+    command: celery -A api_sataiga worker --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - .env.dev
+    depends_on:
+      - redis
+      - mongodb

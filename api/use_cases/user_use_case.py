@@ -157,7 +157,7 @@ class UserUseCase:
                     if 'AccountSettings' not in self.data['permissions']:
                         self.data['permissions']['AccountSettings'] = ['read']
                 updated_user = db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok(UserSerializer(updated_user[0]).data)
+                return ok(UserSerializer(updated_user).data)
             return bad_request('El usaurio no existe.')
 
     def update_password(self):

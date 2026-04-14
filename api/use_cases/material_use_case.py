@@ -5,11 +5,13 @@ from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import created, bad_request, ok, ok_paginated, not_found
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
+from api.utils.cache_utils import invalidate_cache
 from api.serializers.material_serializer import MaterialSerializer
 from api.serializers.file_serializer import FileUploadSerializer
 from openpyxl import load_workbook, Workbook
 from decimal import Decimal, InvalidOperation
 from rest_framework import exceptions
+from pymongo.errors import DuplicateKeyError
 from django.http import HttpResponse
 from PIL import Image
 from django.conf import settings
@@ -18,6 +20,7 @@ from api.services.material_service import MaterialService
 from api.services.catalog_service import CatalogService
 from api.utils.pagination_utils import DummyPaginator, DummyPage
 from api.helpers.get_query_params import get_query_params
+from api.helpers.sku import normalize_sku, with_unique_sku
 
 
 class MaterialUseCase:
@@ -125,41 +128,84 @@ class MaterialUseCase:
         with MongoDBHandler('materials') as db:
             inserted = []
             updated = []
-            if self.__check_supplier(db):
-                for item in materials:
-                    filters = {
-                        'supplier_id': item['supplier_id'],
-                        'division': item['division'],
-                        'name': item['name'],
-                        'measurement': item['measurement'],
-                    }
-                    for f in ['espec1', 'espec2', 'espec3', 'espec4', 'espec5', 'supplier_code', 'presentation']:
-                        if f in item and item[f]:
-                            filters[f] = item[f]
-                    material = db.extract(filters)
-                    if material:
-                        if 'sku' not in material[0] or not material[0]['sku']:
-                            concept, sku = generate_concept_and_sku(
-                                material[0])
-                            item['concept'] = concept
-                            item['sku'] = sku
-                        if 'qr' not in material[0] or not material[0].get('qr'):
-                            item['qr'] = self.__create_qr_image(
-                                str(material[0]['_id']))
-                        db.update({'_id': ObjectId(material[0]['_id'])}, item)
-                        updated.append(
-                            item['concept'] if 'concept' in item else material[0]['concept'])
-                    else:
-                        concept, sku = generate_concept_and_sku(item)
+
+            if not self.__check_supplier(db):
+                raise exceptions.NotFound(
+                    'El proveedor seleccionado no existe.')
+
+            for item in materials:
+                filters = {
+                    'supplier_id': item['supplier_id'],
+                    'division': item['division'],
+                    'name': item['name'],
+                    'measurement': item['measurement'],
+                    'presentation': item['presentation'],
+                }
+                for f in ['espec1', 'espec2', 'espec3', 'espec4', 'espec5', 'supplier_code', 'presentation']:
+                    if f in item and item[f]:
+                        filters[f] = item[f]
+
+                found = db.extract(filters)
+                if found:
+                    doc = found[0]
+                    material_id = str(doc['_id'])
+
+                    # Si el SKU existe en doc, NO lo toques; si falta, genéralo
+                    if not doc.get('sku'):
+                        concept, sku = generate_concept_and_sku(
+                            doc)  # o item, según tu lógica
                         item['concept'] = concept
-                        item['sku'] = sku
-                        material_id = db.insert(item)
+                        desired_sku = sku
+                    else:
+                        # Si viene sku en item (ej import) y quieres permitir cambio:
+                        desired_sku = item.get('sku') or doc.get('sku')
+
+                    # QR si falta
+                    if not doc.get('qr'):
+                        item['qr'] = self.__create_qr_image(material_id)
+
+                    # Si vamos a setear sku, hacerlo unique con retry
+                    if desired_sku:
+                        def op(candidate_sku: str):
+                            item['sku'] = normalize_sku(candidate_sku)
+                            return db.update({'_id': ObjectId(doc['_id'])}, item)
+
+                        try:
+                            db_doc = with_unique_sku(desired_sku, op_fn=op)
+                            invalidate_cache("materials")
+                        except ValueError as e:
+                            # decide si quieres acumular error o reventar
+                            raise exceptions.ValidationError(str(e))
+                    else:
+                        db_doc = db.update({'_id': ObjectId(doc['_id'])}, item)
+
+                    updated.append(item.get('concept') or doc.get('concept'))
+
+                else:
+                    # Crear nuevo
+                    concept, sku = generate_concept_and_sku(item)
+                    item['concept'] = concept
+                    desired_sku = sku
+
+                    def op(candidate_sku: str):
+                        item['sku'] = normalize_sku(candidate_sku)
+                        # puede lanzar DuplicateKeyError por sku unique
+                        new_id = db.insert(item)
                         db.update(
-                            {'_id': ObjectId(material_id)},
-                            {'qr': self.__create_qr_image(str(material_id))})
-                        inserted.append(item['concept'])
-                return inserted, updated
-            raise exceptions.NotFound('El proveedor seleccionado no existe.')
+                            {'_id': ObjectId(new_id)},
+                            {'qr': self.__create_qr_image(str(new_id))}
+                        )
+                        return new_id
+
+                    try:
+                        new_id = with_unique_sku(desired_sku, op_fn=op)
+                        invalidate_cache("materials")
+                    except ValueError as e:
+                        raise exceptions.ValidationError(str(e))
+
+                    inserted.append(item['concept'])
+
+            return inserted, updated
 
     def __suppliers_list(self):
         with MongoDBHandler('suppliers') as db:
@@ -249,13 +295,14 @@ class MaterialUseCase:
 
         # 🔹 Búsqueda libre
         if self.q:
+            q = str(self.q)
             filters['$or'] = [
-                {'concept': {'$regex': self.q, '$options': 'i'}},
-                {'measurement': {'$regex': self.q, '$options': 'i'}},
-                {'supplier_code': {'$regex': self.q, '$options': 'i'}},
-                {'sku': {'$regex': self.q, '$options': 'i'}},
-                {'presentation': {'$regex': self.q, '$options': 'i'}},
-                {'reference': {'$regex': self.q, '$options': 'i'}},
+                {'concept': {'$regex': q, '$options': 'i'}},
+                {'measurement': {'$regex': q, '$options': 'i'}},
+                {'supplier_code': {'$regex': q, '$options': 'i'}},
+                {'sku': {'$regex': q, '$options': 'i'}},
+                {'presentation': {'$regex': q, '$options': 'i'}},
+                {'reference': {'$regex': q, '$options': 'i'}},
             ]
 
         # 🔹 Filtro de proveedor (prioriza el override si se pasa explícito)
@@ -288,21 +335,55 @@ class MaterialUseCase:
 
         return filters
 
+    @staticmethod
+    def normalize_material_ids(material_ids):
+        if not material_ids:
+            return []
+
+        if isinstance(material_ids[0], str):
+            return material_ids
+
+        if isinstance(material_ids[0], dict):
+            return [m["id"] for m in material_ids if "id" in m]
+
+        raise ValueError(
+            "material_ids debe ser una lista de strings o de objetos con id"
+        )
+
     def save(self):
         with MongoDBHandler('materials') as db:
             required_fields = ['division', 'name',
                                'concept', 'measurement', 'supplier_id', 'sku']
-            if all(i in self.data for i in required_fields):
-                if self.__check_supplier(db):
-                    if 'automation' not in self.data:
-                        self.data['automation'] = False
-                    material_id = db.insert(self.data)
-                    db.update(
-                        {'_id': ObjectId(material_id)},
-                        {'qr': self.__create_qr_image(str(material_id))})
-                    return created({'id': str(material_id)})
+            if not all(i in self.data for i in required_fields):
+                return bad_request('Algunos campos requeridos no han sido completados.')
+
+            if not self.__check_supplier(db):
                 return bad_request('El proveedor selecionado no existe.')
-            return bad_request('Algunos campos requeridos no han sido completados.')
+
+            if 'automation' not in self.data:
+                self.data['automation'] = False
+
+            desired_sku = self.data.get("sku")
+
+            def op(candidate_sku: str):
+                self.data["sku"] = normalize_sku(candidate_sku)
+                # <-- si sku duplica, Mongo lanza DuplicateKeyError
+                material_id = db.insert(self.data)
+                db.update(
+                    {'_id': ObjectId(material_id)},
+                    {'qr': self.__create_qr_image(str(material_id))}
+                )
+                return material_id
+
+            try:
+                material_id = with_unique_sku(desired_sku, op_fn=op)
+                invalidate_cache("materials")
+                return created({'id': str(material_id)})
+            except ValueError as e:
+                return bad_request(str(e))
+            except DuplicateKeyError:
+                # si por alguna razón se sale del helper (raro), igual manejas
+                return bad_request("No se pudo generar un SKU único.")
 
     def get(self):
         try:
@@ -338,15 +419,44 @@ class MaterialUseCase:
         with MongoDBHandler('materials') as db:
             material = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            if len(material) > 0:
-                if 'supplier_id' in self.data and not self.__check_supplier(db):
-                    return bad_request('El proveedor selecionado no existe.')
-                if 'qr' not in material[0] or not material[0].get('qr'):
-                    self.data['qr'] = self.__create_qr_image(
-                        str(material[0]['_id']))
+            if not material or len(material) == 0:
+                return bad_request('El material no existe.')
+
+            current = material[0]
+
+            if 'supplier_id' in self.data and not self.__check_supplier(db):
+                return bad_request('El proveedor selecionado no existe.')
+
+            if 'qr' not in current or not current.get('qr'):
+                self.data['qr'] = self.__create_qr_image(str(current['_id']))
+
+            # si no viene sku => update normal
+            if 'sku' not in self.data or not self.data['sku']:
                 updated = db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok(MaterialSerializer(updated[0]).data)
-            return bad_request('El material no existe.')
+                return ok(MaterialSerializer(updated).data)
+
+            desired = normalize_sku(self.data['sku'])
+            current_sku = normalize_sku(current.get('sku'))
+
+            # si no cambia sku => update normal (sin retry)
+            if desired == current_sku:
+                self.data['sku'] = desired
+                updated = db.update({'_id': ObjectId(self.id)}, self.data)
+                return ok(MaterialSerializer(updated).data)
+
+            def op(candidate_sku: str):
+                self.data['sku'] = normalize_sku(candidate_sku)
+                # <-- si sku duplica, Mongo lanza DuplicateKeyError por índice unique
+                return db.update({'_id': ObjectId(self.id)}, self.data)
+
+            try:
+                updated = with_unique_sku(desired, op_fn=op)
+                invalidate_cache("materials")
+                return ok(MaterialSerializer(updated).data)
+            except ValueError as e:
+                return bad_request(str(e))
+            except DuplicateKeyError:
+                return bad_request("No se pudo generar un SKU único.")
 
     def delete(self):
         with MongoDBHandler('materials') as db:
@@ -449,3 +559,31 @@ class MaterialUseCase:
                     return bad_request('No existen imágenes en el material seleccionado y/o las imágenes seleccionadas para eliminar.')
                 return bad_request('El material no existe.')
             return bad_request('Falta el índice de la imagen para poder eliminarla.')
+
+    def download_format(self):
+        try:
+            if not self.data or "filename" not in self.data:
+                return bad_request("El nombre del formato es requerido.")
+
+            material_ids = self.normalize_material_ids(
+                self.data.get("material_ids"))
+
+            content, filename = self.service.export_format(
+                self.data["filename"],
+                material_ids,
+            )
+
+            response = HttpResponse(
+                content,
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
+            response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+            return response
+
+        except Exception as e:
+            print("ENTERED EXCEPT:", repr(e))
+            print(traceback.format_exc())
+            resp = bad_request(f"Error al generar el formato: {e}")
+            print("RESP:", type(resp), resp)
+            return resp

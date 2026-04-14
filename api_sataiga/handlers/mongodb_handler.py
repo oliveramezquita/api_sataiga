@@ -1,6 +1,7 @@
-from pymongo import MongoClient, ReturnDocument
+from pymongo import ReturnDocument
 from django.conf import settings
 from datetime import datetime
+from .mongo_client import get_mongo_client
 
 
 class MongoDBHandler:
@@ -10,18 +11,12 @@ class MongoDBHandler:
         self.collection_name = collection_name
 
     def __enter__(self):
-        uri = "mongodb://{}:{}@{}:{}?authSource=admin".format(
-            settings.MONGO_DB['USER'],
-            settings.MONGO_DB['PASS'],
-            settings.MONGO_DB['HOST'],
-            settings.MONGO_DB['PORT'])
-        self.client = MongoClient(uri)
+        self.client = get_mongo_client()
         self.db = self.client[settings.MONGO_DB['NAME']]
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.client:
-            self.client.close()
+        pass
 
     def insert(self, data):
         collection = self.db[self.collection_name]
@@ -42,23 +37,31 @@ class MongoDBHandler:
 
     def update(self, query, update_data, upsert=False):
         collection = self.db[self.collection_name]
+        now = datetime.now()
 
-        # 🕒 siempre actualiza la fecha
+        # Normalizar a operadores
         if any(k.startswith('$') for k in update_data.keys()):
-            if '$set' in update_data:
-                update_data['$set']['updated_at'] = datetime.now()
-            else:
-                update_data['$set'] = {'updated_at': datetime.now()}
             ops = update_data
         else:
-            update_data['updated_at'] = datetime.now()
             ops = {'$set': update_data}
 
-        # ✅ Aquí se pasa upsert explícitamente
-        collection.update_one(query, ops, upsert=upsert)
+        # updated_at siempre
+        ops.setdefault('$set', {})
+        ops['$set']['updated_at'] = now
 
-        result = collection.find(query)
-        return list(result)
+        # created_at solo en insert (upsert)
+        if upsert:
+            ops.setdefault('$setOnInsert', {})
+            ops['$setOnInsert']['created_at'] = now
+
+        # Doc final
+        doc = collection.find_one_and_update(
+            query,
+            ops,
+            upsert=upsert,
+            return_document=ReturnDocument.AFTER,
+        )
+        return doc
 
     def delete(self, query):
         collection = self.db[self.collection_name]

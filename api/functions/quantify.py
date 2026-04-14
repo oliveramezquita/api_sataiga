@@ -1,138 +1,146 @@
-import re
-from copy import deepcopy
-from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from celery import shared_task
+from typing import Any, Dict, List
+from api.helpers.formats import to_float, normalize_strict
+from api.constants import EQUIPMENTS, CARPENTRY, CATS
+from api.repositories.volumetry_repository import VolumetryRepository
+from api.repositories.material_repository import MaterialRepository
+from api.repositories.quantification_repository import QuantificationRepository
 
 
-def convert_to_float(valor):
-    try:
-        return round(float(valor), 2)
-    except (ValueError, TypeError):
-        return 0.00
+EQUIPMENTS_NORM = {normalize_strict(e) for e in EQUIPMENTS}
+CARPENTRY_NORM = {normalize_strict(c) for c in CARPENTRY}
 
 
-@shared_task
-def quantify(client_id, front, prototype, volumetry):
-    with MongoDBHandler('quantification') as db:
-        real_prototype = re.sub(r"\s*Cocina$", "", prototype)
-        equipments = {'Campana', 'Estufa', 'Horno', 'Parrilla',
-                      'Hielera', 'Microondas', 'Campana + Parrilla'}
-        carpentry = {'Acabado', 'Herraje',
-                     'Maderas', 'Resurtido', 'Tornillería'}
+def r2(x: float) -> float:
+    return round(float(x or 0), 2)
 
-        quantification = db.extract({
-            'client_id': client_id,
-            'front': front,
-            'prototype': real_prototype
-        })
 
-        if quantification and isinstance(quantification[0], dict):
-            quant_data = quantification[0].get("quantification", {})
-        else:
-            quant_data = {}
+@shared_task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=5)
+def quantify(self, client_id: str, front: str, prototype: str) -> bool:
+    v_repo = VolumetryRepository()
+    m_repo = MaterialRepository()
+    q_repo = QuantificationRepository()
 
-        result = {
-            "prototype": real_prototype,
-            "front": front,
-            "client_id": client_id,
-            "quantification": {
-                "PRODUCCIÓN SOLO COCINA": quant_data.get("PRODUCCIÓN SOLO COCINA", []),
-                "PRODUCCIÓN SIN COCINA": quant_data.get("PRODUCCIÓN SIN COCINA", []),
-                "INSTALACIÓN SOLO COCINA": quant_data.get("INSTALACIÓN SOLO COCINA", []),
-                "INSTALACIÓN SIN COCINA": quant_data.get("INSTALACIÓN SIN COCINA", []),
-                "ENTREGAS COCINA": quant_data.get("ENTREGAS COCINA", []),
-                "CARPINTERÍA": quant_data.get("CARPINTERÍA", []),
-                "EQUIPOS": quant_data.get("EQUIPOS", []),
-            }
+    # 1) Fuente de verdad: volumetría actual en DB
+    volumetries = v_repo.find_all(
+        query={"client_id": client_id, "front": front, "prototype": prototype},
+        projection={"material_id": 1, "volumetry": 1},  # optimiza
+    ) or []
+
+    # 2) Map de materials por id (para división)
+    material_ids = [v.get("material_id")
+                    for v in volumetries if v.get("material_id")]
+    mats = m_repo.find_many_by_ids(
+        material_ids,
+        projection={"division": 1},
+        dedupe=True,
+    ) or []
+    materials_map = {str(m["_id"]): m for m in mats if isinstance(
+        m, dict) and m.get("_id")}
+
+    # 3) Estructura: recalcular desde cero (soporta delete)
+    buckets: Dict[str, Dict[str, Dict[str, Any]]] = {cat: {} for cat in CATS}
+
+    def upsert(cat: str, material_id: str, data_dict: Dict[str, Any], total: float) -> None:
+        if total <= 0:
+            # Si quieres mantener entradas con total 0, quita este if.
+            return
+        buckets[cat][material_id] = {
+            "material_id": material_id,
+            **data_dict,
+            "TOTAL": r2(total),
         }
 
-        is_cocina = prototype.strip().endswith("Cocina")
+    # 4) Cálculo
+    for item in volumetries:
+        material_id = str(item.get("material_id") or "")
+        if not material_id:
+            continue
 
-        def add_entry(category, base_info, data_dict, total):
-            if total > 0 and data_dict:
-                data = deepcopy(base_info)
-                data.update(data_dict)
-                data["TOTAL"] = total
+        rows: List[dict] = item.get("volumetry") or []
+        mat = materials_map.get(material_id, {})
+        division_norm = normalize_strict(mat.get("division") or "")
 
-                existing = next(
-                    (entry for entry in result["quantification"][category]
-                     if entry["material_id"] == data["material_id"]),
-                    None
-                )
+        # EQUIPOS (delivery por área)
+        if division_norm in EQUIPMENTS_NORM:
+            dlvy: Dict[str, float] = {}
+            total_dlvy = 0.0
 
-                if existing:
-                    existing.clear()
-                    existing.update(data)
-                else:
-                    result["quantification"][category].append(data)
+            for v in rows:
+                area = v.get("area")
+                delivery = to_float(v.get("delivery", 0), 0.0, min_value=0.0)
+                if area:
+                    dlvy[area] = r2(delivery)
+                total_dlvy += delivery
 
-        for item in volumetry:
-            material_info = {"material_id": item['material_id']}
+            upsert("EQUIPOS", material_id, dlvy, total_dlvy)
+            continue
 
-            if item['material']['division'] in equipments:
-                dlvy = {}
-                total_dlvy = 0
-                for v in item["volumetry"]:
-                    delivery = convert_to_float(v.get("delivery", 0))
-                    dlvy[v["area"]] = delivery
-                    total_dlvy += delivery
-                add_entry("EQUIPOS", material_info, dlvy, total_dlvy)
+        # CARPINTERÍA (factory+installation+delivery por área)
+        if division_norm in CARPENTRY_NORM:
+            carp: Dict[str, float] = {}
+            total_carp = 0.0
 
-            elif item['material']['division'] in carpentry:
-                carp_data = {}
-                total_carp = 0
-                for v in item["volumetry"]:
-                    factory = convert_to_float(v.get("factory", 0))
-                    installation = convert_to_float(v.get("installation", 0))
-                    delivery = convert_to_float(v.get("delivery", 0))
+            for v in rows:
+                area = v.get("area")
+                factory = to_float(v.get("factory", 0), 0.0, min_value=0.0)
+                installation = to_float(
+                    v.get("installation", 0), 0.0, min_value=0.0)
+                delivery = to_float(v.get("delivery", 0), 0.0, min_value=0.0)
 
-                    carp_data[v["area"]] = factory + installation + delivery
-                    total_carp += carp_data[v["area"]]
+                qty = factory + installation + delivery
+                if area:
+                    carp[area] = r2(qty)
+                total_carp += qty
 
-                add_entry("CARPINTERÍA", material_info, carp_data, total_carp)
+            upsert("CARPINTERÍA", material_id, carp, total_carp)
+            continue
 
-            else:
-                prod, inst, dlvy = {}, {}, {}
-                total_prod = total_inst = total_dlvy = 0
+        # OTROS (producción/instalación por área; entregas solo COCINA)
+        prod: Dict[str, float] = {}
+        inst: Dict[str, float] = {}
+        dlvy: Dict[str, float] = {}
 
-                for v in item["volumetry"]:
-                    factory = convert_to_float(v.get("factory", 0))
-                    installation = convert_to_float(v.get("installation", 0))
-                    delivery = convert_to_float(v.get("delivery", 0))
+        total_prod = 0.0
+        total_inst = 0.0
+        total_dlvy = 0.0
+        has_cocina = False
 
-                    if is_cocina:
-                        prod[v["area"]] = factory
-                        inst[v["area"]] = installation
-                        dlvy[v["area"]] = delivery
-                    else:
-                        prod[v["area"]] = factory
-                        inst[v["area"]] = installation
+        for v in rows:
+            area = v.get("area") or ""
+            area_norm = normalize_strict(area)
 
-                    total_prod += factory
-                    total_inst += installation
-                    total_dlvy += delivery
+            factory = to_float(v.get("factory", 0), 0.0, min_value=0.0)
+            installation = to_float(
+                v.get("installation", 0), 0.0, min_value=0.0)
+            delivery = to_float(v.get("delivery", 0), 0.0, min_value=0.0)
 
-                if is_cocina:
-                    add_entry("PRODUCCIÓN SOLO COCINA",
-                              material_info, prod, total_prod)
-                    add_entry("INSTALACIÓN SOLO COCINA",
-                              material_info, inst, total_inst)
-                    add_entry("ENTREGAS COCINA",
-                              material_info, dlvy, total_dlvy)
-                else:
-                    add_entry("PRODUCCIÓN SIN COCINA",
-                              material_info, prod, total_prod)
-                    add_entry("INSTALACIÓN SIN COCINA",
-                              material_info, inst, total_inst)
+            if area:
+                prod[area] = r2(factory)
+                inst[area] = r2(installation)
 
-        if quantification:
-            db.update(
-                {
-                    'client_id': client_id,
-                    'front': front,
-                    'prototype': real_prototype
-                },
-                {'quantification': result["quantification"]}
-            )
+            total_prod += factory
+            total_inst += installation
+
+            if area_norm == "cocina":
+                has_cocina = True
+                dlvy[area] = r2(delivery)
+                total_dlvy += delivery
+
+        if has_cocina:
+            upsert("PRODUCCIÓN SOLO COCINA", material_id, prod, total_prod)
+            upsert("INSTALACIÓN SOLO COCINA", material_id, inst, total_inst)
+            upsert("ENTREGAS COCINA", material_id, dlvy, total_dlvy)
         else:
-            db.insert(result)
+            upsert("PRODUCCIÓN SIN COCINA", material_id, prod, total_prod)
+            upsert("INSTALACIÓN SIN COCINA", material_id, inst, total_inst)
+
+    # 5) Materializar a listas
+    quantification = {cat: list(buckets[cat].values()) for cat in CATS}
+
+    # 6) Upsert (llave natural)
+    query = {"client_id": client_id, "front": front, "prototype": prototype}
+    set_data = {**query, "quantification": quantification}
+    q_repo.upsert_one(query, set_data)
+
+    return True

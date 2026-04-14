@@ -1,5 +1,6 @@
 from urllib.parse import parse_qs
-from api.constants import DEFAULT_PAGE_SIZE
+from api.constants import DEFAULT_PAGE_SIZE, SUPPLIER_ID_TREND
+from api.helpers.formats import to_bool
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import created, bad_request, ok, ok_paginated, not_found
 from django.core.paginator import Paginator
@@ -18,6 +19,8 @@ class SupplierUseCase:
             self.q = params['q'][0] if 'q' in params else None
             self.order_by = - \
                 1 if 'orderBy' in params and params['orderBy'][0] == 'desc' else 1
+            self.exclude_trend = to_bool(
+                params['excludeTrend'][0]) if 'excludeTrend' in params else False
         self.data = kwargs.get('data', None)
         self.id = kwargs.get('id', None)
 
@@ -32,6 +35,8 @@ class SupplierUseCase:
     def get(self):
         with MongoDBHandler('suppliers') as db:
             filters = {}
+            if self.exclude_trend:
+                filters['_id'] = {'$ne': ObjectId(SUPPLIER_ID_TREND)}
             if self.q:
                 filters['$or'] = [
                     {'name': {'$regex': self.q, '$options': 'i'}},

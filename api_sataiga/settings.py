@@ -32,7 +32,7 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = ['*',]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://api.bellarti.art',
+    'https://api.bellarti.com.mx',
 ]
 
 # Application definition
@@ -70,7 +70,7 @@ if DEBUG:
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
-    'https://bellarti.art',
+    'https://sistema.bellarti.com.mx',
 ]
 
 ROOT_URLCONF = 'api_sataiga.urls'
@@ -205,30 +205,32 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'
+
+REDIS_HOST = config('REDIS_HOST')
+REDIS_PORT = config('REDIS_PORT', cast=int)
 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [(REDIS_HOST, REDIS_PORT)],
         },
     },
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TIMEZONE = 'America/Mexico_City'
 CELERY_ENABLE_UTC = False
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = 'media/'
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "SERIALIZER": "django_redis.serializers.json.JSONSerializer",

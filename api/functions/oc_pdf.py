@@ -1,7 +1,7 @@
 import logging
 from django.conf import settings
 from api.functions.pdf_generator import PDFGenerator
-from api.helpers.format_str import clean_text
+from api.helpers.formats import clean_text
 
 
 def generate_pdf(data):

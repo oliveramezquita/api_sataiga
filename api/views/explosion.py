@@ -6,6 +6,10 @@ from api.middlewares import BellartiAuthenticationMiddleware
 class ExplosionView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
+    def post(self, request):
+        use_case = ExplosionUseCase(data=request.data)
+        return use_case.assign()
+
     def get(self, request, home_production_id):
         use_case = ExplosionUseCase(
             request=request, home_production_id=home_production_id)

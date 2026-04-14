@@ -2,7 +2,13 @@ from datetime import datetime
 
 import locale
 
-locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")  # Set Spanish locale
+try:
+    locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")
+except locale.Error:
+    try:
+        locale.setlocale(locale.LC_TIME, "es_MX.UTF-8")
+    except locale.Error:
+        pass
 
 
 def time_ago(dt):

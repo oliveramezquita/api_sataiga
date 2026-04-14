@@ -158,10 +158,10 @@ class ProjectService(BaseService):
         Crea un clon de un proyecto existente, junto con sus conceptos asociados.
         """
         project = self._get_by_id(self.project_repo, project_id)
-        client_id = project["client_id"]
+        client_id = project.get("client_id")
 
         # Determinar nuevo nombre
-        base_name = project["name"]
+        base_name = project.get("name")
         new_name = new_name or self.get_clone_name(client_id, base_name)
 
         # Crear el clon

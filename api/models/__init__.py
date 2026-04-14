@@ -26,3 +26,5 @@ from .project import Project
 from .concept import Concept
 from .employee import Employee
 from .template import Template
+from .trend import Trend
+from .invoice import Invoice
