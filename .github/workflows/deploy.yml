@@ -1,9 +1,7 @@
 name: Bellarti API
 
 on:
-    push:
-        branches:
-            - main
+    workflow_dispatch:
 
 jobs:
     deploy:
