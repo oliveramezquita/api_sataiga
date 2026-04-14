@@ -1,6 +1,7 @@
-from pymongo import MongoClient, ReturnDocument
+from pymongo import ReturnDocument
 from django.conf import settings
 from datetime import datetime
+from .mongo_client import get_mongo_client
 
 
 class MongoDBHandler:
@@ -10,18 +11,12 @@ class MongoDBHandler:
         self.collection_name = collection_name
 
     def __enter__(self):
-        uri = "mongodb://{}:{}@{}:{}?authSource=admin".format(
-            settings.MONGO_DB['USER'],
-            settings.MONGO_DB['PASS'],
-            settings.MONGO_DB['HOST'],
-            settings.MONGO_DB['PORT'])
-        self.client = MongoClient(uri)
+        self.client = get_mongo_client()
         self.db = self.client[settings.MONGO_DB['NAME']]
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.client:
-            self.client.close()
+        pass
 
     def insert(self, data):
         collection = self.db[self.collection_name]
