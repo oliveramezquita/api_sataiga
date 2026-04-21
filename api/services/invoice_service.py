@@ -140,7 +140,7 @@ class InvoiceService(BaseService):
             data={
                 'purchase_order_id': purchase_order_id,
                 'folio': self._generate_invoice_folio(),
-                'status': False},
+                'status': 0},
             required_fields=["purchase_order_id"],
             cache_prefix=self.CACHE_PREFIX
         )
@@ -166,12 +166,23 @@ class InvoiceService(BaseService):
         return str(invoice_id)
 
     @transaction.atomic
-    def update(self, invoice_id: str, status: bool) -> str:
-        invoice = self.invoice_repo.find_by_id(invoice_id)
-        if not invoice:
-            raise LookupError("La factura no existe.")
-        self._update(self.invoice_repo, invoice_id, {'status': status})
-        return "Factura actualizada correctamente."
+    def update(self, invoice_id: str, status: int | bool) -> str:
+        if isinstance(status, bool):
+            status = int(status)
+        elif status not in (0, 1, 2):
+            raise ValueError("Estatus inválido, solo se permite: 0, 1 y 2.")
+
+        self._update(
+            self.invoice_repo,
+            invoice_id,
+            {'status': status},
+            cache_prefix=self.CACHE_PREFIX)
+
+        return (
+            "Factura eliminada correctamente."
+            if status == 2
+            else "Factura actualizada correctamente."
+        )
 
     @transaction.atomic
     def upload(self, invoice_id: str, data: Dict[str, Any]):

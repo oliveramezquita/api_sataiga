@@ -29,3 +29,7 @@ class InvoiceView(views.APIView):
     def put(self, request, id):
         use_case = InvoiceUseCase(id=id, data=request.data)
         return use_case.upload()
+
+    def delete(self, request, id):
+        use_case = InvoiceUseCase(id=id, data={'status': 2})
+        return use_case.update()

@@ -1,7 +1,6 @@
 from api.utils.pagination_utils import DummyPaginator, DummyPage
 from api.helpers.get_query_params import get_query_params
 from api.helpers.http_responses import ok, ok_paginated, bad_request
-from api.helpers.formats import to_bool
 from api.decorators.service_method import service_method
 from api.services.invoice_service import InvoiceService
 
@@ -69,8 +68,8 @@ class InvoiceUseCase:
     @service_method()
     def update(self):
         "Actualizar el estatus de la factura"
-        invoice_status = self.data.get('status', False)
-        return self.service.update(self.id, to_bool(invoice_status))
+        invoice_status = self.data.get('status', 0)
+        return self.service.update(self.id, invoice_status)
 
     @service_method()
     def upload(self):
