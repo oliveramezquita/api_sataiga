@@ -38,7 +38,7 @@ def send_email(template, context):
     send_mail(
         template_name=template,
         context=context,
-        from_email='Sistema Bellarti <info@bellarti.art>',
+        from_email='Sistema Bellarti <info@bellarti.com.mx>',
         recipient_list=to
     )
 
