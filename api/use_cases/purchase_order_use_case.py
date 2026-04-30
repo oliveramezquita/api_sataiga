@@ -24,6 +24,7 @@ from django.core.files.storage import FileSystemStorage
 from api_sataiga.settings import BASE_URL
 from rest_framework import exceptions
 from api.serializers.supplier_serializer import SupplierSerializer
+from api.functions.email_notifications import notify_email
 
 
 class PurchaseOrderUseCase:
@@ -329,8 +330,13 @@ class PurchaseOrderUseCase:
                     data['delivered_status'] = 0
                     id = db.insert(data)
                     if data['status'] == 1:
-                        send_notification(get_message(
-                            'purchase_order_generated', f'Nueva orden de compra generada: {data['project']}'))
+                        message = get_message(
+                            'purchase_order_generated',
+                            f'{data['project']} - {data['number']}',
+                            f'purchase-orders/view/{id}')
+                        send_notification(message)
+                        notify_email('purchase_order_created',
+                                     {'id': id, **data})
                     return created({'id': str(id)})
                 return bad_request('El proveedor seleccionado no existe.')
             return bad_request('Algunos campos requeridos no han sido completados.')
@@ -467,7 +473,7 @@ class PurchaseOrderUseCase:
             purchase_order = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             required_fields = ['supplier_id', 'home_production_id',
-                               'request_by', 'created', 'items', 'subtotal', 'iva', 'total']
+                               'request_by', 'created', 'items', 'subtotal', 'iva', 'total', 'status']
             if purchase_order:
                 if all(i in self.data for i in required_fields):
                     home_production = self.__check_home_production(
@@ -480,6 +486,14 @@ class PurchaseOrderUseCase:
                             data['project'] = f"{home_production['front']} - OD {home_production['od']}"
                         else:
                             data['project'] = 'Sin proyecto'
+                        if data['status'] == 1:
+                            message = get_message(
+                                'purchase_order_generated',
+                                f'{data['project']} - {data['number']}',
+                                f'purchase-orders/view/{self.id}')
+                            send_notification(message)
+                            notify_email('purchase_order_created',
+                                         {'id': self.id, **data})
                         db.update({'_id': ObjectId(self.id)}, data)
                         message_status = 'guardada' if data['status'] == 0 else 'generada'
                         return ok(f'Orden de compra {message_status} correctamente.')
@@ -515,6 +529,7 @@ class PurchaseOrderUseCase:
                         'notes': data.get('subject', '')
                     })
                     self.data['pdf_file'] = f"{settings.BASE_URL}/{pdf}"
+
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')

@@ -5,10 +5,13 @@ from django.db import transaction
 from django.core.files.storage import FileSystemStorage
 from rest_framework import exceptions
 from api_sataiga.settings import BASE_URL
+from api_sataiga.functions import send_notification
+from api.functions.email_notifications import notify_email
 from api.services.base_service import BaseService
 from api.repositories.invoice_repository import InvoiceRepository
 from api.repositories.purchase_order_repository import PurchaseOrderRepository
 from api.serializers.invoice_serializer import InvoiceSerializer, InvoiceUploadSerializer
+from api.helpers.get_message import get_message
 
 
 class InvoiceService(BaseService):
@@ -197,6 +200,13 @@ class InvoiceService(BaseService):
         if not invoice:
             raise LookupError("La factura no existe.")
 
+        purchase_order = self.purchaseorder_repo.find_by_id(
+            invoice.get('purchase_order_id'))
+        if not purchase_order:
+            raise exceptions.ValidationError(
+                "La orden de compra seleccionada no existe o no es válida."
+            )
+
         try:
             files = invoice.get('files', [])
             files.append({
@@ -205,6 +215,15 @@ class InvoiceService(BaseService):
                 'xml_file': self._upload_file(invoice_id, xml_file, 'xml')})
             self._update(self.invoice_repo, invoice_id, {
                          'files': files}, cache_prefix=self.CACHE_PREFIX)
+            message = get_message(
+                'invoice_uploaded',
+                invoice.get('folio'),
+                f'invoices/view/{invoice_id}')
+            send_notification(message)
+            notify_email('invoice_uploaded', {
+                **invoice,
+                'purchase_order': f"{purchase_order.get('project')} - {purchase_order.get('number')}"}
+            )
         except Exception as e:
             raise exceptions.ValidationError(
                 f"Error al guardar los archivos: {str(e)}"

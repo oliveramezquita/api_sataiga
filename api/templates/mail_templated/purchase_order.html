@@ -1,0 +1,85 @@
+{% extends "mail_templated/base.html" %}
+
+{% block subject_appendix %}{{ subject }}{% endblock %}
+
+{% block html_content %}
+<div>
+    <h4 style="color: #1f2937; margin-bottom: 8px;">
+        Nueva orden de compra generada
+    </h4>
+
+    <table style="width: 600px; max-width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Número:</td>
+            <td style="padding: 8px;">{{ number }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Fecha:</td>
+            <td style="padding: 8px;">{{ created }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Entrega estimada:</td>
+            <td style="padding: 8px;">{{ estimated_delivery|default:"No definida" }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Proyecto:</td>
+            <td style="padding: 8px;">{{ project }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Método de pago:</td>
+            <td style="padding: 8px;">{{ payment_method }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Forma de pago:</td>
+            <td style="padding: 8px;">{{ payment_form }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">CFDI:</td>
+            <td style="padding: 8px;">{{ cfdi }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Correo de facturación:</td>
+            <td style="padding: 8px;">{{ invoice_email }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Asunto / Nota / Comentario:</td>
+            <td style="padding: 8px;">{{ comments }}</td>
+        </tr>
+    </table>
+
+    <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+    <table style="width: 600px; max-width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Subtotal:</td>
+            <td style="padding: 8px; text-align: right;">{{ subtotal }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">IVA:</td>
+            <td style="padding: 8px; text-align: right;">{{ iva }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold; font-size: 18px;">Total:</td>
+            <td style="padding: 8px; text-align: right; font-weight: bold; font-size: 18px;">
+                {{ total }}
+            </td>
+        </tr>
+    </table>
+    <p style="margin: 0;">
+        <a href="{{ link_href }}" style="
+            display: inline-block;
+            background-color: #664125;
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 16px;
+        ">
+            {{ link_label }}
+        </a>
+    </p>
+    <p style="margin: 0 0 50px 0;"> </p>
+</div>
+{% endblock %}

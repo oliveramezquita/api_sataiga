@@ -29,6 +29,12 @@ MESSAGE_CONFIG = {
         "user_id": None,
         "roles": ['super', 'admin', 'ceo', 'buyer'],
     },
+    "invoice_uploaded": {
+        "title": "Nueva factura registrada",
+        "icon": "tabler-shopping-file-invoice",
+        "user_id": None,
+        "roles": ['super', 'admin', 'ceo', 'buyer'],
+    },
 }
 
 FIXED_PRESENTATIONS = {
@@ -69,3 +75,22 @@ CATS = [
 ALLOWED_LAID = {"DERECHO", "IZQUIERDO"}
 
 SUPPLIER_ID_TREND = '6982d28833f8fc75b7f10988'
+
+EMAIL_NOTIFICATIONS = {
+    'purchase_order_created': {
+        'template': 'purchase_order.html',
+        'recipients': [
+            ['oliver.amezquita@hotmail.com'],  # to
+            [],  # cc
+            []  # bcc
+        ]
+    },
+    'invoice_uploaded': {
+        'template': 'invoice.html',
+        'recipients': [
+            ['oliver.amezquita@hotmail.com'],  # to
+            [],  # cc
+            []  # bcc
+        ]
+    }
+}
