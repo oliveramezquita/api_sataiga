@@ -1,36 +1,46 @@
+from api.utils.pagination_utils import DummyPaginator, DummyPage
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
-from urllib.parse import parse_qs
-from datetime import datetime, timedelta
-from api.serializers.notification_serializer import NotificationSerializer
-from api.helpers.http_responses import ok, bad_request
+from api.helpers.get_query_params import get_query_params
+from api.helpers.http_responses import ok, ok_paginated, bad_request
 from bson import ObjectId
 from api.helpers.validations import objectid_validation
+from api.services.notification_service import NotificationService
 
 
 class NotificationUseCase:
     def __init__(self, request=None, data=None):
-        if request:
-            params = parse_qs(request.META['QUERY_STRING'])
-            self.user_id = params['user_id'][0] if 'user_id' in params else None
-            self.role = params['role'][0] if 'role' in params else None
-            self.today = params['today'][0] if 'today' in params else None
+        params = get_query_params(request)
+        self.q = params["q"]
+        self.page = params["page"]
+        self.page_size = params["page_size"]
+        self.sort_by = params["sort_by"]
+        self.order_by = params["order_by"]
+        self.user_id = params.get('user_id')
+        self.role = params.get('role')
+        self.today = params.get('today')
         self.data = data
+        self.service = NotificationService()
 
     def get(self):
-        with MongoDBHandler('notifications') as db:
+        """Método especial con paginación manual."""
+        try:
+            roles = self.role if isinstance(self.role, list) else [self.role]
             filters = {
                 "$or": [
                     {"user_id": self.user_id},
-                    {"roles": self.role}
-                ],
+                    {"roles": {"$in": roles}},
+                ]
             }
-            if self.today:
-                filters['created_at'] = {
-                    "$gte": datetime.strptime(self.today, "%Y-%m-%d"),
-                    "$lt": datetime.strptime(self.today, "%Y-%m-%d") + timedelta(days=1)
-                }
-            notifications = db.extract(filters)
-            return ok(NotificationSerializer(notifications, many=True).data)
+            result = self.service.get_paginated(
+                filters, self.page, self.page_size, self.sort_by, self.order_by
+            )
+            dummy_paginator = DummyPaginator(
+                result["count"], result["total_pages"])
+            dummy_page = DummyPage(
+                result["current_page"], dummy_paginator, result["results"])
+            return ok_paginated(dummy_paginator, dummy_page, result["results"])
+        except Exception as e:
+            return bad_request(f"Error al obtener las notificaciones: {e}")
 
     def update(self):
         with MongoDBHandler('notifications') as db:

@@ -74,10 +74,10 @@ class UserUseCase:
                         context={
                             'subject': 'Invitación para el registro del Sistema Bellarti',
                             'full_name': self.data['name'] + f' {self.data['lastname']}' if 'lastname' in self.data else '',
-                            'email': self.data['email'],
                             'link_href': f"{settings.ADMIN_URL}register?hr={hash_request}",
                             'link_label': 'REGISTRAR'
                         },
+                        to=[self.data['email']],
                     )
                     return created('Usuario creado correctamente.')
                 except errors.DuplicateKeyError:
@@ -123,10 +123,10 @@ class UserUseCase:
                             context={
                                 'subject': '¡Registro Completo! Bienvenido al Sistema Bellarti',
                                 'full_name': user[0]['name'] + f' {user[0]['lastname']}' if 'lastname' in user[0] and user[0]['lastname'] != '' else '',
-                                'email': user[0]['email'],
                                 'link_href': settings.ADMIN_URL,
                                 'link_label': 'INICIAR SESIÓN'
                             },
+                            to=[user[0]['email']],
                         )
                         return ok('Registro realizado exitosamente.')
                     return bad_request('Las contraseñas no coinciden.')

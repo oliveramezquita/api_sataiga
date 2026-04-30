@@ -109,3 +109,11 @@ def norm(s: Any) -> str:
 
 def to_bool(value):
     return str(value).strip().lower() in ("true", "1", "yes")
+
+
+def to_money(value):
+    try:
+        amount = float(value)
+        return "$ {:,.2f}".format(amount)
+    except (ValueError, TypeError):
+        return value

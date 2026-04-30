@@ -1,0 +1,46 @@
+{% extends "mail_templated/base.html" %}
+
+{% block subject_appendix %}{{ subject }}{% endblock %}
+
+{% block html_content %}
+<div>
+    <h4 style="color: #1f2937; margin-bottom: 8px;">
+        Nueva factura registrada
+    </h4>
+
+    <p style="font-size: 15px;">
+        Se ha registrado una nueva factura relacionada con una orden de compra.
+    </p>
+
+    <table style="width: 600px; max-width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Folio de factura:</td>
+            <td style="padding: 8px;">{{ folio }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Orden de compra:</td>
+            <td style="padding: 8px;">{{ purchase_order }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; font-weight: bold;">Estatus:</td>
+            <td style="padding: 8px;">{{ status }}</td>
+        </tr>
+    </table>
+    <p style="margin: 0;">
+        <a href="{{ link_href }}" style="
+            display: inline-block;
+            background-color: #664125;
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 16px;
+        ">
+            {{ link_label }}
+        </a>
+    </p>
+    <p style="margin: 0 0 50px 0;"> </p>
+</div>
+{% endblock %}

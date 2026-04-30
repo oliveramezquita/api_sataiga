@@ -9,3 +9,4 @@ class Notification(models.Model):
     is_seen = models.BooleanField(default=False)
     user_id = models.CharField(max_length=50, null=True)
     roles = models.JSONField(null=True)
+    path = models.CharField(max_length=255, null=True)

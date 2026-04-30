@@ -32,14 +32,17 @@ def hex_decode(data):
     return json.loads(decoded_json_data)
 
 
-def send_email(template, context):
-    to = []
-    to.append(context['email'])
+def send_email(template, context, to=None, cc=None, bcc=None):
+    to = to or []
+    cc = cc or []
+    bcc = bcc or []
     send_mail(
         template_name=template,
         context=context,
         from_email='Sistema Bellarti <info@bellarti.com.mx>',
-        recipient_list=to
+        recipient_list=to,
+        cc=cc,
+        bcc=bcc
     )
 
 
@@ -55,7 +58,7 @@ def send_notification(message):
     async_to_sync(channel_layer.group_send)(
         "notifications",
         {
-            "type": "notify",
+            "type": "send_notification",
             "message": insert_notification(message)
         }
     )

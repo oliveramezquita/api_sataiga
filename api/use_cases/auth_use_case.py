@@ -35,16 +35,23 @@ class AuthUseCase:
 
     def __get_notifications(self, db, user_id, role):
         today = datetime.now().strftime("%Y-%m-%d")
-        notifications = MongoDBHandler.find(db, 'notifications', {
-            "$or": [
-                {"user_id": user_id},
-                {"roles": role}
-            ],
-            "created_at": {
-                "$gte": datetime.strptime(today, "%Y-%m-%d"),
-                "$lt": datetime.strptime(today, "%Y-%m-%d") + timedelta(days=1)
-            }
-        })
+        notifications = MongoDBHandler.find(
+            db,
+            'notifications',
+            {
+                "is_seen": False,
+                "$or": [
+                    {"user_id": user_id},
+                    {"roles": role}
+                ],
+                "created_at": {
+                    "$gte": datetime.strptime(today, "%Y-%m-%d"),
+                    "$lt": datetime.strptime(today, "%Y-%m-%d") + timedelta(days=1)
+                },
+            },
+            order_field="created_at",
+            order=-1
+        )
         if notifications:
             return NotificationSerializer(notifications, many=True).data
         return []
@@ -95,10 +102,10 @@ class AuthUseCase:
                         context={
                             'subject': 'Restauración de Contraseña del Sistema Bellarti',
                             'full_name': user[0]['name'] + f' {user[0]['lastname']}' if user[0]['lastname'] else '',
-                            'email': user[0]['email'],
                             'link_href': f'{settings.ADMIN_URL}reset-password?rt={hash_request}',
                             'link_label': 'RESTAURAR CONTRASEÑA'
                         },
+                        to=[user[0]['email']]
                     )
                     return ok('La solicitud para el cambio de contraseña ha sido enviada. Revisa tu correo electrónico.')
                 return bad_request('El correo electrónico no se encuentra registrado.')
