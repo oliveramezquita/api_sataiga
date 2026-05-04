@@ -509,8 +509,9 @@ class PurchaseOrderUseCase:
                 if self.data['status'] == 2:
                     data = self.__prepare_data_files(
                         db, PurchaseOrderSerializer(purchase_order[0]).data)
-                    self.data['excel_file'] = f"{settings.BASE_URL}/{create_xlsx(data)}"
-                    pdf = generate_pdf({
+                    excel_path = create_xlsx(data)
+                    self.data['excel_file'] = f"{settings.BASE_URL}{settings.MEDIA_URL}{excel_path}"
+                    pdf_path = generate_pdf({
                         'purchase_order_id': str(data['_id']),
                         'client': data['client'],
                         'number': data['number'],
@@ -528,7 +529,7 @@ class PurchaseOrderUseCase:
                         'invoice_email': data.get('invoice_email', ''),
                         'notes': data.get('subject', '')
                     })
-                    self.data['pdf_file'] = f"{settings.BASE_URL}/{pdf}"
+                    self.data['pdf_file'] = f"{settings.BASE_URL}{settings.MEDIA_URL}{pdf_path}"
 
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
