@@ -7,6 +7,9 @@ services:
       - .env.prod
     ports:
       - "8000:8000"
+    volumes:
+      - /home/deploy/bellarti_api/media:/app/media
+      - /home/deploy/bellarti_api/logs:/app/logs
     depends_on:
       - redis
       - mongodb
