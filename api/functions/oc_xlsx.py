@@ -83,4 +83,5 @@ def create_xlsx(data):
     path = folder / filename
     wb.save(path)
 
-    return str(path)
+    relative_path = path.relative_to(settings.MEDIA_ROOT)
+    return str(relative_path)

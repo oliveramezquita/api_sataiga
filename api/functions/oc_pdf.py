@@ -195,7 +195,8 @@ def generate_pdf(data):
         # 🧩 Generar PDF
         pdf_generator.merge()
 
-        return str(output_path)
+        relative_path = output_path.relative_to(settings.MEDIA_ROOT)
+        return str(relative_path)
 
     except Exception as e:
         logging.error(f"Error generando PDF: {e}")
