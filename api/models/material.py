@@ -19,6 +19,7 @@ class Material(models.Model):
     concept = models.CharField(max_length=50, null=True)
     supplier_code = models.CharField(max_length=25, null=True)
     sku = models.CharField(max_length=50, null=True)
+    barcode = models.JSONField(null=True)
     area = models.CharField(
         max_length=25,
         choices=AREAS,

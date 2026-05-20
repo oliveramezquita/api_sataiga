@@ -1,4 +1,5 @@
 from typing import Optional
+from api.helpers.clean_payload import clean_payload
 from api.services.base_service import BaseService
 from api.repositories.client_repository import ClientRepository
 from api.serializers.client_serializer import ClientSerializer
@@ -20,14 +21,14 @@ class ClientService(BaseService):
 
         self._create(
             repo=self.client_repo,
-            data=data,
+            data=clean_payload({**data, 'status': 1}),
             required_fields=["type", "name"],
             cache_prefix=self.CACHE_PREFIX,
             preprocess=preprocess,
         )
 
     def get_paginated(self, client_type: str, q: Optional[str], page: int, page_size: int, sort_by: str = None, order_by: int = 1):
-        filters = {"type": client_type}
+        filters = {"type": client_type, "status": 1}
         if q:
             filters["$or"] = [
                 {"name": {"$regex": q, "$options": "i"}},
@@ -44,12 +45,13 @@ class ClientService(BaseService):
         return self._get_by_id(self.client_repo, client_id, serializer=ClientSerializer)
 
     def update(self, client_id: str, data: dict):
-        self._update(self.client_repo, client_id, data,
+        payload = clean_payload(data)
+        self._update(self.client_repo, client_id, payload,
                      cache_prefix=self.CACHE_PREFIX)
 
     def delete(self, client_id: str):
-        self._delete(self.client_repo, client_id,
-                     cache_prefix=self.CACHE_PREFIX)
+        self._update(self.client_repo, client_id, {
+                     'status': 0}, cache_prefix=self.CACHE_PREFIX)
 
     def __create_consecutive(self) -> int:
         clients = self.client_repo.find_all({"type": "PE"})
