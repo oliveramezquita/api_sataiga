@@ -1,4 +1,4 @@
-from api.helpers.http_responses import ok, bad_request
+from api.helpers.http_responses import ok
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 
 

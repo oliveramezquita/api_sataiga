@@ -1,4 +1,5 @@
 from typing import Optional, Dict, Any
+from api.helpers.clean_payload import clean_payload
 from api.services.base_service import BaseService
 from api.repositories.contact_repository import ContactRepository
 from api.repositories.client_repository import ClientRepository
@@ -32,7 +33,7 @@ class ContactService(BaseService):
         self._validate_fields(data, ["name"])
 
         # 3) Insertar contacto: aseguramos que el client_id del argumento prevalezca
-        payload = {**data, "client_id": client_id}
+        payload = clean_payload({**data, "client_id": client_id})
         inserted_id = self._create(
             repo=self.contact_repo,
             data=payload,

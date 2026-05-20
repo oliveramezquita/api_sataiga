@@ -363,27 +363,32 @@ class MaterialUseCase:
             if 'automation' not in self.data:
                 self.data['automation'] = False
 
-            desired_sku = self.data.get("sku")
+            self.data["sku"] = normalize_sku(self.data.get("sku"))
 
-            def op(candidate_sku: str):
-                self.data["sku"] = normalize_sku(candidate_sku)
-                # <-- si sku duplica, Mongo lanza DuplicateKeyError
-                material_id = db.insert(self.data)
-                db.update(
-                    {'_id': ObjectId(material_id)},
-                    {'qr': self.__create_qr_image(str(material_id))}
-                )
-                return material_id
+            self.data['barcode'] = [self.data.get('barcode', '')]
+
+            # desired_sku = self.data.get("sku")
+
+            # def op(candidate_sku: str):
+            #     self.data["sku"] = normalize_sku(candidate_sku)
+            #     # <-- si sku duplica, Mongo lanza DuplicateKeyError
+            #     material_id = db.insert(self.data)
+            #     db.update(
+            #         {'_id': ObjectId(material_id)},
+            #         {'qr': self.__create_qr_image(str(material_id))}
+            #     )
+            #     return material_id
 
             try:
-                material_id = with_unique_sku(desired_sku, op_fn=op)
+                # material_id = with_unique_sku(desired_sku, op_fn=op)
+                material_id = db.insert(self.data)
                 invalidate_cache("materials")
                 return created({'id': str(material_id)})
             except ValueError as e:
                 return bad_request(str(e))
             except DuplicateKeyError:
                 # si por alguna razón se sale del helper (raro), igual manejas
-                return bad_request("No se pudo generar un SKU único.")
+                return bad_request("El SKU generado ya existe en el sistema. Verifica la información ingresada o genera uno diferente.")
 
     def get(self):
         try:
@@ -423,40 +428,45 @@ class MaterialUseCase:
                 return bad_request('El material no existe.')
 
             current = material[0]
+            barcode = material[0].get('barcode', [])
 
             if 'supplier_id' in self.data and not self.__check_supplier(db):
                 return bad_request('El proveedor selecionado no existe.')
 
-            if 'qr' not in current or not current.get('qr'):
-                self.data['qr'] = self.__create_qr_image(str(current['_id']))
-
             # si no viene sku => update normal
-            if 'sku' not in self.data or not self.data['sku']:
-                updated = db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok(MaterialSerializer(updated).data)
+            # if 'sku' not in self.data or not self.data['sku']:
+            #     updated = db.update({'_id': ObjectId(self.id)}, self.data)
+            #     return ok(MaterialSerializer(updated).data)
 
-            desired = normalize_sku(self.data['sku'])
+            sku = normalize_sku(self.data['sku'])
             current_sku = normalize_sku(current.get('sku'))
 
-            # si no cambia sku => update normal (sin retry)
-            if desired == current_sku:
-                self.data['sku'] = desired
-                updated = db.update({'_id': ObjectId(self.id)}, self.data)
-                return ok(MaterialSerializer(updated).data)
+            if sku == current_sku:
+                self.data.pop('sku')
 
-            def op(candidate_sku: str):
-                self.data['sku'] = normalize_sku(candidate_sku)
-                # <-- si sku duplica, Mongo lanza DuplicateKeyError por índice unique
-                return db.update({'_id': ObjectId(self.id)}, self.data)
+            if 'new_barcode' in self.data and self.data['new_barcode']:
+                barcode.append(self.data['new_barcode'])
+                self.data['barcode'] = barcode
+
+            # si no cambia sku => update normal (sin retry)
+            # if desired == current_sku:
+            #     self.data['sku'] = desired
+            #     updated = db.update({'_id': ObjectId(self.id)}, self.data)
+            #     return ok(MaterialSerializer(updated).data)
+
+            # def op(candidate_sku: str):
+            #     self.data['sku'] = normalize_sku(candidate_sku)
+            #     return db.update({'_id': ObjectId(self.id)}, self.data)
 
             try:
-                updated = with_unique_sku(desired, op_fn=op)
+                # updated = with_unique_sku(desired, op_fn=op)
+                updated = db.update({'_id': ObjectId(self.id)}, self.data)
                 invalidate_cache("materials")
                 return ok(MaterialSerializer(updated).data)
             except ValueError as e:
                 return bad_request(str(e))
             except DuplicateKeyError:
-                return bad_request("No se pudo generar un SKU único.")
+                return bad_request("El SKU generado ya existe en el sistema. Verifica la información ingresada o genera uno diferente.")
 
     def delete(self):
         with MongoDBHandler('materials') as db:
