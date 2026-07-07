@@ -538,7 +538,6 @@ class MaterialUseCase:
                         destination.write(chunk)
 
                 relative_path = f"{settings.BASE_URL}/media/materials/{str(self.id)}/{image.name}"
-                print(type(images))
                 images.append(relative_path)
 
                 db.update({'_id': ObjectId(self.id)}, {'images': images})
