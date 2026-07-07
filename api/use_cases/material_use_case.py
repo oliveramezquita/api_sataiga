@@ -26,6 +26,7 @@ from api.helpers.sku import normalize_sku, with_unique_sku
 class MaterialUseCase:
     def __init__(self, request=None, **kwargs):
         params = get_query_params(request)
+        self.request = request
         self.q = params["q"]
         self.page = params["page"]
         self.page_size = params["page_size"]
@@ -519,7 +520,7 @@ class MaterialUseCase:
             material = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if material and image:
-                if 'images' in material[0]:
+                if 'images' in material[0] and material[0]['images']:
                     images = material[0]['images']
 
                 img = Image.open(image)
