@@ -18,7 +18,7 @@ from .lot import LotsView, LotView
 from .explosion import ExplosionView
 from .quantification import QuantificationView, QuantificationFiltersView, QuantificationByIdView
 from .contact import ContactsView, ContactsByClientView, ContactByIdView
-from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, PurchaseOrderLastConsecutiveView, VSProjectsView, InputRegisterView, InvoiceView
+from .purchase_order import PurchaseOrdersView, PurchaseOrderView, PurchaseOrderSuppliersView, PurchaseOrderMaterialsView, PurchaseOrderLastConsecutiveView, ListProjectsView, InputRegisterView, InvoiceView
 from .inventory import InventoryView, InventoryItemView, InventoryMaterialView, DownloadInventoryView
 from .inbound import InboundsView, ProjectsListView, InboundView, InboundsByMaterialView, InboundsByFileView
 from .company import CompaniesView, CompanyByIdView
@@ -29,3 +29,5 @@ from .employee import EmployeesView, EmployeeByIdView
 from .template import TemplatesView, TemplateByIdView, TemplateItemsView, TemplateIndirectCostsView
 from .trend import TrendsView, TrendByIdView, TrendElemetsView
 from .invoice import InvoicesView, InvoiceView
+from .customer import CustomersView, CustomerByIdView
+from .warranty import WarrantiesView, WarrantyView
