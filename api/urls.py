@@ -136,4 +136,7 @@ urlpatterns = [
     path('after_sales/warranties', WarrantiesView.as_view(), name='warranties'),
     path('after_sales/warranty/<str:id>',
          WarrantyView.as_view(), name='warranty'),
+    path('after_sales/technicians', TechniciansView.as_view(), name='technicians'),
+    path('after_sales/technician/<str:id>',
+         TechnicianByIdView.as_view(), name='technician'),
 ]

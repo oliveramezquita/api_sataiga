@@ -31,3 +31,4 @@ from .trend import TrendsView, TrendByIdView, TrendElemetsView
 from .invoice import InvoicesView, InvoiceView
 from .customer import CustomersView, CustomerByIdView
 from .warranty import WarrantiesView, WarrantyView
+from .technician import TechniciansView, TechnicianByIdView

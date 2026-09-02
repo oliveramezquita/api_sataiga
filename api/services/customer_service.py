@@ -19,13 +19,21 @@ class CustomerService(BaseService):
         warranty = {}
 
         if warranty_data := data.pop('warranty', None):
+            expiration_date = data.pop('expiration_date', None)
             duration = float(warranty_data.get('duration', 0))
+            months = round(duration * 12)
+            expiration_date = (
+                datetime.strptime(expiration_date, "%Y-%m-%d")
+                if expiration_date
+                else (
+                    datetime.today() + relativedelta(months=months)
+                ).replace(hour=0, minute=0, second=0, microsecond=0)
+            )
 
             warranty = {
                 'id': warranty_data.get('_id'),
-                'expiration_date': datetime.today() + relativedelta(
-                    months=round(duration * 12)
-                ),
+                'expiration_date': expiration_date,
+                'start_date': expiration_date - relativedelta(months=months),
                 'status': 1,
             }
 
@@ -50,7 +58,7 @@ class CustomerService(BaseService):
         if q:
             filters["$or"] = [
                 {"name": {"$regex": q, "$options": "i"}},
-                {"last_name": {"$regex": q, "$options": "i"}},
+                {"address": {"$regex": q, "$options": "i"}},
                 {"email": {"$regex": q, "$options": "i"}},
                 {"phone": {"$regex": q, "$options": "i"}},
             ]
@@ -66,8 +74,38 @@ class CustomerService(BaseService):
 
     def update(self, customer_id: str, data: dict):
         payload = clean_payload(data)
-        self._update(self.customer_repo, customer_id, payload,
-                     cache_prefix=self.CACHE_PREFIX)
+
+        if warranty := payload.pop('warranty', None):
+            start_date = warranty.get('start_date')
+            expiration_date = warranty.get('expiration_date')
+            duration = float(warranty.get('duration', 0))
+            months = round(duration * 12)
+
+            if expiration_date:
+                warranty['expiration_date'] = datetime.fromisoformat(
+                    expiration_date
+                )
+                warranty['start_date'] = (
+                    warranty['expiration_date']
+                    - relativedelta(months=months)
+                )
+            else:
+                warranty['start_date'] = datetime.fromisoformat(
+                    start_date
+                )
+                warranty['expiration_date'] = (
+                    warranty['start_date']
+                    + relativedelta(months=months)
+                )
+            warranty['status'] = 1 if warranty['expiration_date'] > datetime.today(
+            ).replace(hour=0, minute=0, second=0, microsecond=0) else 0
+            warranty.pop('duration')
+
+        self._update(
+            self.customer_repo,
+            customer_id,
+            {**payload, 'warranty': warranty},
+            cache_prefix=self.CACHE_PREFIX)
 
     def delete(self, customer_id: str):
         self._update(self.customer_repo, customer_id, {

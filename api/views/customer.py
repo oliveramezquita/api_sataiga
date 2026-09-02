@@ -19,7 +19,7 @@ class CustomersView(views.APIView):
     authentication_classes = [BellartiAuthenticationMiddleware]
 
     def post(self, request: Request) -> Response:
-        """Crea un nuevo proyecto especial."""
+        """Crea un nuevo cliente de Postventa."""
         logger.debug(
             "POST /after_sales/customers recibido con datos: %s", request.data)
         use_case = CustomerUseCase(data=request.data)
