@@ -139,4 +139,8 @@ urlpatterns = [
     path('after_sales/technicians', TechniciansView.as_view(), name='technicians'),
     path('after_sales/technician/<str:id>',
          TechnicianByIdView.as_view(), name='technician'),
+    path('after_sales/send_invitation',
+         SendInvitationView.as_view(), name='send invitation'),
+    path('after_sales/account_disable',
+         AccountDisableView.as_view(), name='account disable'),
 ]

@@ -32,3 +32,4 @@ from .invoice import InvoicesView, InvoiceView
 from .customer import CustomersView, CustomerByIdView
 from .warranty import WarrantiesView, WarrantyView
 from .technician import TechniciansView, TechnicianByIdView
+from .after_sales import SendInvitationView, AccountDisableView

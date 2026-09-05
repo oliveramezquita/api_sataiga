@@ -2,10 +2,17 @@ from django.db import models
 
 
 class Technician(models.Model):
-    _id = models.CharField(max_length=50)
+    _id = models.CharField(
+        max_length=50,
+        primary_key=True
+    )
+
     name = models.CharField(max_length=150)
-    email = models.EmailField(max_length=255)
-    phone = models.CharField(max_length=20)
+
     schedule = models.JSONField(null=True)
+
     blocked_dates = models.JSONField(null=True)
-    status = models.SmallIntegerField(default=0)
+
+    is_deleted = models.BooleanField(default=False)
+
+    deleted_at = models.DateTimeField(null=True)
