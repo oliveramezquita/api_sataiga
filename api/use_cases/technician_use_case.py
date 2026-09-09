@@ -3,6 +3,7 @@ from api.decorators.service_method import service_method
 from api.helpers.http_responses import ok_paginated, bad_request
 from api.utils.pagination_utils import DummyPaginator, DummyPage
 from api.services.technician_service import TechnicianService
+from api.services.auth_service import AuthService
 
 
 class TechnicianUseCase:
@@ -15,7 +16,9 @@ class TechnicianUseCase:
         self.order_by = params["order_by"]
         self.data = kwargs.get("data")
         self.id = kwargs.get("id")
+        self.action = kwargs.get("action")
         self.service = TechnicianService()
+        self.auth_service = AuthService()
 
     @service_method(success_status="created")
     def save(self):
@@ -30,7 +33,7 @@ class TechnicianUseCase:
 
     @service_method()
     def update(self):
-        """Actualiza un técnico existente."""
+        """Actualiza un técnico."""
         self.service.update(self.id, self.data)
         return "El técnico actualizado correctamente."
 
@@ -39,6 +42,19 @@ class TechnicianUseCase:
         """Elimina un técnico."""
         self.service.delete(self.id)
         return "Técnico eliminado correctamente."
+
+    @service_method()
+    def manage_status(self):
+        """Actualiza el estatus de un técnico dependiendo de la acción."""
+
+        if self.action == 'enable':
+            self.auth_service.manage_status(
+                'technician', self.id, 1, 'technicians')
+            return "Técnico habilitado correctamente."
+        elif self.action == 'disable':
+            self.auth_service.manage_status(
+                'technician', self.id, 3, 'technicians')
+            return "Técnico deshabilitado correctamente."
 
     def get(self):
         """Método especial con paginación manual."""

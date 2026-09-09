@@ -29,7 +29,7 @@ from .employee import EmployeesView, EmployeeByIdView
 from .template import TemplatesView, TemplateByIdView, TemplateItemsView, TemplateIndirectCostsView
 from .trend import TrendsView, TrendByIdView, TrendElemetsView
 from .invoice import InvoicesView, InvoiceView
-from .customer import CustomersView, CustomerByIdView
-from .warranty import WarrantiesView, WarrantyView
-from .technician import TechniciansView, TechnicianByIdView
-from .after_sales import SendInvitationView, AccountDisableView
+from .customer import CustomersView, CustomerByIdView, CustomerStatusView
+from .warranty import WarrantiesView, WarrantyView, WarrantyAvailabilityView
+from .technician import TechniciansView, TechnicianByIdView, TechnicianStatusView
+from .after_sales import SendInvitationView

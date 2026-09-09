@@ -9,11 +9,3 @@ class SendInvitationView(views.APIView):
     def get(self, request):
         use_case = AfterSalesUseCase(request=request)
         return use_case.send_invitation()
-
-
-class AccountDisableView(views.APIView):
-    authentication_classes = [BellartiAuthenticationMiddleware]
-
-    def path(sef, request):
-        use_case = AfterSalesUseCase(request=request)
-        return use_case.disable()

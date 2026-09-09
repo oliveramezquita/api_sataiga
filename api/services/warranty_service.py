@@ -4,6 +4,7 @@ from api.repositories.warranty_repository import WarrantyRepository
 from api.serializers.warranty_serializer import WarrantySerializer
 from api.helpers.clean_payload import clean_payload
 from api.helpers.formats import to_float
+from api.utils.cache_utils import invalidate_cache
 
 
 class WarrantyService(BaseService):
@@ -19,14 +20,14 @@ class WarrantyService(BaseService):
     # ----------------------------------------------------------
     def create(self, data: Dict[str, Any]) -> Dict[str, str]:
         """
-        Crea una garantia.
+        Crea una garantía.
         """
         if 'duration' in data:
             data['duration'] = to_float(data['duration'])
 
         self._create(
             repo=self.warranty_repo,
-            data=clean_payload({**data, 'warranty_status': 1, 'status': 1}),
+            data=clean_payload({**data, 'is_available': True}),
             required_fields=["name", "duration"],
             cache_prefix=self.CACHE_PREFIX,
         )
@@ -34,13 +35,13 @@ class WarrantyService(BaseService):
     # ----------------------------------------------------------
     # LISTADO (con cache por filtro)
     # ----------------------------------------------------------
-    def get(self):
+    def get(self, filters: dict):
         """
-        Lista las garantias.
+        Lista las garantías.
         """
         warranties = self._get_all_cached(
             repo=self.warranty_repo,
-            filters={'status': 1},
+            filters=filters,
             prefix=self.CACHE_PREFIX,
         )
         return WarrantySerializer(warranties, many=True).data
@@ -50,7 +51,7 @@ class WarrantyService(BaseService):
     # ----------------------------------------------------------
     def get_by_id(self, warranty_id: str):
         """
-        Devuelve una garantia por su ID.
+        Devuelve una garantía por su ID.
         """
         return self._get_by_id(self.warranty_repo, warranty_id, serializer=WarrantySerializer)
 
@@ -59,7 +60,7 @@ class WarrantyService(BaseService):
     # ----------------------------------------------------------
     def update(self, warranty_id: str, data: Dict[str, Any]) -> str:
         """
-        Actualiza una garantia existente.
+        Actualiza una garantía existente.
         """
         if 'duration' in data:
             data['duration'] = to_float(data['duration'])
@@ -73,16 +74,15 @@ class WarrantyService(BaseService):
         return "Garantía actualizada correctamente."
 
     # ----------------------------------------------------------
-    # ELIMINAR
+    # HABILITAR
     # ----------------------------------------------------------
-    def delete(self, warranty_id: str):
+    def availability(self, warranty_id: str, is_available: bool):
         """
-        Eliminar una garantia existente.
+        Administra la disponibilidad de una garantía.
         """
         self._update(
             repo=self.warranty_repo,
             _id=warranty_id,
-            data={'status': 0},
+            data={'is_available': is_available},
             cache_prefix=self.CACHE_PREFIX,
         )
-        return "Garantía eliminada correctamente."

@@ -1,17 +1,30 @@
 from typing import Optional
 from datetime import datetime
+from bson import ObjectId
 from api.services.base_service import BaseService
 from api.services.auth_service import AuthService
 from api.helpers.clean_payload import clean_payload
 from api.repositories.technician_repository import TechnicianRepository
 from api.serializers.technician_serializer import TechnicianSerializer
 from api.helpers.review_required_fields import review_required_fields
+from api.utils.cache_utils import invalidate_cache
 
 
 class TechnicianService(BaseService):
     """Lógica de negocio pura para los técnicos de Postventa."""
 
     CACHE_PREFIX = "technicians"
+
+    default_projection = {
+        "_id": 1,
+        "name": 1,
+        "schedule": 1,
+        "blocked_dates": 1,
+        "is_deleted": 1,
+        "email": "$auth.email",
+        "phone": "$auth.phone",
+        "status": "$auth.status",
+    }
 
     def __init__(self):
         self.technician_repo = TechnicianRepository()
@@ -41,7 +54,6 @@ class TechnicianService(BaseService):
             repo=self.technician_repo,
             data=clean_payload(user_data),
             required_fields=["name"],
-            cache_prefix=self.CACHE_PREFIX,
         )
         self.auth_service.create(
             "technician",
@@ -53,6 +65,8 @@ class TechnicianService(BaseService):
             }
         )
 
+        invalidate_cache(self.CACHE_PREFIX)
+
     def get_paginated(self,
                       q: Optional[str] = None,
                       page: int = 1,
@@ -60,22 +74,37 @@ class TechnicianService(BaseService):
                       sort_by: str = None,
                       order_by: int = 1):
         filters = {}
+
         if q:
             filters["$or"] = [
                 {"name": {"$regex": q, "$options": "i"}},
-                {"last_name": {"$regex": q, "$options": "i"}},
-                {"email": {"$regex": q, "$options": "i"}},
-                {"phone": {"$regex": q, "$options": "i"}},
             ]
-        items = self._get_all_cached(
-            self.technician_repo, filters,
+
+        technicians = self._get_all_aggregated_cached(
+            repo=self.technician_repo,
+            filters=filters,
             prefix=self.CACHE_PREFIX,
-            order_field=sort_by,
-            order=order_by)
-        return self._paginate(items, page, page_size, serializer=TechnicianSerializer)
+            ttl=300,
+            order_field=sort_by or "name",
+            order=order_by,
+            projection=self.default_projection
+        )
+
+        return self._paginate(
+            technicians,
+            page,
+            page_size,
+            serializer=TechnicianSerializer
+        )
 
     def get_by_id(self, technician_id: str):
-        return self._get_by_id(self.technician_repo, technician_id, serializer=TechnicianSerializer)
+        return self.technician_repo.find_one_with_auth(
+            query={
+                "_id": ObjectId(technician_id)
+            },
+            projection=self.default_projection,
+            serializer=TechnicianSerializer
+        )
 
     def update(self, technician_id: str, data: dict):
         payload = clean_payload(data)
@@ -89,8 +118,12 @@ class TechnicianService(BaseService):
         if blocked_dates:
             data['blocked_dates'] = self._convert_blocked_dates(blocked_dates)
 
-        self._update(self.technician_repo, technician_id,
-                     data, cache_prefix=self.CACHE_PREFIX)
+        self._update(
+            self.technician_repo,
+            technician_id,
+            data,
+            cache_prefix=self.CACHE_PREFIX
+        )
 
     def delete(self, technician_id: str):
         self._update(

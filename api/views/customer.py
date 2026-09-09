@@ -41,11 +41,11 @@ class CustomersView(views.APIView):
 
 class CustomerByIdView(views.APIView):
     """
-    Endpoint para operaciones sobre un cliente de Postventa en específico.
+    Endpoint para operaciones sobre un cliente de Postventa.
 
     Métodos:
         GET: Obtiene los detalles del cliente.
-        PATCH: Actualiza datos de un cliente existente.
+        PATCH: Actualiza datos de un cliente.
         DELETE: Elimina un cliente.
     """
     authentication_classes = [BellartiAuthenticationMiddleware]
@@ -68,3 +68,18 @@ class CustomerByIdView(views.APIView):
         logger.debug("DELETE /after_sales/customer/%s", id)
         use_case = CustomerUseCase(id=id)
         return use_case.delete()
+
+
+class CustomerStatusView(views.APIView):
+    """
+    Endpoint para operaciones sobre el estatus de un cliente de Postventa.
+
+    Métodos:
+        PATCH: Actualiza el estatus de un cliente.
+    """
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def patch(self, request: Request, action: str, id: str) -> Response:
+        logger.debug("PATCH /after_sales/customer/%s/%s", action, id)
+        use_case = CustomerUseCase(action=action, id=id)
+        return use_case.manage_status()

@@ -1,5 +1,6 @@
 from api.helpers.get_query_params import get_query_params
 from api.services.customer_service import CustomerService
+from api.services.auth_service import AuthService
 from api.decorators.service_method import service_method
 from api.helpers.http_responses import ok_paginated, bad_request
 from api.utils.pagination_utils import DummyPaginator, DummyPage
@@ -16,7 +17,9 @@ class CustomerUseCase:
         self.warranty_type = params.get("warranty_type")
         self.data = kwargs.get("data")
         self.id = kwargs.get("id")
+        self.action = kwargs.get("action")
         self.service = CustomerService()
+        self.auth_service = AuthService()
 
     @service_method(success_status="created")
     def save(self):
@@ -37,9 +40,22 @@ class CustomerUseCase:
 
     @service_method()
     def delete(self):
-        """Elimina un cliente."""
+        """Elimina a un cliente."""
         self.service.delete(self.id)
         return "Cliente eliminado correctamente."
+
+    @service_method()
+    def manage_status(self):
+        """Actualiza el estatus de un cliente dependiendo de la acción."""
+
+        if self.action == 'enable':
+            self.auth_service.manage_status(
+                'customer', self.id, 1, 'customers')
+            return "Cliente habilitado correctamente."
+        elif self.action == 'disable':
+            self.auth_service.manage_status(
+                'customer', self.id, 3, 'customers')
+            return "Cliente deshabilitado correctamente."
 
     def get(self):
         """Método especial con paginación manual."""

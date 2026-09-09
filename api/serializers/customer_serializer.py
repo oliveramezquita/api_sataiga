@@ -10,3 +10,4 @@ class CustomerSerializer(serializers.Serializer):
     email = serializers.EmailField()
     phone = serializers.CharField()
     status = serializers.IntegerField()
+    is_deleted = serializers.BooleanField()

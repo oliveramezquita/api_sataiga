@@ -8,12 +8,25 @@ from api.repositories.customer_repository import CustomerRepository
 from api.helpers.clean_payload import clean_payload
 from api.serializers.customer_serializer import CustomerSerializer
 from api.helpers.review_required_fields import review_required_fields
+from api.utils.cache_utils import invalidate_cache
 
 
 class CustomerService(BaseService):
     """Lógica de negocio pura para los clientes de Postventa."""
 
     CACHE_PREFIX = "customers"
+
+    default_projection = {
+        "_id": 1,
+        "name": 1,
+        "address": 1,
+        "project": 1,
+        "warranty": 1,
+        "is_deleted": 1,
+        "email": "$auth.email",
+        "phone": "$auth.phone",
+        "status": "$auth.status",
+    }
 
     def __init__(self):
         self.customer_repo = CustomerRepository()
@@ -85,7 +98,6 @@ class CustomerService(BaseService):
                 "name",
                 "address"
             ],
-            cache_prefix=self.CACHE_PREFIX,
         )
 
         self.auth_service.create(
@@ -97,6 +109,8 @@ class CustomerService(BaseService):
                 "phone": data.get("phone"),
             }
         )
+
+        invalidate_cache(self.CACHE_PREFIX)
 
     def get_paginated(
         self,
@@ -131,20 +145,11 @@ class CustomerService(BaseService):
         customers = self._get_all_aggregated_cached(
             repo=self.customer_repo,
             filters=filters,
-            prefix=f"{self.CACHE_PREFIX}_with_auth",
+            prefix=self.CACHE_PREFIX,
             ttl=300,
             order_field=sort_by or "name",
             order=order_by,
-            projection={
-                "_id": 1,
-                "name": 1,
-                "address": 1,
-                "project": 1,
-                "warranty": 1,
-                "email": "$auth.email",
-                "phone": "$auth.phone",
-                "status": "$auth.status",
-            }
+            projection=self.default_projection
         )
 
         return self._paginate(
@@ -159,16 +164,7 @@ class CustomerService(BaseService):
             query={
                 "_id": ObjectId(customer_id)
             },
-            projection={
-                "_id": 1,
-                "name": 1,
-                "address": 1,
-                "project": 1,
-                "warranty": 1,
-                "email": "$auth.email",
-                "phone": "$auth.phone",
-                "status": "$auth.status",
-            },
+            projection=self.default_projection,
             serializer=CustomerSerializer
         )
 

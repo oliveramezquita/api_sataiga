@@ -68,3 +68,18 @@ class TechnicianByIdView(views.APIView):
         logger.debug("DELETE /after_sales/technician/%s", id)
         use_case = TechnicianUseCase(id=id)
         return use_case.delete()
+
+
+class TechnicianStatusView(views.APIView):
+    """
+    Endpoint para operaciones sobre el estatus de un técnico de Postventa.
+
+    Métodos:
+        PATCH: Actualiza el estatus de un técnico.
+    """
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def patch(self, request: Request, action: str, id: str) -> Response:
+        logger.debug("PATCH /after_sales/technician/%s/%s", action, id)
+        use_case = TechnicianUseCase(action=action, id=id)
+        return use_case.manage_status()

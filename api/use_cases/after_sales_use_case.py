@@ -15,11 +15,3 @@ class AfterSalesUseCase:
 
         self.auth_service.send_invitation(name, email)
         return "La invitación ha sido enviada con éxito."
-
-    @service_method()
-    def disable(self):
-        user_type = self.params.get('user_type')
-        user_id = self.params.get('user_id')
-
-        self.auth_service.disable(user_type, user_id)
-        return "La cuenta se ha deshabilitado con éxito."

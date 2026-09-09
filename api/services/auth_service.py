@@ -1,4 +1,5 @@
 from typing import Any
+from bson import ObjectId
 from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from api.services.base_service import BaseService
@@ -12,8 +13,6 @@ class AuthService(BaseService):
     Lógica de negocio para manejar la autenticación
     de clientes y técnicos de postventa.
     """
-
-    CACHE_PREFIX = "auth"
 
     def __init__(self):
         self.repo = AuthRepository()
@@ -53,7 +52,6 @@ class AuthService(BaseService):
                 "email",
                 "phone",
             ],
-            cache_prefix=self.CACHE_PREFIX
         )
         self.send_invitation(user_name, data['email'])
 
@@ -69,18 +67,20 @@ class AuthService(BaseService):
                 'last_login': 1,
             }
             return self.repo.find_one(
-                query={'user_type': user_type, 'user_id': user_id},
+                query={'user_type': user_type, 'user_id': ObjectId(user_id)},
                 projection=projection
             )
         return None
 
-    def disable(self, user_type: str, user_id: str):
+    def manage_status(self, user_type: str, user_id: str, status: int, cache_prefx=None):
         query = {
             'user_type': user_type,
-            'user_id': user_id
+            'user_id': ObjectId(user_id)
         }
-        self.repo.update_one(query=query, update_data={'status': 3})
-        invalidate_cache(self.CACHE_PREFIX)
+        self.repo.update_one(query=query, update_data={'status': status})
+
+        if cache_prefx:
+            invalidate_cache(cache_prefx)
 
     @staticmethod
     def send_invitation(name: str, email: str):
