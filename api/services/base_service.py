@@ -134,6 +134,42 @@ class BaseService:
 
         return result
 
+    # ----------------------------------------------------------
+    # LECTURAS Y CACHE CON AGREGADO
+    # ----------------------------------------------------------
+    def _get_all_aggregated_cached(
+        self,
+        repo,
+        filters=None,
+        prefix="",
+        ttl=300,
+        order_field=None,
+        order=1,
+        projection=None
+    ):
+        @cache_result(prefix=prefix, ttl=ttl)
+        def _cached(
+            repo_ref,
+            filters_ref,
+            order_field_ref,
+            order_ref,
+            projection_ref
+        ):
+            return repo_ref.find_all_with_auth(
+                query=filters_ref or {},
+                order_field=order_field_ref,
+                order=order_ref,
+                projection=projection_ref
+            )
+
+        return _cached(
+            repo,
+            filters,
+            order_field,
+            order,
+            projection
+        )
+
     def _get_by_id(self, repo: Any, _id: str, serializer: Optional[Callable] = None):
         """Obtiene un documento por ID, opcionalmente serializándolo."""
         doc = repo.find_by_id(_id)

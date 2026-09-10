@@ -1,0 +1,55 @@
+{% extends "mail_templated/base.html" %}
+
+{% block subject_appendix %}{{ subject }}{% endblock %}
+
+{% block html_content %}
+
+<div>
+    <p style="margin: 0 0 20px 0; font-size: 16px;">
+        Estimado(a) {{ name }},
+    </p>
+
+    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6;">
+        Nos complace invitarle a utilizar <strong>BellartiMovil</strong>, nuestra aplicación
+        móvil diseñada para brindarle una experiencia más rápida y sencilla en la gestión
+        de sus servicios de postventa.
+    </p>
+
+    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6;">
+        Para comenzar, descargue la aplicación <strong>BellartiMovil</strong> desde la tienda
+        correspondiente a su dispositivo:
+    </p>
+
+    <div style="text-align: center; margin: 30px 0;">
+
+        <!-- App Store -->
+        <a href="{{ app_store_url }}" target="_blank" style="display: inline-block; margin: 0 8px;">
+            <img src="{{ app_store_image_url }}" alt="Descargar en App Store"
+                style="width: 180px; height: auto; border: 0;">
+        </a>
+
+        <!-- Google Play -->
+        <a href="{{ play_store_url }}" target="_blank" style="display: inline-block; margin: 0 8px;">
+            <img src="{{ play_store_image_url }}" alt="Disponible en Google Play"
+                style="width: 180px; height: auto; border: 0;">
+        </a>
+
+    </div>
+
+    <p style="margin: 0 0 15px 0; font-size: 16px; line-height: 1.6;">
+        Una vez instalada la aplicación, siga las instrucciones para activar su cuenta
+        y comenzar a utilizar BellartiMovil.
+    </p>
+
+    <p style="margin: 25px 0 0 0; font-size: 16px; line-height: 1.6;">
+        Si tiene alguna duda o necesita asistencia, no dude en ponerse en contacto
+        con nuestro equipo de soporte.
+    </p>
+
+    <p style="margin: 25px 0 0 0; font-size: 16px;">
+        Saludos cordiales,<br>
+        <strong>Equipo Bellarti</strong>
+    </p>
+
+</div>
+{% endblock %}

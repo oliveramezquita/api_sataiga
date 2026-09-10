@@ -35,6 +35,12 @@ class MongoDBHandler:
             result = result.sort(order_field, order)
         return list(result)
 
+    def aggregate(self, pipeline):
+        collection = self.db[self.collection_name]
+        result = collection.aggregate(pipeline)
+
+        return list(result)
+
     def update(self, query, update_data, upsert=False):
         collection = self.db[self.collection_name]
         now = datetime.now()
@@ -88,6 +94,10 @@ class MongoDBHandler:
             upsert=True
         )
         return result["seq"]
+
+    def create_unique_index(self, field):
+        collection = self.db[self.collection_name]
+        collection.create_index([(field, 1)], unique=True)
 
     @staticmethod
     def find(inst, collection_name, query, order_field=None, order=1, projection=None):

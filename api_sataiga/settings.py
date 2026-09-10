@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'api',
+    'after_sales',
     'mail_templated',
     'channels',
     'django_celery_beat',

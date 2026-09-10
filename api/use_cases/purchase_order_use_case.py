@@ -395,7 +395,7 @@ class PurchaseOrderUseCase:
                 if projects:
                     for project in projects:
                         leaked_projects.append({
-                            'home_production_id': str(project['_id']),
+                            'id': str(project['_id']),
                             'name': f"{project['front']} - OD {project['od']}",
                             'od': project['od'],
                             'front': project['front'],
