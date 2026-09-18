@@ -162,8 +162,8 @@ class MaterialUseCase:
                         desired_sku = item.get('sku') or doc.get('sku')
 
                     # QR si falta
-                    if not doc.get('qr'):
-                        item['qr'] = self.__create_qr_image(material_id)
+                    # if not doc.get('qr'):
+                    #     item['qr'] = self.__create_qr_image(material_id)
 
                     # Si vamos a setear sku, hacerlo unique con retry
                     if desired_sku:
@@ -192,10 +192,10 @@ class MaterialUseCase:
                         item['sku'] = normalize_sku(candidate_sku)
                         # puede lanzar DuplicateKeyError por sku unique
                         new_id = db.insert(item)
-                        db.update(
-                            {'_id': ObjectId(new_id)},
-                            {'qr': self.__create_qr_image(str(new_id))}
-                        )
+                        # db.update(
+                        #     {'_id': ObjectId(new_id)},
+                        #     {'qr': self.__create_qr_image(str(new_id))}
+                        # )
                         return new_id
 
                     try:
@@ -261,31 +261,56 @@ class MaterialUseCase:
         wb.save(response)
         return response
 
-    def __create_qr_image(self, material_id):
-        # Construir la URL
-        url = f"{settings.ADMIN_URL}apps/materials/view/{material_id}?input=true"
+    def create_qr_image(self):
+        with MongoDBHandler('materials') as db:
+            material = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if not material or len(material) == 0:
+                return bad_request('El material no existe.')
 
-        # Ruta donde se guardará la imagen
-        qr_dir = os.path.join(settings.MEDIA_ROOT, "materials/qr")
-        os.makedirs(qr_dir, exist_ok=True)  # Crea la carpeta si no existe
+            # Construir la URL
+            url = f"{settings.ADMIN_URL}apps/materials/view/{self.id}?input=true"
 
-        qr_path = os.path.join(qr_dir, f"{material_id}.jpg")
+            # Ruta donde se guardará la imagen
+            qr_dir = os.path.join(settings.MEDIA_ROOT, "materials/qr")
+            os.makedirs(qr_dir, exist_ok=True)  # Crea la carpeta si no existe
 
-        # Crear el QR code
-        qr = qrcode.QRCode(
-            version=1,  # controla el tamaño de la matriz
-            error_correction=qrcode.constants.ERROR_CORRECT_H,  # alta tolerancia de error
-            box_size=10,  # tamaño de cada "cuadro"
-            border=4,  # borde alrededor
-        )
-        qr.add_data(url)
-        qr.make(fit=True)
+            qr_path = os.path.join(qr_dir, f"{self.id}.jpg")
 
-        # Generar imagen
-        img = qr.make_image(fill_color="black", back_color="white")
-        img.save(qr_path)
+            # Crear el QR code
+            qr = qrcode.QRCode(
+                version=1,  # controla el tamaño de la matriz
+                error_correction=qrcode.constants.ERROR_CORRECT_H,  # alta tolerancia de error
+                box_size=10,  # tamaño de cada "cuadro"
+                border=4,  # borde alrededor
+            )
+            qr.add_data(self.id)
+            qr.make(fit=True)
 
-        return f"{settings.BASE_URL}/media/materials/qr/{material_id}.jpg"
+            # Generar imagen
+            img = qr.make_image(fill_color="black", back_color="white")
+            img.save(qr_path)
+
+            db.update(
+                {'_id': ObjectId(self.id)},
+                {'qr': f"{settings.BASE_URL}/media/materials/qr/{self.id}.jpg"}
+            )
+
+            return ok('Código QR creado con éxito.')
+
+    def delete_qr_image(self):
+        with MongoDBHandler('materials') as db:
+            material = db.extract(
+                {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
+            if not material or len(material) == 0:
+                return bad_request('El material no existe.')
+
+            db.update(
+                {'_id': ObjectId(self.id)},
+                {'qr': None}
+            )
+
+            return ok('Código QR eliminado con éxito.')
 
     def __build_material_filters(self, division_list: list[str] = None):
         """

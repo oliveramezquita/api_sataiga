@@ -61,3 +61,15 @@ class DownloadFormatView(views.APIView):
     def post(self, request):
         use_case = MaterialUseCase(request=request, data=request.data)
         return use_case.download_format()
+
+
+class QRCodeImageView(views.APIView):
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def post(self, request, id):
+        use_case = MaterialUseCase(id=id)
+        return use_case.create_qr_image()
+
+    def delete(self, request, id):
+        use_case = MaterialUseCase(id=id)
+        return use_case.delete_qr_image()
