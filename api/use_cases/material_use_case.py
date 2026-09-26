@@ -365,7 +365,7 @@ class MaterialUseCase:
                     '$in': ["MELAMINA", "Melamina", "melamina"]
                 }
 
-            if group_name == "EQUIPMENT_GROUP":
+            elif group_name == "EQUIPMENT_GROUP":
                 filters['division'] = {
                     '$in': [
                         re.compile(
@@ -374,6 +374,12 @@ class MaterialUseCase:
                         )
                         for division in equipment_divisions
                     ]
+                }
+                filters['name'] = {
+                    '$not': re.compile(
+                        '^MALEMINA$',
+                        re.IGNORECASE
+                    )
                 }
 
             elif group_name == "MATERIALS_GROUP":
