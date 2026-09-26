@@ -1,5 +1,6 @@
 import os
 import traceback
+import re
 import qrcode
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 from api.helpers.http_responses import created, bad_request, ok, ok_paginated, not_found
@@ -337,13 +338,18 @@ class MaterialUseCase:
 
         # 🔹 Si viene una lista de divisiones explícita
         if division_list:
-            filters['division'] = {'$in': division_list}
+            filters['division'] = {
+                '$in': [
+                    re.compile(f'^{re.escape(division)}$', re.IGNORECASE)
+                    for division in division_list
+                ]
+            }
             return filters  # ← No aplicar filtros por grupo
 
         # 🔹 Filtro directo de división (tiene prioridad)
-        if self.division:
-            filters['division'] = self.division
-            return filters  # ← También evita aplicar group
+        # if self.division:
+        #     filters['division'] = self.division
+        #     return filters  # ← También evita aplicar group
 
         # 🔹 Filtro por grupo (solo si no hay división)
         if getattr(self, "group", None):
@@ -354,10 +360,32 @@ class MaterialUseCase:
                 'Equipos y/o accesorios')
             equipment_divisions = catalog.get('values', []) if catalog else []
 
+            if group_name == "MELAMINE":
+                filters['name'] = {
+                    '$in': ["MELAMINA", "Melamina", "melamina"]
+                }
+
             if group_name == "EQUIPMENT_GROUP":
-                filters['division'] = {'$in': equipment_divisions}
+                filters['division'] = {
+                    '$in': [
+                        re.compile(
+                            f'^{re.escape(division)}$',
+                            re.IGNORECASE
+                        )
+                        for division in equipment_divisions
+                    ]
+                }
+
             elif group_name == "MATERIALS_GROUP":
-                filters['division'] = {'$nin': equipment_divisions}
+                filters['division'] = {
+                    '$nin': [
+                        re.compile(
+                            f'^{re.escape(division)}$',
+                            re.IGNORECASE
+                        )
+                        for division in equipment_divisions
+                    ]
+                }
 
         return filters
 
@@ -423,6 +451,7 @@ class MaterialUseCase:
                 division_list = self.division.split(',')
 
             filters = self.__build_material_filters(division_list)
+
             result = self.service.get_paginated(
                 filters, self.page, self.page_size, self.sort_by, self.order_by
             )
@@ -549,7 +578,7 @@ class MaterialUseCase:
                     images = material[0]['images']
 
                 img = Image.open(image)
-                if img.format not in ['JPEG', 'PNG']:
+                if img.format not in ['JPEG', 'PNG', 'WEBP']:
                     return bad_request('El archivo cargado no es una imagen valida.')
 
                 material_folder = os.path.join(
@@ -566,6 +595,7 @@ class MaterialUseCase:
                 images.append(relative_path)
 
                 db.update({'_id': ObjectId(self.id)}, {'images': images})
+                invalidate_cache("materials")
 
                 return ok(images)
             return bad_request('El material no existe.')
