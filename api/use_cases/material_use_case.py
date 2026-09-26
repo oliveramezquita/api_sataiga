@@ -344,6 +344,13 @@ class MaterialUseCase:
                     for division in division_list
                 ]
             }
+            if self.group and self.group.upper() == "EQUIPMENT_GROUP":
+                filters['name'] = {
+                    '$not': re.compile(
+                        '^MELAMINA$',
+                        re.IGNORECASE
+                    )
+                }
             return filters  # ← No aplicar filtros por grupo
 
         # 🔹 Filtro directo de división (tiene prioridad)
@@ -377,7 +384,7 @@ class MaterialUseCase:
                 }
                 filters['name'] = {
                     '$not': re.compile(
-                        '^MALEMINA$',
+                        '^MELAMINA$',
                         re.IGNORECASE
                     )
                 }
