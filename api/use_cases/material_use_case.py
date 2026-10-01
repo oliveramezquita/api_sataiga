@@ -285,7 +285,7 @@ class MaterialUseCase:
                 box_size=10,  # tamaño de cada "cuadro"
                 border=4,  # borde alrededor
             )
-            qr.add_data(self.id)
+            qr.add_data(url)
             qr.make(fit=True)
 
             # Generar imagen
