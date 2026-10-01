@@ -270,7 +270,7 @@ class MaterialUseCase:
                 return bad_request('El material no existe.')
 
             # Construir la URL
-            url = f"{settings.ADMIN_URL}apps/materials/view/{self.id}?input=true"
+            # url = f"{settings.ADMIN_URL}apps/materials/view/{self.id}?input=true"
 
             # Ruta donde se guardará la imagen
             qr_dir = os.path.join(settings.MEDIA_ROOT, "materials/qr")
@@ -285,7 +285,7 @@ class MaterialUseCase:
                 box_size=10,  # tamaño de cada "cuadro"
                 border=4,  # borde alrededor
             )
-            qr.add_data(url)
+            qr.add_data(self.id)
             qr.make(fit=True)
 
             # Generar imagen
