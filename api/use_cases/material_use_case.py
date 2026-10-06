@@ -542,6 +542,7 @@ class MaterialUseCase:
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if material:
                 db.delete({'_id': ObjectId(self.id)})
+                invalidate_cache("materials")
                 return ok('Material eliminado correctamente.')
             return bad_request('El material no existe.')
 
