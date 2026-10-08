@@ -472,7 +472,7 @@ class PurchaseOrderUseCase:
         with MongoDBHandler('purchase_orders') as db:
             purchase_order = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            required_fields = ['supplier_id', 'home_production_id',
+            required_fields = ['supplier_id', 'home_production_id', 'number',
                                'request_by', 'created', 'items', 'subtotal', 'iva', 'total', 'status']
             if purchase_order:
                 if all(i in self.data for i in required_fields):
