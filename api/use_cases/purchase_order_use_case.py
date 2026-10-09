@@ -34,6 +34,8 @@ class PurchaseOrderUseCase:
             self.page = params['page'][0] if 'page' in params else 1
             self.page_size = params['itemsPerPage'][0] \
                 if 'itemsPerPage' in params else DEFAULT_PAGE_SIZE
+            self.sort_by = params['sortBy'][0] if 'sortBy' in params else 'created_at'
+            self.order_by = params['orderBy'][0] if 'orderBy' in params else -1
             self.q = params['q'][0] if 'q' in params else None
             self.project = params['project'][0] if 'project' in params else None
             self.supplier = params['supplier'][0] if 'supplier' in params else None
@@ -364,7 +366,8 @@ class PurchaseOrderUseCase:
                 filters['supplier_id'] = self.supplier
             if self.project:
                 filters['home_production_id'] = self.project
-            purchase_orders = db.extract(filters)
+            order_by = 1 if self.order_by == 'asc' else -1
+            purchase_orders = db.extract(filters, self.sort_by, order_by)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
             page = paginator.get_page(self.page)
             return ok_paginated(
