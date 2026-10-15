@@ -38,7 +38,7 @@ class ClientUseCase:
     @service_method()
     def delete(self):
         """Elimina un cliente."""
-        self.service.delete(self.idx)
+        self.service.delete(self.id)
         return "Cliente eliminado correctamente."
 
     def get(self):
