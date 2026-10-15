@@ -44,9 +44,9 @@ class ProjectService(BaseService):
     # ----------------------------------------------------------
     # LECTURAS
     # ----------------------------------------------------------
-    def get_all(self):
+    def get_all(self, client_id: str):
         """Obtiene todos los proyectos ordenados por fecha de creación."""
-        return self.project_repo.find_all(order_field="created_at", order=-1)
+        return self.project_repo.find_all(query={'client_id': client_id}, order_field="created_at", order=-1)
 
     def get_by_id(self, project_id: str):
         """Obtiene un proyecto por ID (usando método base)."""
