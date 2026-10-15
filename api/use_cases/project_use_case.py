@@ -32,7 +32,7 @@ class ProjectUseCase:
             return bad_request(f'Error inesperado: {e}')
 
     def get(self):
-        projects = self.service.get_all()
+        projects = self.service.get_all(self.client_id)
         paginator = Paginator(projects, per_page=self.page_size)
         page = paginator.get_page(self.page)
         serialized = ProjectSerializer(page.object_list, many=True).data
