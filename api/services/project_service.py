@@ -96,7 +96,8 @@ class ProjectService(BaseService):
     # ----------------------------------------------------------
     def get_clients(self) -> List[Dict[str, Any]]:
         """Devuelve lista de clientes tipo PE con resumen de sus proyectos."""
-        clients = self.client_repo.find_all({"type": "PE"}, "pe_id")
+        clients = self.client_repo.find_all(
+            {"type": "PE", "status": 1}, "pe_id")
         results: List[Dict[str, Any]] = []
 
         for client in clients:
