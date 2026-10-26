@@ -14,12 +14,14 @@ class PurchaseOrderService:
         self.project_id, self.supplier_id, self.type, self.ps_materials = self._get_purchase_data()
 
     def _get_purchase_data(self) -> tuple:
+        # TODO: Implementar cambios en el metodo para cuando todavia no exista una orden de compra
+
         purchase_order = self.purchase_order_repository.find_by_id(
             self.purchase_order_id
         )
 
         if not purchase_order:
-            return []
+            return None, None, None, {}
 
         project_id = purchase_order.get('project_id')
         supplier_id = purchase_order.get('supplier_id')
