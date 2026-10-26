@@ -555,6 +555,16 @@ class PurchaseOrderUseCase:
                             if supplier_id:
                                 supplier_ids.add(str(supplier_id))
 
+                        equipment = (
+                            concept.get('equipment') or {}
+                        ).get('items') or []
+
+                        for item in equipment:
+                            supplier_id = item.get('supplier_id')
+
+                            if supplier_id:
+                                supplier_ids.add(str(supplier_id))
+
             # Validar ObjectId y consultar proveedores una sola vez
             valid_supplier_ids = [
                 ObjectId(supplier_id)
@@ -630,6 +640,12 @@ class PurchaseOrderUseCase:
                     ).get('items') or []
 
                     items.extend(materials)
+
+                    equipment = (
+                        concept.get('equipment') or {}
+                    ).get('items') or []
+
+                    items.extend(equipment)
 
                 grouped = PurchaseOrderService.group_materials(
                     items,
