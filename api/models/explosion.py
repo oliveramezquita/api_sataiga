@@ -9,3 +9,5 @@ class Explosion(models.Model):
     explosion = models.JSONField(null=True)
     gran_total = models.FloatField(default=0)
     assigned_to = models.JSONField(null=True)
+    status = models.PositiveSmallIntegerField()
+    purchased = models.PositiveSmallIntegerField()

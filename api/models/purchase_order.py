@@ -25,10 +25,10 @@ class PurchaseOrder(models.Model):
     ]
 
     _id = models.CharField(max_length=50)
-    home_production_id = models.CharField(max_length=50, null=True)
+    project_id = models.CharField(max_length=50, null=True)
     linked_id = models.CharField(max_length=50, null=True)
     company_id = models.CharField(max_length=50, null=True)
-    project = models.CharField(max_length=50)
+    project_name = models.CharField(max_length=50)
     number = models.CharField(max_length=25)
     folio = models.SmallIntegerField()
     lots = models.JSONField(null=True)

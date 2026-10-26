@@ -43,7 +43,12 @@ class PrototypeService(BaseService):
         client_id = data["client_id"]
 
         # 🔹 Validar cliente
-        client = self.client_repo.find_by_id(client_id, {"type": "VS"})
+
+        client = self.client_repo.find_by_id(
+            client_id,
+            {"type": "VS", "status": 1}
+        )
+
         if not client:
             raise LookupError(
                 "El cliente seleccionado no existe o no es válido.")
@@ -86,11 +91,37 @@ class PrototypeService(BaseService):
         client: Optional[str] = None,
         front: Optional[str] = None,
     ):
-        filters = {}
+        # Obtener clientes activos de tipo VS
+        active_clients = self.client_repo.find_all({
+            "type": "VS",
+            "status": 1,
+        })
+
+        # Obtener sus identificadores
+        active_client_ids = [
+            str(client["_id"])
+            for client in active_clients
+        ]
+
+        # Filtrar prototipos de clientes activos
+        filters = {
+            "client_id": {"$in": active_client_ids}
+        }
+
         if client:
+            if client not in active_client_ids:
+                return self._paginate(
+                    [],
+                    page,
+                    page_size,
+                    serializer=PrototypeSerializer
+                )
+
             filters["client_id"] = client
+
         if front:
             filters["front"] = front
+
         if q:
             filters["$or"] = [
                 {"client_name": {"$regex": q, "$options": "i"}},
@@ -105,7 +136,13 @@ class PrototypeService(BaseService):
             order_field=sort_by,
             order=order_by
         )
-        return self._paginate(items, page, page_size, serializer=PrototypeSerializer)
+
+        return self._paginate(
+            items,
+            page,
+            page_size,
+            serializer=PrototypeSerializer
+        )
 
     def get_by_id(self, prototype_id: str):
         return self._get_by_id(
