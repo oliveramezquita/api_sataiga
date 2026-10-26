@@ -382,7 +382,7 @@ class PurchaseOrderUseCase:
 
     def save(self):
         with MongoDBHandler('purchase_orders') as db:
-            required_fields = ['project_name', 'project_id', 'supplier_id', 'request_by',
+            required_fields = ['project_name', 'supplier_id', 'request_by',
                                'created', 'items', 'subtotal', 'iva', 'total', 'type']
             if all(i in self.data for i in required_fields):
                 data = self.data
@@ -424,6 +424,7 @@ class PurchaseOrderUseCase:
             if self.q:
                 filters['$or'] = [
                     {'project_name': {'$regex': self.q, '$options': 'i'}},
+                    {'number': {'$regex': self.q, '$options': 'i'}},
                     {'subject': {'$regex': self.q, '$options': 'i'}},
                     {'request_by_name': {'$regex': self.q, '$options': 'i'}},
                     {'approved_by_name': {'$regex': self.q, '$options': 'i'}},
