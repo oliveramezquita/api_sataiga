@@ -70,11 +70,16 @@ class PurchaseOrderUseCase:
         return False
 
     def __check_client(self, db, client_id):
-        client = MongoDBHandler.find(db, 'clients', {'_id': ObjectId(
-            client_id)}) if objectid_validation(client_id) else None
-        if client:
-            return client[0]
-        return False
+        if not objectid_validation(client_id):
+            return None
+
+        clients = MongoDBHandler.find(
+            db,
+            'clients',
+            {'_id': ObjectId(client_id)}
+        )
+
+        return clients[0] if clients else None
 
     def __extract_material_fields(self, material):
         fields = [
@@ -250,7 +255,7 @@ class PurchaseOrderUseCase:
 
         # CLIENT
         client = self.__check_client(db, client_id)
-        data['client'] = client['name'] if 'name' in client else ''
+        data['client'] = client.get('name', '') if client else ''
 
         # COMPANY
         company = MongoDBHandler.find(db, 'companies', {'_id': ObjectId(
@@ -759,7 +764,7 @@ class PurchaseOrderUseCase:
                     purchase_order_service = PurchaseOrderService(self.id)
                     purchase_order_service.set_purchased_materials()
 
-                db.update({'_id': ObjectId(self.id)}, self.data)
+                # db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')
             return not_found('La orden de compra no existe.')
