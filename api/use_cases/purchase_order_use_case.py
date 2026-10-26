@@ -701,7 +701,7 @@ class PurchaseOrderUseCase:
                             send_notification(message)
                             notify_email('purchase_order_created',
                                          {'id': self.id, **data})
-                        # db.update({'_id': ObjectId(self.id)}, data)
+                        db.update({'_id': ObjectId(self.id)}, data)
                         message_status = 'guardada' if data['status'] == 0 else 'generada'
                         return ok(f'Orden de compra {message_status} correctamente.')
                     return bad_request('El proveedor seleccionado no existe.')
