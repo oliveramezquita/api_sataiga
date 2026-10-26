@@ -764,7 +764,7 @@ class PurchaseOrderUseCase:
                     purchase_order_service = PurchaseOrderService(self.id)
                     purchase_order_service.set_purchased_materials()
 
-                # db.update({'_id': ObjectId(self.id)}, self.data)
+                db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')
             return not_found('La orden de compra no existe.')
