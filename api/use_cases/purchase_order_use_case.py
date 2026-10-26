@@ -3,11 +3,11 @@ import math
 import re
 import traceback
 import os
+from bson import ObjectId
 from collections import defaultdict
 from urllib.parse import parse_qs
 from api.constants import DEFAULT_PAGE_SIZE, SUPPLIER_ID_TREND, FIXED_PRESENTATIONS
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
-from bson import ObjectId
 from api.helpers.validations import objectid_validation
 from api.helpers.http_responses import created, bad_request, ok_paginated, ok, not_found
 from django.core.paginator import Paginator
@@ -25,6 +25,7 @@ from api_sataiga.settings import BASE_URL
 from rest_framework import exceptions
 from api.serializers.supplier_serializer import SupplierSerializer
 from api.functions.email_notifications import notify_email
+from api.services.purchase_order_service import PurchaseOrderService
 
 
 class PurchaseOrderUseCase:
@@ -47,11 +48,18 @@ class PurchaseOrderUseCase:
         self.id = kwargs.get('id', None)
         self.supplier_id = kwargs.get('supplier_id', None)
 
-    def __check_home_production(self, db, home_production_id):
+    def __check_home_production(self, db, project_id):
         home_production = MongoDBHandler.find(db, 'home_production', {'_id': ObjectId(
-            home_production_id)}) if objectid_validation(home_production_id) else None
+            project_id)}) if objectid_validation(project_id) else None
         if home_production:
             return home_production[0]
+        return None
+
+    def __check_project(self, db, project_id):
+        project = MongoDBHandler.find(db, 'projects', {'_id': ObjectId(
+            project_id)}) if objectid_validation(project_id) else None
+        if project:
+            return project[0]
         return None
 
     def __check_supplier(self, db, supplier_id):
@@ -132,18 +140,23 @@ class PurchaseOrderUseCase:
         }
 
     def __process_material_quantities(self, item, material):
+        gran_total = item.get('gran_total', 0)
+        purchased = item.get('purchased', 0)
+        if gran_total > purchased:
+            gran_total = gran_total - purchased
+
         if ('presentation' in material and material['presentation']) and ('automation' in material and material['automation']):
             presentation = self.__get_amount_presentation(
                 material['presentation'])
             return self.__get_total_automation(
                 presentation,
-                item['gran_total'],
+                gran_total,
                 material['inventory_price'])
         return {
             'quantity': None,
-            'total_quantity': item['gran_total'],
+            'total_quantity': gran_total,
             'modified': 0,
-            'total': round(float(item['gran_total'])*float(material.get('inventory_price', 0)), 2),
+            'total': round(float(gran_total)*float(material.get('inventory_price', 0)), 2),
             'delivered': {
                 'rack': None,
                 'level': None,
@@ -193,6 +206,7 @@ class PurchaseOrderUseCase:
         data['front'] = ''
         data['od'] = ''
         data['prototypes'] = ''
+        client_id = None
 
         # DATES
         if 'created' in data and data['created']:
@@ -207,25 +221,36 @@ class PurchaseOrderUseCase:
         else:
             data['estimated_delivery'] = 'S/D'
 
-        # HOME PRODUCTION
-        home_production = self.__check_home_production(
-            db, data['home_production_id'])
-        if home_production:
-            client = self.__check_client(
-                db, home_production['client_id'])
-            data['client'] = client['name'] if 'name' in client else ''
-            front = home_production['front']
-            data['front'] = front
-            data['od'] = home_production['od']
-            prototypes = home_production['lots']['prototypes']
-            data['prototypes'] = prototypes
-            prototypes_items = [f"{v} {k}" for k, v in prototypes.items()]
-            data['location'] = 'front'
-            if len(prototypes_items) == 1:
-                data['location'] = f'{front} - {prototypes_items[0]}'
-            else:
-                data['location'] = f'{front} - ' + ', '.join(
-                    prototypes_items[:-1]) + ' y ' + prototypes_items[-1]
+        if purchase_order['type'] == 'VS':
+            # HOME PRODUCTION
+            home_production = self.__check_home_production(
+                db, data['project_id'])
+            if home_production:
+                client_id = home_production['client_id']
+                front = home_production['front']
+                data['front'] = front
+                data['od'] = home_production['od']
+                prototypes = home_production['lots']['prototypes']
+                data['prototypes'] = prototypes
+                prototypes_items = [f"{v} {k}" for k, v in prototypes.items()]
+                data['location'] = 'front'
+                if len(prototypes_items) == 1:
+                    data['location'] = f'{front} - {prototypes_items[0]}'
+                else:
+                    data['location'] = f'{front} - ' + ', '.join(
+                        prototypes_items[:-1]) + ' y ' + prototypes_items[-1]
+
+        # PROJECT
+        elif purchase_order['type'] == 'PE':
+            project = self.__check_project(db, data['project_id'])
+            if project:
+                client_id = project['client_id']
+                data['front'] = project['front']
+                data['location'] = project['location']
+
+        # CLIENT
+        client = self.__check_client(db, client_id)
+        data['client'] = client['name'] if 'name' in client else ''
 
         # COMPANY
         company = MongoDBHandler.find(db, 'companies', {'_id': ObjectId(
@@ -271,31 +296,71 @@ class PurchaseOrderUseCase:
         return data
 
     def __check_materials(self, db, materials):
-        purchase_orders = MongoDBHandler.find(db, 'purchase_orders', {
-                                              'home_production_id': self.project_id, 'supplier_id': self.supplier_id, 'status': {'$in': [1, 2]}})
-        if purchase_orders:
-            total_quantity_sum = defaultdict(float)
+        purchase_orders = MongoDBHandler.find(
+            db,
+            'purchase_orders',
+            {
+                'project_id': self.project_id,
+                'supplier_id': self.supplier_id,
+                'status': {'$in': [1, 2]}
+            }
+        )
 
-            for purchase_order in purchase_orders:
-                for item in purchase_order['items']:
-                    mat_id = item['material_id']
-                    total_quantity_sum[mat_id] += float(
-                        item.get('total_quantity', 0))
+        if not purchase_orders:
+            return materials
 
-            result = []
-            for material in materials:
-                mat_id = material['material_id']
-                required = float(material.get('required', 0))
-                consumed = total_quantity_sum.get(mat_id, 0.0)
-                diff = required - consumed
+        # Cantidades previamente solicitadas por material
+        total_quantity_sum = defaultdict(float)
 
-                if diff > 0:
-                    new_item = copy.deepcopy(material)
-                    new_item['total_quantity'] = diff
-                    result.append(new_item)
+        for purchase_order in purchase_orders:
+            for item in purchase_order.get('items', []):
+                material_id = str(item['material_id'])
 
-            return result
-        return materials
+                total_quantity_sum[material_id] += float(
+                    item.get('total_quantity', 0)
+                )
+
+        result = []
+
+        for material in materials:
+            material_id = str(material['material_id'])
+
+            required = float(material.get('required', 0))
+            consumed = total_quantity_sum.get(material_id, 0)
+
+            # Cuando existe presentación automatizada,
+            # convertir la cantidad requerida a unidades de compra
+            if material.get('modified') == 1:
+                presentation = float(material.get('quantity') or 1)
+                required_quantity = math.ceil(
+                    required / presentation
+                )
+            else:
+                required_quantity = required
+
+            # Calcular cantidad pendiente
+            pending = required_quantity - consumed
+
+            if pending <= 0:
+                continue
+
+            new_item = copy.deepcopy(material)
+
+            # Actualizar cantidad pendiente
+            new_item['total_quantity'] = pending
+
+            # Recalcular costo total
+            inventory_price = float(
+                new_item.get('inventory_price', 0)
+            )
+
+            new_item['total'] = round(
+                pending * inventory_price, 2
+            )
+
+            result.append(new_item)
+
+        return result
 
     def __upload_file(self, invoice_file, ext):
         fs = FileSystemStorage(
@@ -317,16 +382,17 @@ class PurchaseOrderUseCase:
 
     def save(self):
         with MongoDBHandler('purchase_orders') as db:
-            home_production_id = self.data.get('home_production_id')
-            required_fields = ['supplier_id', 'request_by',
-                               'created', 'items', 'subtotal', 'iva', 'total']
+            required_fields = ['project_name', 'project_id', 'supplier_id', 'request_by',
+                               'created', 'items', 'subtotal', 'iva', 'total', 'type']
             if all(i in self.data for i in required_fields):
-                home_production = self.__check_home_production(
-                    db, home_production_id)
+                data = self.data
                 supplier = self.__check_supplier(db, self.data['supplier_id'])
                 if supplier:
-                    data = self.data
-                    data['project'] = f"{home_production['front']} - OD {home_production['od']}" if data['type'] == 'OD' else 'Sin proyecto'
+                    if data['status'] == 1:
+                        # Revisar los materiales comprados
+                        purchase_order_service = PurchaseOrderService(self.id)
+                        purchase_order_service.check_purchased_materials()
+
                     data['folio'] = db.set_next_folio('purchase_order')
                     data['invoiced_status'] = 0
                     data['delivered_status'] = 0
@@ -334,7 +400,7 @@ class PurchaseOrderUseCase:
                     if data['status'] == 1:
                         message = get_message(
                             'purchase_order_generated',
-                            f'{data['project']} - {data['number']}',
+                            f'{data['project_name']} - {data['number']}',
                             f'purchase-orders/view/{id}')
                         send_notification(message)
                         notify_email('purchase_order_created',
@@ -357,7 +423,7 @@ class PurchaseOrderUseCase:
                     filters['status'] = {"$gt": 1}
             if self.q:
                 filters['$or'] = [
-                    {'project': {'$regex': self.q, '$options': 'i'}},
+                    {'project_name': {'$regex': self.q, '$options': 'i'}},
                     {'subject': {'$regex': self.q, '$options': 'i'}},
                     {'request_by_name': {'$regex': self.q, '$options': 'i'}},
                     {'approved_by_name': {'$regex': self.q, '$options': 'i'}},
@@ -365,7 +431,7 @@ class PurchaseOrderUseCase:
             if self.supplier:
                 filters['supplier_id'] = self.supplier
             if self.project:
-                filters['home_production_id'] = self.project
+                filters['project_id'] = self.project
             order_by = 1 if self.order_by == 'asc' else -1
             purchase_orders = db.extract(filters, self.sort_by, order_by)
             paginator = Paginator(purchase_orders, per_page=self.page_size)
@@ -381,12 +447,14 @@ class PurchaseOrderUseCase:
             purchase_order = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
             if purchase_order:
-                home_production_id = purchase_order[0].get(
-                    'home_production_id')
-                hp = self.__check_home_production(db, home_production_id)
+                if purchase_order[0]['type'] == "VS":
+                    project_id = purchase_order[0].get(
+                        'project_id')
+                    hp = self.__check_home_production(db, project_id)
+                    purchase_order[0]['lots'] = hp['lots']['prototypes'] if hp else {
+                    }
                 purchase_order[0]['selected_rows'] = [item['id']
                                                       for item in purchase_order[0]['items']]
-                purchase_order[0]['lots'] = hp['lots']['prototypes'] if hp else {}
                 return ok(PurchaseOrderSerializer(purchase_order[0]).data)
             return not_found('Orden de compra no encontrada.')
 
@@ -404,100 +472,236 @@ class PurchaseOrderUseCase:
                             'front': project['front'],
                             'lots': project['lots']['prototypes'] if 'prototypes' in project['lots'] else {}
                         })
-        # TODO: Logica para proyectos especiales
-        # if self.type_project == 'PE':
+        if self.type_project == 'PE':
+            with MongoDBHandler('projects') as db:
+                projects = db.extract({
+                    'status': {'$in': [2, 3]}
+                })
+                if projects:
+                    with MongoDBHandler('clients') as db:
+                        clients = db.extract({
+                            'status': 1, 'type': 'PE'
+                        })
+
+                    active_client_ids = {
+                        str(client['_id'])
+                        for client in clients
+                    }
+
+                    for project in projects:
+                        client_id = str(project.get('client_id'))
+
+                        if client_id not in active_client_ids:
+                            continue
+
+                        pe_id = next(
+                            (client['pe_id'] for client in clients if str(
+                                client['_id']) == client_id),
+                            None
+                        )
+
+                        leaked_projects.append({
+                            'id': str(project['_id']),
+                            'name': f"C{pe_id} - {project['name']}",
+                            'od': None,
+                            'front': project['front'],
+                            'lots': {},
+                        })
         return ok(leaked_projects)
 
     def get_suppliers(self):
-        with MongoDBHandler('explosion') as db:
-            suppliers = []
-            if self.type_project == 'SP':
+        suppliers = []
+        supplier_ids = set()
+
+        if self.type_project == 'SP':
+            with MongoDBHandler('suppliers') as db:
+                suppliers = db.extract({
+                    '_id': {'$ne': ObjectId(SUPPLIER_ID_TREND)}
+                }, 'name')
+
                 suppliers = SupplierSerializer(
-                    MongoDBHandler.find(db, 'suppliers', {'supplier_id': {'$ne': SUPPLIER_ID_TREND}}, 'name'), many=True).data
+                    suppliers,
+                    many=True
+                ).data
+
+        else:
+            if self.type_project == 'VS':
+                with MongoDBHandler('explosion') as db:
+                    materials = db.extract({
+                        'home_production_id': self.project_id,
+                        'supplier_id': {'$ne': SUPPLIER_ID_TREND}
+                    })
+
+                    supplier_ids = {
+                        str(material['supplier_id'])
+                        for material in materials
+                        if material.get('supplier_id')
+                    }
+
             else:
-                viewed = set()
-                materials = db.extract({
-                    'home_production_id': self.project_id,
-                    'supplier_id': {'$ne': SUPPLIER_ID_TREND}})
-                for material in materials:
-                    supplier = self.__check_supplier(
-                        db, material['supplier_id'])
-                    if supplier:
-                        supplier_id = str(supplier['_id'])
-                        if supplier_id not in viewed:
-                            suppliers.append({
-                                '_id': supplier_id,
-                                'name': supplier['name']
-                            })
-                            viewed.add(supplier_id)
-            return ok({'suppliers_list': suppliers, 'last_consecutive': db.get_next_folio('purchase_order')})
+                with MongoDBHandler('concepts') as db:
+                    concepts = db.extract({
+                        'project_id': self.project_id
+                    })
+
+                    for concept in concepts:
+                        materials = (
+                            concept.get('materials') or {}
+                        ).get('items') or []
+
+                        for material in materials:
+                            supplier_id = material.get('supplier_id')
+
+                            if supplier_id:
+                                supplier_ids.add(str(supplier_id))
+
+            # Validar ObjectId y consultar proveedores una sola vez
+            valid_supplier_ids = [
+                ObjectId(supplier_id)
+                for supplier_id in supplier_ids
+                if objectid_validation(supplier_id)
+            ]
+
+            if valid_supplier_ids:
+                with MongoDBHandler('suppliers') as db:
+                    results = db.extract(
+                        {'_id': {'$in': valid_supplier_ids}},
+                        'name'
+                    )
+
+                    suppliers = [
+                        {
+                            '_id': str(supplier['_id']),
+                            'name': supplier['name']
+                        }
+                        for supplier in results
+                    ]
+
+        with MongoDBHandler('purchase_orders') as db:
+            last_consecutive = db.get_next_folio(
+                'purchase_order'
+            )
+
+        return ok({
+            'suppliers_list': suppliers,
+            'last_consecutive': last_consecutive
+        })
 
     def get_last_consecutive(self):
         with MongoDBHandler('purchase_orders') as db:
             return ok(db.get_next_folio('purchase_order'))
 
     def get_materials(self):
-        with MongoDBHandler('explosion') as db:
-            data = []
-            costs = {}
-            items = db.extract(
-                {'home_production_id': self.project_id, 'supplier_id': self.supplier_id})
-            for i, item in enumerate(items):
-                material = self.__process_material(db, item)
-                if item and material:
-                    data.append({
-                        'id': i,
-                        'supplier_id': item['supplier_id'],
-                        'required': item['gran_total'],
-                        'quantities': item['explosion'],
-                        'color': item.get('color', None),
-                        'source': 'volumetry',
-                        **material,
-                    })
-            materials = self.__check_materials(db, data)
-            if len(materials) > 0:
-                subtotal = sum(item['total'] for item in materials)
-                costs = {
-                    'subtotal': subtotal,
-                    'iva': round(subtotal*.16, 2),
-                    'total': round(subtotal*1.16, 2),
-                }
-            else:
-                costs = {
-                    'subtotal': 0,
-                    'iva': 0,
-                    'total': 0,
-                }
+        data = []
 
-            return ok({'costs': costs, 'items': materials})
+        if self.type_project == 'VS':
+            with MongoDBHandler('explosion') as db:
+                items = db.extract({
+                    'home_production_id': self.project_id,
+                    'supplier_id': self.supplier_id,
+                    'status': 0,
+                })
+
+                for i, item in enumerate(items):
+                    material = self.__process_material(db, item)
+
+                    if material:
+                        data.append({
+                            'id': i,
+                            'supplier_id': item['supplier_id'],
+                            'required': item['gran_total'],
+                            'quantities': item['explosion'],
+                            'color': item.get('color'),
+                            'source': 'volumetry',
+                            **material,
+                        })
+
+        else:
+            with MongoDBHandler('concepts') as db:
+                concepts = db.extract({
+                    'project_id': self.project_id
+                })
+
+                items = []
+
+                for concept in concepts:
+                    materials = (
+                        concept.get('materials') or {}
+                    ).get('items') or []
+
+                    items.extend(materials)
+
+                grouped = PurchaseOrderService.group_materials(
+                    items,
+                    self.supplier_id
+                )
+
+                for i, item in enumerate(grouped):
+                    material = self.__process_material(
+                        db,
+                        {
+                            'material_id': item['id'],
+                            'gran_total': item['amount']
+                        }
+                    )
+
+                    if material:
+                        data.append({
+                            'id': i,
+                            'supplier_id': item['supplier_id'],
+                            'required': item['amount'],
+                            'color': item.get('color'),
+                            'source': 'volumetry',
+                            **material,
+                        })
+
+        # Validar materiales previamente solicitados
+        with MongoDBHandler('purchase_orders') as db:
+            materials = self.__check_materials(db, data)
+
+        # Calcular costos
+        subtotal = round(
+            sum(item['total'] for item in materials),
+            2
+        )
+
+        costs = {
+            'subtotal': subtotal,
+            'iva': round(subtotal * 0.16, 2),
+            'total': round(subtotal * 1.16, 2),
+        }
+
+        return ok({
+            'costs': costs,
+            'items': materials
+        })
 
     def update(self):
         with MongoDBHandler('purchase_orders') as db:
             purchase_order = db.extract(
                 {'_id': ObjectId(self.id)}) if objectid_validation(self.id) else None
-            required_fields = ['supplier_id', 'home_production_id', 'number',
+            required_fields = ['supplier_id', 'project_id', 'number',
                                'request_by', 'created', 'items', 'subtotal', 'iva', 'total', 'status']
             if purchase_order:
                 if all(i in self.data for i in required_fields):
-                    home_production = self.__check_home_production(
-                        db, self.data['home_production_id'])
                     supplier = self.__check_supplier(
                         db, self.data['supplier_id'])
                     if supplier:
                         data = self.data
-                        if isinstance(home_production, dict) and data['type'] == 'OD':
-                            data['project'] = f"{home_production['front']} - OD {home_production['od']}"
-                        else:
-                            data['project'] = 'Sin proyecto'
                         if data['status'] == 1:
+                            # Revisar los materiales comprados
+                            purchase_order_service = PurchaseOrderService(
+                                self.id)
+                            purchase_order_service.check_purchased_materials()
+
                             message = get_message(
                                 'purchase_order_generated',
-                                f'{data['project']} - {data['number']}',
+                                f'{data['project_name']} - {data['number']}',
                                 f'purchase-orders/view/{self.id}')
                             send_notification(message)
                             notify_email('purchase_order_created',
                                          {'id': self.id, **data})
-                        db.update({'_id': ObjectId(self.id)}, data)
+                        # db.update({'_id': ObjectId(self.id)}, data)
                         message_status = 'guardada' if data['status'] == 0 else 'generada'
                         return ok(f'Orden de compra {message_status} correctamente.')
                     return bad_request('El proveedor seleccionado no existe.')
@@ -534,6 +738,10 @@ class PurchaseOrderUseCase:
                     })
                     self.data['pdf_file'] = f"{settings.BASE_URL}{settings.MEDIA_URL}{pdf_path}"
 
+                    # Actualizar los materiales comprados
+                    purchase_order_service = PurchaseOrderService(self.id)
+                    purchase_order_service.set_purchased_materials()
+
                 db.update({'_id': ObjectId(self.id)}, self.data)
                 message_status = 'aprobada' if self.data['status'] == 2 else 'rechazada'
                 return ok(f'Orden de compra {message_status} correctamente.')
@@ -569,7 +777,7 @@ class PurchaseOrderUseCase:
                         project={
                             'id': str(purchase_order[0]['_id']),
                             'name': purchase_order[0]['project'],
-                            'type': 'OD' if purchase_order[0]['home_production_id'] else 'Proyecto Especial'
+                            'type': 'OD' if purchase_order[0]['project_id'] else 'Proyecto Especial'
                         },
                         items=items,
                         folio=db.set_next_folio('purchase_order'),

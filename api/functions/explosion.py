@@ -247,6 +247,7 @@ def explosion(self, home_production_id: str, prev_lots: int):
                     "explosion": amounts,
                     "gran_total": gran_total,
                     "status": 0,
+                    "purchased": 0,
                 })
         invalidate_cache('explosion')
         return True
