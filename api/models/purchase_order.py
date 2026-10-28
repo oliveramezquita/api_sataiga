@@ -56,5 +56,6 @@ class PurchaseOrder(models.Model):
         choices=DELIVERED_CHOICES, default=SIN_ENTREGAR)
     paid = models.BooleanField(default=False)
     type = models.CharField(max_length=2)
+    cancel_reason = models.TextField(null=True)
     created_at = models.DateTimeField(null=True)
     updated_at = models.DateTimeField(null=True)
