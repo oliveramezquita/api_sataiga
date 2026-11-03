@@ -75,20 +75,21 @@ class PurchaseOrderService:
             for material_id, material in self.ps_materials.items():
                 exp_material = exp_materials.get(material_id)
 
-                if not exp_material:
-                    raise ValidationError(
-                        f"El material '{material['concept']}' no se encontró en la explosión de materiales."
-                    )
+                # if not exp_material:
+                #     raise ValidationError(
+                #         f"El material '{material['concept']}' no se encontró en la explosión de materiales."
+                #     )
 
-                total = material['total_quantity'] + exp_material['purchased']
+                if exp_material:
+                    total = material['total_quantity'] + exp_material['purchased']
 
-                if total > exp_material['gran_total']:
-                    raise ValidationError(
-                        f"El material '{material['concept']}' excede la cantidad requerida en la orden de compra. "
-                        f"Requerido: {exp_material['gran_total']}, "
-                        f"comprado: {exp_material['purchased']}, "
-                        f"solicitado: {material['total_quantity']}."
-                    )
+                    if total > exp_material['gran_total']:
+                        raise ValidationError(
+                            f"El material '{material['concept']}' excede la cantidad requerida en la orden de compra. "
+                            f"Requerido: {exp_material['gran_total']}, "
+                            f"comprado: {exp_material['purchased']}, "
+                            f"solicitado: {material['total_quantity']}."
+                        )
 
         elif self.type == 'PE':
             concepts = self.concept_repository.find_all(
@@ -118,21 +119,22 @@ class PurchaseOrderService:
             for material_id, material in self.ps_materials.items():
                 concept_material = concept_materials.get(material_id)
 
-                if not concept_material:
-                    raise ValidationError(
-                        f"El material '{material['concept']}' no se encontró en la explosión de materiales."
-                    )
+                # if not concept_material:
+                #     raise ValidationError(
+                #         f"El material '{material['concept']}' no se encontró en la explosión de materiales."
+                #     )
 
-                total = material['total_quantity'] + \
-                    concept_material['purchased']
+                if concept_material:
+                    total = material['total_quantity'] + \
+                        concept_material['purchased']
 
-                if total > concept_material['gran_total']:
-                    raise ValidationError(
-                        f"El material '{material['concept']}' excede la cantidad requerida en la orden de compra. "
-                        f"Requerido: {concept_material['gran_total']}, "
-                        f"comprado: {concept_material['purchased']}, "
-                        f"solicitado: {material['total_quantity']}."
-                    )
+                    if total > concept_material['gran_total']:
+                        raise ValidationError(
+                            f"El material '{material['concept']}' excede la cantidad requerida en la orden de compra. "
+                            f"Requerido: {concept_material['gran_total']}, "
+                            f"comprado: {concept_material['purchased']}, "
+                            f"solicitado: {material['total_quantity']}."
+                        )
 
         return True
 
@@ -156,18 +158,19 @@ class PurchaseOrderService:
             for material_id, material in self.ps_materials.items():
                 exp_material = exp_materials.get(material_id)
 
-                if not exp_material:
-                    raise ValidationError(
-                        f"El material '{material['concept']}' no se encontró en la explosión de materiales."
-                    )
+                # if not exp_material:
+                #     raise ValidationError(
+                #         f"El material '{material['concept']}' no se encontró en la explosión de materiales."
+                #     )
 
-                total = material['total_quantity'] + exp_material['purchased']
-                data = {'purchased': total}
-                if total == exp_material['gran_total']:
-                    data['status'] = 1
+                if exp_material:
+                    total = material['total_quantity'] + exp_material['purchased']
+                    data = {'purchased': total}
+                    if total == exp_material['gran_total']:
+                        data['status'] = 1
 
-                self.explosion_repository.update_one(
-                    {'material_id': material_id}, data)
+                    self.explosion_repository.update_one(
+                        {'material_id': material_id}, data)
 
             return True
 

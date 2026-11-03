@@ -71,9 +71,9 @@ def generate_pdf(data):
 
         remaining_y = pdf_generator.ensure_space(remaining_y, 35)
 
-        # 📝 Observaciones
+        # 📝 Asunto / Nota / Comentario
         pdf_generator.add_wrap_text(
-            101, remaining_y, 300, ["OBSERVACIONES:"], font_color="gray"
+            101, remaining_y, 300, ["ASUNTO / NOTA / COMENTARIO:"], font_color="gray"
         )
         pdf_generator.add_wrap_text(
             103,
