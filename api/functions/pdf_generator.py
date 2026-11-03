@@ -167,7 +167,7 @@ class PDFGenerator:
         font_size = kwargs.get('font_size', 8)
 
         headers = [
-            "Clave del Producto", "SKU", "Color", "Cantidad", "Descripción",
+            "Clave del Producto", "SKU", "Observación", "Cantidad", "Descripción",
             "Unidad", "P. Unitario", "Total"
         ]
         all_rows = [headers] + data

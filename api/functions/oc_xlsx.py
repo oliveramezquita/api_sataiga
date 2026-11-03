@@ -52,7 +52,7 @@ def create_xlsx(data):
 
     ws.append([
         "CLAVE DEL PRODUCTO",
-        "COLOR",
+        "OBSERVACIÓN",
         "CANTIDAD",
         "DESCRIPCIÓN",
         "UNIDAD DE MEDIDA",
@@ -63,7 +63,7 @@ def create_xlsx(data):
     for item in data.get("items", []):
         ws.append([
             item.get("supplier_code", ""),
-            item.get("color", ""),
+            item.get("observation", ""),
             round(float(item.get("total_quantity", 0)), 2),
             item.get("concept", ""),
             item.get("measurement", ""),

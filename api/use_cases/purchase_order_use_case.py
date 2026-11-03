@@ -280,7 +280,7 @@ class PurchaseOrderUseCase:
             data['materials'].append([
                 item.get('supplier_code', ''),
                 item.get('sku', ''),
-                item.get('color', ''),
+                item.get('observation', ''),
                 item.get('total_quantity', 0),
                 item.get('concept', ''),
                 item.get('measurement', ''),
