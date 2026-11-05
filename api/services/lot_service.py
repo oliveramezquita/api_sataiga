@@ -84,8 +84,8 @@ class LotService(BaseService):
                 missing.append("manzana")
             if lot is None:
                 missing.append("lote")
-            if laid is None:
-                missing.append("sembrado")
+            # if laid is None:
+            #     missing.append("sembrado")
             if prototype is None:
                 missing.append("prototipo")
 
@@ -98,7 +98,7 @@ class LotService(BaseService):
 
             block_s = str(block).strip()
             lot_s = str(lot).strip()
-            laid_s = str(laid).strip().upper()
+            laid_s = "" if laid is None else str(laid).strip().upper()
             prototype_s = str(prototype).strip()
 
             empty = []
@@ -106,8 +106,8 @@ class LotService(BaseService):
                 empty.append("manzana")
             if not lot_s:
                 empty.append("lote")
-            if not laid_s:
-                empty.append("sembrado")
+            # if not laid_s:
+            #     empty.append("sembrado")
             if not prototype_s:
                 empty.append("prototipo")
 
@@ -118,7 +118,7 @@ class LotService(BaseService):
                 )
                 continue
 
-            if laid_s not in ALLOWED_LAID:
+            if laid_s and laid_s not in ALLOWED_LAID:
                 errors.append(
                     {
                         "row": row_idx,
@@ -144,11 +144,11 @@ class LotService(BaseService):
                 'prototype': prototype_s,
             })
             if not existing_lot:
-                valid_rows.append(
-                    {"block": block_s, "lot": lot_s,
-                        "laid": laid_s, "prototype": prototype_s}
-                )
-
+                row = {"block": block_s, "lot": lot_s, "prototype": prototype_s}
+                if laid_s:
+                    row["laid"] = laid_s
+                valid_rows.append(row)
+        
         return valid_rows, errors
 
     def _update_hp_lots(self, home_production_id: str, lots: List[Dict[str, Any]]):
@@ -222,7 +222,7 @@ class LotService(BaseService):
                 self._create(
                     repo=self.lot_repo,
                     data=payload,
-                    required_fields=["prototype", "block", "lot", "laid"],
+                    required_fields=["prototype", "block", "lot"],
                     cache_prefix=self.CACHE_PREFIX,
                 )
             except Exception as e:
@@ -284,7 +284,7 @@ class LotService(BaseService):
                     "percentage": 0,
                     "progress": self._default_progress(),
                 },
-                required_fields=["prototype", "block", "lot", "laid"],
+                required_fields=["prototype", "block", "lot"],
                 cache_prefix=self.CACHE_PREFIX,
             )
 
