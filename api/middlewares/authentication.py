@@ -1,35 +1,61 @@
-from rest_framework import exceptions
+
+import jwt
+from bson import ObjectId
+from rest_framework import authentication, exceptions
 from api_sataiga.functions import decode_user
-from rest_framework import authentication
 from api_sataiga.handlers.mongodb_handler import MongoDBHandler
 
 
-class InvalidAccessTokenError(Exception):
-    pass
-
-
 class BellartiAuthenticationMiddleware(authentication.BaseAuthentication):
+
+    def authenticate_header(self, request):
+        return "Bearer"
+
     def authenticate(self, request):
-        token = request.headers.get("authorization", None)
+        authorization = request.headers.get(
+            "Authorization", ""
+        )
+
+        parts = authorization.split()
+
+        if len(parts) != 2 or parts[0].lower() != "bearer":
+            raise exceptions.AuthenticationFailed(
+                "Token de acceso no válido"
+            )
+
+        token = parts[1]
+
         try:
-            if not token:
-                raise exceptions.AuthenticationFailed(
-                    'Token de acceso no válido')
+            payload = decode_user(token)
 
-            token = token.split(" ")[1]
-            user = self.get_user_from_token(token)
-            return (user, None)
+        except jwt.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed(
+                "El token de acceso ha expirado",
+                code="token_expired"
+            )
 
-        except InvalidAccessTokenError:
-            raise exceptions.NotFound(
-                "No puedo obtener información con el token actual")
+        except jwt.InvalidTokenError:
+            raise exceptions.AuthenticationFailed(
+                "Token de acceso no válido",
+                code="invalid_token"
+            )
 
-    def get_user_from_token(self, token: str):
-        payload = decode_user(token)
-        with MongoDBHandler('user') as db:
-            user = db.extract({'_id': payload['_id'], })
+        user_id = payload.get("_id")
 
-            if user is None:
-                raise InvalidAccessTokenError
+        if not user_id:
+            raise exceptions.AuthenticationFailed(
+                "Token sin identificador de usuario"
+            )
 
-            return user
+        with MongoDBHandler("users") as db:
+            users = db.extract({
+                "_id": ObjectId(user_id),
+                "status": 1,
+            })
+
+        if not users:
+            raise exceptions.AuthenticationFailed(
+                "Usuario no encontrado o inactivo"
+            )
+
+        return (users[0], None)
