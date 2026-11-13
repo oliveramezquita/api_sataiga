@@ -9,13 +9,16 @@ class ConceptUseCase:
     """Orquesta peticiones HTTP para el módulo de Conceptos."""
 
     def __init__(self, request=None, **kwargs):
+        self.request = request
         params = get_query_params(request)
         self.page = params["page"]
         self.page_size = params["page_size"]
         self.q = params["q"]
+        self.path = params.get('path')
         self.data = kwargs.get('data')
         self.id = kwargs.get('id')
         self.project_id = kwargs.get('project_id', None)
+        self.concept_id = kwargs.get('concept_id', None)
         self.element = kwargs.get('element', None)
         self.service = ConceptService()
 
@@ -105,6 +108,18 @@ class ConceptUseCase:
         try:
             self.service.clear_indirect_costs(self.id)
             return ok("El costo indirecto se eliminó correctamente.")
+        except LookupError as e:
+            return not_found(str(e))
+        except Exception as e:
+            return bad_request(f'Error inesperado: {e}')
+
+    def upload(self):
+        try:
+            response = self.service.upload(
+                self.concept_id,
+                self.path,
+                self.request.FILES['file'])
+            return ok(response)
         except LookupError as e:
             return not_found(str(e))
         except Exception as e:

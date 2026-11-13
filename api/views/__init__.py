@@ -1,7 +1,7 @@
 from .section import SectionView, SectionViewById, TreeView
 from .role import RoleView, RoleByIdView, UpdatePermissionsView
 from .user import UserView, UserByIdView, RegisterView, UpdatePasswordView
-from .auth import AuthView, PasswordRequestView, RestorePasswordView
+from .auth import AuthView, PasswordRequestView, RestorePasswordView, RefreshTokenView
 from .dashboard import DashboardView
 from .client import ClientView, ClientByTypeView, ClientByIdView
 from .supplier import SupplierView, SupplierByIdView
@@ -24,7 +24,7 @@ from .inbound import InboundsView, ProjectsListView, InboundView, InboundsByMate
 from .company import CompaniesView, CompanyByIdView
 from .output import OutputsView, OutputView, OutputsByMaterialView
 from .project import ProjectsView, ProjectByIdView, ClientsProjectsView, CloneProjectsView
-from .concept import ConceptsView, ConceptByIdView, ConceptItemsView, ConceptTemplatesView, ConceptIndirectCostsView
+from .concept import ConceptsView, ConceptByIdView, ConceptItemsView, ConceptTemplatesView, ConceptIndirectCostsView, ConceptUploadMaterialsView
 from .employee import EmployeesView, EmployeeByIdView
 from .template import TemplatesView, TemplateByIdView, TemplateItemsView, TemplateIndirectCostsView
 from .trend import TrendsView, TrendByIdView, TrendElemetsView

@@ -150,13 +150,13 @@ class PurchaseOrderUseCase:
         if gran_total > purchased:
             gran_total = gran_total - purchased
 
-        if ('presentation' in material and material['presentation']) and ('automation' in material and material['automation']):
-            presentation = self.__get_amount_presentation(
-                material['presentation'])
-            return self.__get_total_automation(
-                presentation,
-                gran_total,
-                material['inventory_price'])
+        # if ('presentation' in material and material['presentation']) and ('automation' in material and material['automation']):
+        #     presentation = self.__get_amount_presentation(
+        #         material['presentation'])
+        #     return self.__get_total_automation(
+        #         presentation,
+        #         gran_total,
+        #         material['inventory_price'])
         return {
             'quantity': None,
             'total_quantity': gran_total,
@@ -393,10 +393,10 @@ class PurchaseOrderUseCase:
                 data = self.data
                 supplier = self.__check_supplier(db, self.data['supplier_id'])
                 if supplier:
-                    if data['status'] == 1:
-                        # Revisar los materiales comprados
-                        purchase_order_service = PurchaseOrderService(self.id)
-                        purchase_order_service.check_purchased_materials()
+                    # if data['status'] == 1:
+                    # Revisar los materiales comprados
+                    # purchase_order_service = PurchaseOrderService(self.id)
+                    # purchase_order_service.check_purchased_materials()
 
                     data['folio'] = db.set_next_folio('purchase_order')
                     data['invoiced_status'] = 0
@@ -712,9 +712,8 @@ class PurchaseOrderUseCase:
                         data = self.data
                         if data['status'] == 1:
                             # Revisar los materiales comprados
-                            purchase_order_service = PurchaseOrderService(
-                                self.id)
-                            purchase_order_service.check_purchased_materials()
+                            # purchase_order_service = PurchaseOrderService(self.id)
+                            # purchase_order_service.check_purchased_materials()
 
                             message = get_message(
                                 'purchase_order_generated',

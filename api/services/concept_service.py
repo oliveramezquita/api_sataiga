@@ -1,9 +1,17 @@
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from typing import Mapping, Any, List
+from zipfile import BadZipFile
+from bson import ObjectId
+
+from openpyxl import load_workbook, Workbook
+from rest_framework.exceptions import ValidationError
+from openpyxl.utils.exceptions import InvalidFileException
+
 from api.repositories.project_repository import ProjectRepository
 from api.repositories.concept_repository import ConceptRepository
 from api.repositories.template_repository import TemplateRepository
+from api.repositories.material_repository import MaterialRepository
 from api.tasks.project_tasks import recalculate_project_totals
-from decimal import Decimal, ROUND_HALF_UP
-from typing import Mapping, Any, List
 
 
 class ConceptNotFoundError(Exception):
@@ -27,6 +35,7 @@ class ConceptService:
         self.project_repo = ProjectRepository()
         self.concept_repo = ConceptRepository()
         self.template_repo = TemplateRepository()
+        self.material_repo = MaterialRepository()
 
     # ────────────────────────────────────────────────────────────────────────────────
     # VALIDACIONES Y UTILIDADES BÁSICAS
@@ -62,6 +71,112 @@ class ConceptService:
         if "total" not in bucket or not isinstance(bucket.get("total"), (int, float)):
             bucket["total"] = 0
         return bucket
+
+    def _extract_data_from_file(
+        self,
+        wb: Workbook,
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        items: list[dict[str, Any]] = []
+        errors: list[dict[str, Any]] = []
+
+        worksheet = wb.active
+        rows = worksheet.iter_rows(
+            min_row=3,
+            min_col=1,
+            max_col=4,
+            values_only=True,
+        )
+
+        for row_number, row in enumerate(rows, start=3):
+            empty_cells = [
+                value is None or (isinstance(value, str) and not value.strip())
+                for value in row
+            ]
+
+            if all(empty_cells):
+                continue
+
+            concept, _, sku, amount = row
+            material_filter = {"sku": sku}
+
+            missing_columns = [
+                name
+                for name, is_empty in zip(
+                    ("SKU (C)", "Cantidad (D)"),
+                    empty_cells[2:4],
+                )
+                if is_empty
+            ]
+
+            if missing_columns:
+                errors.append({
+                    "row": row_number,
+                    "material": concept,
+                    "message": f"Faltan valores en {', '.join(missing_columns)}.",
+                })
+                continue
+
+            material = self.material_repo.find_one(
+                material_filter,
+                {
+                    "_id": 1,
+                    "supplier_id": 1,
+                    "concept": 1,
+                    "sku": 1,
+                    "measurement": 1,
+                    "presentation": 1,
+                    "inventory_price": 1,
+                },
+            )
+
+            if material is None:
+                errors.append({
+                    "row": row_number,
+                    "material": concept,
+                    "message": "Material no encontrado.",
+                })
+                continue
+
+            inventory_price = material.get("inventory_price")
+
+            try:
+                quantity = Decimal(str(amount))
+                price = Decimal(str(inventory_price))
+
+                if not quantity.is_finite() or not price.is_finite():
+                    raise InvalidOperation
+
+                total = (quantity * price).quantize(
+                    Decimal("0.01"),
+                    rounding=ROUND_HALF_UP,
+                )
+            except InvalidOperation:
+                errors.append({
+                    "row": row_number,
+                    "material": concept,
+                    "message": (
+                        f"Cantidad o precio inválido. "
+                        f"Cantidad: {amount!r}. Precio: {inventory_price!r}."
+                    ),
+                })
+                continue
+
+            material_data = {
+                key: value
+                for key, value in material.items()
+                if key not in {"_id", "inventory_price"}
+            }
+
+            items.append({
+                **material_data,
+                "id": str(material["_id"]),
+                "color": None,
+                "inventory_price": float(price),
+                "amount": float(quantity),
+                "total": float(total),
+            })
+
+        return items, errors
 
     # ────────────────────────────────────────────────────────────────────────────────
     # CÁLCULOS CENTRALES (USADO EN TODOS LOS MÉTODOS)
@@ -298,3 +413,80 @@ class ConceptService:
         concept = self._recalculate_concept_totals(concept)
         self.concept_repo.update(concept_id, concept)
         recalculate_project_totals.delay(concept['project_id'])
+
+    # ────────────────────────────────────────────────────────────────────────────────
+    # UPLOAD MATERIALS BY FILE
+    # ────────────────────────────────────────────────────────────────────────────────
+    def upload(self, concept_id: str, path: str, request_file):
+        if not concept_id:
+            raise ValidationError("El ID del concepto es obligatorio.")
+
+        if not ObjectId.is_valid(concept_id):
+            raise ValidationError("El ID del concepto es inválido.")
+
+        if not path:
+            raise ValidationError(
+                "La sección donde se cargarán los materiales es obligatoria."
+            )
+
+        if path not in {"materials", "equipment"}:
+            raise ValidationError("La sección indicada es inválida.")
+
+        if not request_file:
+            raise ValidationError("El archivo es requerido.")
+
+        concept = self.concept_repo.find_one(
+            {"_id": ObjectId(concept_id)},
+            {"_id": 0, "project_id": 1, "materials": 1, "equipment": 1},
+        )
+        if concept is None:
+            raise ValidationError("El concepto no existe.")
+
+        try:
+            workbook = load_workbook(request_file, data_only=True)
+        except (InvalidFileException, BadZipFile, OSError, ValueError) as exc:
+            raise ValidationError(f"Archivo Excel inválido: {exc}") from exc
+
+        try:
+            new_items, errors = self._extract_data_from_file(workbook)
+        finally:
+            workbook.close()
+
+        section = concept.setdefault(path, {})
+        items = section.get("items", [])
+
+        items_by_id = {item["id"]: item for item in items}
+        new_items_by_id = {item["id"]: item for item in new_items}
+
+        num_inserted = 0
+        num_updated = 0
+
+        for item_id, new_item in new_items_by_id.items():
+            if item_id not in items_by_id:
+                num_inserted += 1
+            elif items_by_id[item_id] != new_item:
+                num_updated += 1
+
+            items_by_id[item_id] = new_item
+
+        updated_items = list(items_by_id.values())
+
+        total_items = sum(
+            (Decimal(str(item.get("total", 0))) for item in updated_items),
+            Decimal("0.00"),
+        )
+
+        section["items"] = updated_items
+        section["total"] = float(
+            total_items.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        )
+
+        concept = self._recalculate_concept_totals(concept)
+        self.concept_repo.update(concept_id, concept)
+        recalculate_project_totals.delay(concept["project_id"])
+
+        return {
+            "num_inserted": num_inserted,
+            "num_updated": num_updated,
+            "errors": errors,
+        }

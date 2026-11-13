@@ -130,3 +130,22 @@ class ConceptIndirectCostsView(views.APIView):
         logger.debug("DELETE /concept/%s", id)
         use_case = ConceptUseCase(id=id)
         return use_case.clear_indirect_costs()
+
+
+class ConceptUploadMaterialsView(views.APIView):
+    """
+    Endpoint para cargar materiales mediante un archivo.
+
+    Métodos:
+        POST: Carga de materiales.
+    """
+    authentication_classes = [BellartiAuthenticationMiddleware]
+
+    def post(self, request: Request, concept_id: str) -> Response:
+        """Cargar materiales mediante un archivo."""
+        logger.debug("POST /concept/%s/upload_materials", concept_id)
+        use_case = ConceptUseCase(request=request, concept_id=concept_id)
+        response = use_case.upload()
+        logger.debug("Respuesta POST /concept/%s/upload_materials",
+                     response.data if hasattr(response, 'data') else response)
+        return response
