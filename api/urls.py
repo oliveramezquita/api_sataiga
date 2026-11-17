@@ -16,6 +16,7 @@ urlpatterns = [
          UpdatePasswordView.as_view(), name='update_password'),
     path('login', AuthView.as_view(), name='login'),
     path('auth/refresh', RefreshTokenView.as_view(), name='auth-refresh'),
+    path('auth/logout', LogoutView.as_view(), name='auth-logout'),
     path('password-request', PasswordRequestView.as_view(), name="password_request"),
     path('restore-password', RestorePasswordView.as_view(), name="restore_password"),
     path('dashboard', DashboardView.as_view(), name='dashboard'),

@@ -23,6 +23,7 @@ from .health import HealthCheckView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    path('', include('after_sales.urls')),
     path('health/', HealthCheckView.as_view(), name='health'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

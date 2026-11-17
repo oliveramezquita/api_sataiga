@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+from datetime import timedelta
 from decouple import config
 from pathlib import Path
 import logging.config
@@ -42,6 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 if DEBUG:
+    ALLOWED_HOSTS += ['*']
     CSRF_TRUSTED_ORIGINS += [
         'http://localhost:5173',
         'http://127.0.0.1:5173',
@@ -262,6 +264,44 @@ CACHES = {
         "TIMEOUT": 60 * 10,
     }
 }
+
+AUTH_WEB_ALLOW_LEGACY_TOKENS = config(
+    'AUTH_WEB_ALLOW_LEGACY_TOKENS',
+    default=True,
+    cast=bool,
+)
+
+# ---------------------------------------------------------------------------
+# after_sales (app móvil de postventa) — flujo de autenticación
+# ---------------------------------------------------------------------------
+# Umbral de intentos fallidos de login antes de deshabilitar la cuenta.
+# El número exacto aún no está definido por producto; 5 es un valor razonable.
+AUTH_MAX_FAILED_ATTEMPTS = config(
+    'AUTH_MAX_FAILED_ATTEMPTS', default=5, cast=int)
+
+# Vida de los JWT emitidos a la app móvil.
+AUTH_ACCESS_TOKEN_LIFETIME = timedelta(
+    minutes=config('AUTH_ACCESS_TOKEN_MINUTES', default=30, cast=int))
+AUTH_REFRESH_TOKEN_LIFETIME = timedelta(
+    days=config('AUTH_REFRESH_TOKEN_DAYS', default=30, cast=int))
+# Token corto que acredita haber pasado el 2FA (activación / reset).
+AUTH_ONBOARDING_TOKEN_LIFETIME = timedelta(
+    minutes=config('AUTH_ONBOARDING_TOKEN_MINUTES', default=15, cast=int))
+
+# Verificación en dos pasos por SMS.
+AUTH_SMS_CODE_LENGTH = config('AUTH_SMS_CODE_LENGTH', default=6, cast=int)
+AUTH_SMS_CODE_LIFETIME = timedelta(
+    minutes=config('AUTH_SMS_CODE_MINUTES', default=10, cast=int))
+AUTH_SMS_MAX_ATTEMPTS = config('AUTH_SMS_MAX_ATTEMPTS', default=5, cast=int)
+# TODO(product): reemplazar por el throttling estándar cuando exista uno.
+AUTH_SMS_RESEND_COOLDOWN = timedelta(
+    seconds=config('AUTH_SMS_RESEND_COOLDOWN_SECONDS', default=60, cast=int))
+
+# Backend de envío de SMS. Por omisión sólo escribe en el log
+# (no hay proveedor real configurado todavía).
+AFTER_SALES_SMS_BACKEND = config(
+    'AFTER_SALES_SMS_BACKEND',
+    default='after_sales.services.sms.ConsoleSmsBackend')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"

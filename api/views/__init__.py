@@ -1,7 +1,7 @@
 from .section import SectionView, SectionViewById, TreeView
 from .role import RoleView, RoleByIdView, UpdatePermissionsView
 from .user import UserView, UserByIdView, RegisterView, UpdatePasswordView
-from .auth import AuthView, PasswordRequestView, RestorePasswordView, RefreshTokenView
+from .auth import AuthView, PasswordRequestView, RestorePasswordView, RefreshTokenView, LogoutView
 from .dashboard import DashboardView
 from .client import ClientView, ClientByTypeView, ClientByIdView
 from .supplier import SupplierView, SupplierByIdView

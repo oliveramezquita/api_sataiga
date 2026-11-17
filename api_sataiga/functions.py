@@ -1,4 +1,3 @@
-
 import jwt  # type: ignore
 import json
 import uuid
@@ -34,12 +33,13 @@ def encode_user(user):
 
 def decode_user(token):
     """
-    Valida los Access Tokens nuevos y antiguos.
+    Valida los Access Tokens.
 
-    - Los tokens nuevos deben tener tipo 'access'
+    - Tokens nuevos: deben contener tipo 'access'
       y fecha de expiración.
-    - Los tokens antiguos se aceptan temporalmente.
-    - Los Refresh Tokens se rechazan.
+    - Tokens antiguos: se aceptan únicamente si
+      AUTH_WEB_ALLOW_LEGACY_TOKENS está activado.
+    - Refresh Tokens: siempre se rechazan.
     """
     payload = jwt.decode(
         jwt=token,
@@ -49,28 +49,37 @@ def decode_user(token):
 
     token_type = payload.get("token_type")
 
-    if token_type == "refresh":
-        raise jwt.InvalidTokenError(
-            "No se puede usar un Refresh Token como Access Token"
-        )
-
     if token_type == "access":
+        if not payload.get("_id"):
+            raise jwt.InvalidTokenError(
+                "Access Token sin identificador de usuario"
+            )
+
         if "exp" not in payload:
             raise jwt.InvalidTokenError(
-                "El Access Token no contiene expiración"
+                "Access Token sin expiración"
             )
 
     elif token_type is None:
-        # Compatibilidad temporal con tokens anteriores.
-        # Solo se acepta el formato antiguo que contiene _id.
+        allow_legacy = getattr(
+            settings,
+            "AUTH_WEB_ALLOW_LEGACY_TOKENS",
+            True
+        )
+
+        if not allow_legacy:
+            raise jwt.InvalidTokenError(
+                "Los tokens antiguos ya no están permitidos"
+            )
+
         if not payload.get("_id"):
             raise jwt.InvalidTokenError(
                 "Token antiguo inválido"
             )
 
-        # Evitar aceptar tokens de otro formato.
         if any(
-            key in payload for key in ("sub", "jti", "iss")
+            key in payload
+            for key in ("sub", "jti", "iss")
         ):
             raise jwt.InvalidTokenError(
                 "Formato de token no permitido"
